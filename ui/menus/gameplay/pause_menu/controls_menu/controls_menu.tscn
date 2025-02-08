@@ -1,0 +1,343 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/menus/gameplay/pause_menu/controls_menu/controls_menu.gd" id="1_script"]
+
+[node name="ControlsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.588235)
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 50.0
+offset_right = 300.0
+offset_bottom = 120.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 72
+text = "CONTROLS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ControlsContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -600.0
+offset_top = -200.0
+offset_right = 600.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ControlsContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlsContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 60
+
+[node name="KeyboardControls" type="VBoxContainer" parent="ControlsContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="Header" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Keyboard"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Grid" type="GridContainer" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls"]
+layout_mode = 2
+theme_override_constants/h_separation = 40
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="PlayerHeader" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 32
+text = "Player Controls"
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Control" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+
+[node name="MovementLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Movement"
+
+[node name="MovementKeys" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "WASD"
+
+[node name="SprintLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Sprint"
+
+[node name="SprintKey" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Shift"
+
+[node name="DashLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Dash"
+
+[node name="DashKey" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Space"
+
+[node name="ShockwaveLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Shockwave"
+
+[node name="ShockwaveKey" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "E"
+
+[node name="ToggleFieldLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Toggle Field"
+
+[node name="ToggleFieldKey" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Q"
+
+[node name="PauseLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Pause"
+
+[node name="PauseKey" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Escape"
+
+[node name="RobotHeader" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 32
+text = "Robot Controls"
+horizontal_alignment = 1
+
+[node name="Spacer2" type="Control" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+
+[node name="ShootLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Shoot"
+
+[node name="ShootKey" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Left Click"
+
+[node name="BoostLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Boost"
+
+[node name="BoostKey" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Right Click"
+
+[node name="QuickBoostLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Quick Boost"
+
+[node name="QuickBoostKey" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Right Click x2"
+
+[node name="VSeparator" type="VSeparator" parent="ControlsContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="ControllerControls" type="VBoxContainer" parent="ControlsContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="Header" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Controller"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Grid" type="GridContainer" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls"]
+layout_mode = 2
+theme_override_constants/h_separation = 40
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="PlayerHeader" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 32
+text = "Player Controls"
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Control" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+
+[node name="MovementLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Movement"
+
+[node name="MovementButton" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Left Stick"
+
+[node name="SprintLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Sprint"
+
+[node name="SprintButton" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "L2/LT"
+
+[node name="DashLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Dash"
+
+[node name="DashButton" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "X/A"
+
+[node name="ShockwaveLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Shockwave"
+
+[node name="ShockwaveButton" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "L3"
+
+[node name="ToggleFieldLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Toggle Field"
+
+[node name="ToggleFieldButton" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Y"
+
+[node name="PauseLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Pause"
+
+[node name="PauseButton" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Start/Menu"
+
+[node name="RobotHeader" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 32
+text = "Robot Controls"
+horizontal_alignment = 1
+
+[node name="Spacer2" type="Control" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+
+[node name="ShootLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Shoot"
+
+[node name="ShootButton" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "R2/RT"
+
+[node name="BoostLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Boost"
+
+[node name="BoostButton" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "R1/RB"
+
+[node name="QuickBoostLabel" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Quick Boost"
+
+[node name="QuickBoostButton" type="Label" parent="ControlsContainer/MarginContainer/HBoxContainer/ControllerControls/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "R1/RB x2"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -80.0
+offset_right = 100.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Back" 

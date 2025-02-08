@@ -1,0 +1,27 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="2025 Game Jam"
+run/main_scene="res://ui/menus/main_menu/main_menu.tscn"
+config/features=PackedStringArray("4.3", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Audio="*res://global/audio_manager.gd"
+SettingsManager="*res://global/settings_manager.gd"
+InputManager="*res://global/input_manager.gd"
+UiManager="*res://global/ui_manager.gd"
+
+[display]
+
+window/size/mode=3

@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bib65lfrf2n8g"]
+
+[ext_resource type="Script" path="res://stages/wave/wave.gd" id="1_22uwt"]
+[ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="4_0hphn"]
+
+[node name="Main" type="Node2D"]
+process_mode = 3
+y_sort_enabled = true
+script = ExtResource("1_22uwt")
+
+[node name="Player" type="Node2D" parent="."]
+process_mode = 1
+
+[node name="HUDCamera" type="Camera2D" parent="."]
+editor_draw_limits = true
+
+[node name="HUD" parent="HUDCamera" instance=ExtResource("4_0hphn")]

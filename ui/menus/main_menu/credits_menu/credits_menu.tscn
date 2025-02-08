@@ -1,0 +1,62 @@
+[gd_scene load_steps=2 format=3 uid="uid://cri4j0pxbfd78"]
+
+[ext_resource type="Script" path="res://ui/menus/main_menu/credits_menu/credits_menu.gd" id="1_script"]
+
+[node name="CreditsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 50.0
+offset_right = 200.0
+offset_bottom = 120.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 48
+text = "CREDITS"
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="."]
+custom_minimum_size = Vector2(400, 70)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -120.0
+offset_right = 200.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "BACK"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+anchor_left = 0.497
+anchor_top = 0.5
+anchor_right = 0.497
+anchor_bottom = 0.5
+offset_left = -496.544
+offset_top = -300.0
+offset_right = 495.456
+offset_bottom = 417.0
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="CreditsText" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
