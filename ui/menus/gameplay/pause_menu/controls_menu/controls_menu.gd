@@ -1,6 +1,9 @@
 extends Control
 
 @onready var back_button: Button = $BackButton
+@onready var keyboard_controls: VBoxContainer = $ControlsContainer/MarginContainer/HBoxContainer/KeyboardControls
+@onready var controller_controls: VBoxContainer = $ControlsContainer/MarginContainer/HBoxContainer/ControllerControls
+@onready var v_separator: VSeparator = $ControlsContainer/MarginContainer/HBoxContainer/VSeparator
 
 func _ready() -> void:
 	back_button.pressed.connect(_on_back_pressed)
@@ -24,5 +27,11 @@ func _on_back_pressed() -> void:
 	pause_menu.center_container.show()  # Show pause menu buttons
 
 func _on_input_mode_changed(mode: String) -> void:
-	if mode == "controller" and visible:
-		back_button.grab_focus() 
+	# Update control visibility
+	keyboard_controls.visible = (mode == "mouse")
+	controller_controls.visible = (mode == "controller")
+	v_separator.visible = false
+	
+	# Handle focus
+	if mode == "controller":
+		back_button.grab_focus()

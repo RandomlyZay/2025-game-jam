@@ -1,88 +1,65 @@
-[gd_scene load_steps=27 format=3 uid="uid://o0q0t4eik226"]
+[gd_scene load_steps=24 format=3 uid="uid://o0q0t4eik226"]
 
-[ext_resource type="Script" path="res://entities/player/human/human.gd" id="1_eklt3"]
-[ext_resource type="Texture2D" uid="uid://cycp1iidapsa7" path="res://assets/textures/entities/player/human/human.png" id="2_em47w"]
-[ext_resource type="Material" uid="uid://bnvgna1nonq4c" path="res://effects/post_process_material.tres" id="3_post_mat"]
-[ext_resource type="Script" path="res://effects/post_process.gd" id="4_post_script"]
+[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_eklt3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nead4"]
-atlas = ExtResource("2_em47w")
 region = Rect2(0, 0, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wg0oe"]
-atlas = ExtResource("2_em47w")
 region = Rect2(0, 96, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_o0bc4"]
-atlas = ExtResource("2_em47w")
 region = Rect2(0, 32, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_03i4t"]
-atlas = ExtResource("2_em47w")
 region = Rect2(0, 64, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_023o6"]
-atlas = ExtResource("2_em47w")
 region = Rect2(16, 0, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p23lq"]
-atlas = ExtResource("2_em47w")
 region = Rect2(32, 0, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uxrnf"]
-atlas = ExtResource("2_em47w")
 region = Rect2(48, 0, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_t4nmo"]
-atlas = ExtResource("2_em47w")
 region = Rect2(0, 0, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_doy1j"]
-atlas = ExtResource("2_em47w")
 region = Rect2(0, 96, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ori4i"]
-atlas = ExtResource("2_em47w")
 region = Rect2(16, 96, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x41lt"]
-atlas = ExtResource("2_em47w")
 region = Rect2(32, 96, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fjkl8"]
-atlas = ExtResource("2_em47w")
 region = Rect2(48, 96, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_15qt8"]
-atlas = ExtResource("2_em47w")
 region = Rect2(0, 32, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_peiu8"]
-atlas = ExtResource("2_em47w")
 region = Rect2(16, 32, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_co7py"]
-atlas = ExtResource("2_em47w")
 region = Rect2(32, 32, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_q2xla"]
-atlas = ExtResource("2_em47w")
 region = Rect2(48, 32, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nda1p"]
-atlas = ExtResource("2_em47w")
 region = Rect2(0, 64, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3hp62"]
-atlas = ExtResource("2_em47w")
 region = Rect2(16, 64, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5l0ee"]
-atlas = ExtResource("2_em47w")
 region = Rect2(32, 64, 16, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_12k7k"]
-atlas = ExtResource("2_em47w")
 region = Rect2(48, 64, 16, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7ncv6"]
@@ -197,13 +174,14 @@ animations = [{
 radius = 16.0
 height = 80.0
 
-[node name="Human" type="CharacterBody2D" groups=["human", "player"]]
+[node name="Player" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
 script = ExtResource("1_eklt3")
 normal_speed_scale = 1.25
 sprint_speed_scale = 3.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
 position = Vector2(2, 0)
 scale = Vector2(5, 5)
 sprite_frames = SubResource("SpriteFrames_7ncv6")
@@ -246,19 +224,10 @@ drag_top_margin = 0.1
 drag_right_margin = 0.1
 drag_bottom_margin = 0.1
 
-[node name="PostProcess" type="ColorRect" parent="Camera2D"]
-z_index = 100
-material = ExtResource("3_post_mat")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -576.0
-offset_top = -324.0
-offset_right = 576.0
-offset_bottom = 324.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("4_post_script")
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -19.0
+offset_top = -2.0
+offset_right = 21.0
+offset_bottom = 66.0
 
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]

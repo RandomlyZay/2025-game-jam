@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://nuanv8572rg6"]
 
 [ext_resource type="Script" path="res://stages/tutorial/tutorial.gd" id="1_c5dhf"]
-[ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/player/human/human.tscn" id="2_anlns"]
-[ext_resource type="PackedScene" uid="uid://be2y3c7m0q4cx" path="res://entities/player/robot/robot.tscn" id="3_763uy"]
+[ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="2_anlns"]
+[ext_resource type="PackedScene" path="res://entities/player/robot/robot.tscn" id="3_763uy"]
 [ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="4_qxdds"]
 
 [node name="Stage" type="Node2D"]

@@ -1,4 +1,4 @@
-extends "res://entities/player/base_player.gd"
+extends "res://entities/characters/player/base_player.gd"
 
 signal stamina_changed(new_stamina: float, max_stamina: float)
 signal velocity_changed(velocity: Vector2)
@@ -27,43 +27,17 @@ signal dash
 @export var normal_speed_scale: float = 1.0 
 @export var sprint_speed_scale: float = 1.5  
 
-@export_group("Shockwave")
-@export var shockwave_min_radius: float = 0.0 
-@export var shockwave_max_radius: float = 300.0
-@export var shockwave_charge_rate: float = 120.0 
-@export var shockwave_base_force: float = 800.0
-@export var shockwave_max_force_multiplier: float = 2.0
-@export var shockwave_stun_damage: float = 2.0
-@export var shockwave_min_energy_cost: float = 0.0 
-@export var shockwave_max_energy_cost: float = 45.0  
-@export var wall_impact_threshold: float = 1000.0 
-@export var wall_impact_damage: float = 1.0 
-
-@export_group("Destabilizing Field")
-@export var destabilizing_field_delay: float = 1.0  # Time before field appears when standing still
-@export var destabilizing_field_drain_rate: float = 10.0  # Energy drained per second
-@export var destabilizing_field_enabled: bool = true 
-
 @export_group("Energy System")
 @export var energy_regen_rate: float = 10.0  # Energy regenerated per second
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var trail_effect: CPUParticles2D = $TrailEffect
-@onready var ShockwaveEffect = preload("res://entities/player/human/shockwave_effect.tscn")
-@onready var ShockwaveRangeIndicator = preload("res://entities/player/human/shockwave_range_indicator.tscn")
-@onready var DestabilizingField = preload("res://entities/player/human/destabilizing_field.tscn")
 @onready var StaminaWheel = preload("res://ui/hud/stamina_wheel.tscn")
 @onready var EnergyWheel = preload("res://ui/hud/energy_wheel.tscn")
 @onready var hit_box: Area2D = $HitBox
 @onready var camera: Camera2D = $Camera2D
 
 var effects_container: Node2D
-var current_shockwave_radius: float = shockwave_min_radius
-var current_shockwave_force: float = shockwave_base_force
-var is_charging_shockwave: bool = false
-var range_indicator: Node2D = null
-var destabilizing_field: Node2D = null
-var time_since_last_move: float = 0.0
 
 # Stamina State
 var current_stamina: float = max_stamina
@@ -84,9 +58,6 @@ var is_exhausted: bool = false
 
 # Combat State
 var is_dying: bool = false 
-
-# Add toggle state
-var destabilizing_field_active: bool = true
 
 func _ready() -> void:
 	max_health = 50 
@@ -111,11 +82,6 @@ func _ready() -> void:
 	add_child(energy_wheel)
 	update_energy_wheel()
 	
-	# Set up post-process effects
-	var post_process = $Camera2D/PostProcess
-	if not post_process:
-		return
-	
 	# Set up collision detection
 	set_collision_layer_value(1, true)  # Player's physical collision layer
 	set_collision_mask_value(2, true)   # Can detect enemy physical bodies
@@ -129,35 +95,9 @@ func _ready() -> void:
 	# Set initial animation to face down
 	animated_sprite.animation = "idle_down"
 	animated_sprite.play()
-	
-	# Initialize destabilizing field state
-	destabilizing_field_active = destabilizing_field_enabled
 
 func _process(delta: float) -> void:
 	super._process(delta)  # Call base class _process for i-frame handling
-	
-	if not is_dying:
-		# Handle destabilizing field energy drain first
-		if destabilizing_field and destabilizing_field.is_inside_tree():
-			var drain_cost = destabilizing_field_drain_rate * delta
-			if current_energy >= drain_cost:
-				current_energy -= drain_cost
-				update_energy_wheel()
-			else:
-				# Not enough energy to maintain field
-				destabilizing_field.fade_out()
-				destabilizing_field = null
-		
-		# Handle energy regeneration when not using abilities
-		if not is_charging_shockwave and not destabilizing_field:
-			current_energy = min(current_energy + energy_regen_rate * delta, max_energy)
-			update_energy_wheel()
-		
-		if is_charging_shockwave:
-			charge_shockwave(delta)
-		if time_since_last_move >= destabilizing_field_delay:
-			spawn_destabilizing_field()
-	
 	# Keep effects container aligned with scene
 	if effects_container:
 		effects_container.global_position = global_position
@@ -170,18 +110,6 @@ func _process(delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("dash"):
 		start_dash()
-	if event.is_action_pressed("shockwave"):
-		start_charging_shockwave()
-	elif event.is_action_released("shockwave"):
-		release_shockwave()
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("toggle_destabilizing_field"):
-		destabilizing_field_active = !destabilizing_field_active
-		if !destabilizing_field_active and destabilizing_field:
-			destabilizing_field.fade_out()
-			destabilizing_field = null
-			time_since_last_move = 0.0
 
 func update_stamina_bar() -> void:
 	if not stamina_wheel or not is_instance_valid(stamina_wheel):
@@ -208,17 +136,6 @@ func handle_movement(delta: float) -> void:
 	var move_direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	is_moving = move_direction.length() > 0
 	is_sprinting = Input.is_action_pressed("sprint") and not is_exhausted 
-	 
-	# Update time since last move
-	if is_moving:
-		time_since_last_move = 0.0
-	else:
-		time_since_last_move += delta
-	
-	# Clear destabilizing field if we start moving
-	if is_moving and destabilizing_field:
-		destabilizing_field.fade_out()
-		destabilizing_field = null
 	
 	if is_moving:
 		# Update look_direction from base class only when actually moving
@@ -346,7 +263,7 @@ func take_damage(amount: float = 1.0) -> void:
 	if is_invincible or is_dying:  # Prevent damage if already dying
 		return
 		
-	AudioManager.play_sfx("human_hurt")
+	Audio.play_sfx("human_hurt")
 	
 	# Normal damage effect for non-lethal damage
 	var post_process = $Camera2D/PostProcess
@@ -370,9 +287,7 @@ func on_death() -> void:
 		return
 	is_dying = true
 	
-	# Immediate death
-	if not GameState.is_game_over():
-		AudioManager.play_sfx("human_death")
+	Audio.play_sfx("human_death")
 	emit_signal("human_died")
 	queue_free()  # Remove human immediately
 
@@ -381,160 +296,9 @@ func _on_health_depleted() -> void:
 		return
 	is_dying = true
 	
-	# Immediate death
-	if not GameState.is_game_over():
-		AudioManager.play_sfx("human_death")
+	Audio.play_sfx("human_death")
 	emit_signal("human_died")
 	queue_free()  # Remove human immediately
-
-func start_charging_shockwave() -> void:
-	if is_charging_shockwave or current_energy <= 0:  
-		return
-	
-	# Clear destabilizing field if it exists
-	if destabilizing_field:
-		destabilizing_field.fade_out()
-		destabilizing_field = null
-		
-	is_charging_shockwave = true
-	current_shockwave_radius = 0.0
-	current_shockwave_force = shockwave_base_force
-	
-	# Show initial cost on energy wheel
-	energy_wheel.update_cost(shockwave_min_energy_cost, shockwave_max_energy_cost)
-	
-	# Create range indicator
-	range_indicator = ShockwaveRangeIndicator.instantiate()
-	effects_container.add_child(range_indicator)
-	range_indicator.set_radius(0)  
-
-func charge_shockwave(delta: float) -> void:
-	if not is_charging_shockwave:
-		return
-	
-	# Calculate how much more we can charge based on remaining energy
-	var current_charge_ratio = (current_shockwave_radius) / (shockwave_max_radius)
-	var current_cost = lerp(shockwave_min_energy_cost, shockwave_max_energy_cost, current_charge_ratio)
-	
-	# Calculate potential next frame's cost
-	var next_radius = min(current_shockwave_radius + shockwave_charge_rate * delta, shockwave_max_radius)
-	var next_charge_ratio = (next_radius) / (shockwave_max_radius)
-	var next_cost = lerp(shockwave_min_energy_cost, shockwave_max_energy_cost, next_charge_ratio)
-	
-	# Update cost display on energy wheel
-	energy_wheel.update_cost(current_cost, shockwave_max_energy_cost)
-	
-	# Check if we can afford the next charge increment
-	if next_cost > current_energy:
-		release_shockwave()
-		return
-	
-	# Continue charging if we can afford it and haven't reached max size
-	if current_shockwave_radius < shockwave_max_radius:
-		current_shockwave_radius = next_radius
-		current_shockwave_force = lerp(shockwave_base_force, shockwave_base_force * shockwave_max_force_multiplier, current_charge_ratio)
-	
-	if range_indicator:
-		range_indicator.set_radius(current_shockwave_radius)
-
-func release_shockwave() -> void:
-	if not is_charging_shockwave:
-		return
-	
-	# Calculate energy cost based on current charge level
-	var charge_ratio = (current_shockwave_radius) / (shockwave_max_radius)
-	var energy_cost = lerp(shockwave_min_energy_cost, shockwave_max_energy_cost, charge_ratio)
-	
-	# Ensure we don't try to use more energy than we have
-	energy_cost = min(energy_cost, current_energy)
-	
-	# Create shockwave effect
-	var effect = ShockwaveEffect.instantiate()
-	effects_container.add_child(effect)
-		
-	# Consume energy and update wheel
-	current_energy -= energy_cost
-	update_energy_wheel()
-		
-	# Handle shockwave logic
-	var overlapping_bodies = []
-	
-	# Get all projectiles (includes robot bullets)
-	var areas = get_tree().get_nodes_in_group("projectiles")
-	for area in areas:
-		if area.global_position.distance_to(global_position) <= current_shockwave_radius:
-			overlapping_bodies.append(area)
-	
-	# Get enemy bullets
-	for area in get_tree().get_nodes_in_group("enemy_bullets"):
-		var parent = area.get_parent()
-		if parent and parent.is_in_group("projectiles"):
-			if parent.global_position.distance_to(global_position) <= current_shockwave_radius:
-				overlapping_bodies.append(parent)
-	
-	# Get enemies
-	var enemies = get_tree().get_nodes_in_group("enemies")
-	for enemy in enemies:
-		var distance = enemy.global_position.distance_to(global_position)
-		if distance <= current_shockwave_radius:
-			overlapping_bodies.append(enemy)
-	
-	for object in overlapping_bodies:
-		# Calculate deflection direction and force
-		var direction = (object.global_position - global_position).normalized()
-		var distance = object.global_position.distance_to(global_position)
-		var distance_factor = 1.0 - clamp(distance / current_shockwave_radius, 0.0, 1.0)
-		var deflection_force = current_shockwave_force * (distance_factor * 1.3 + 0.4)
-		
-		if object.is_in_group("enemies"):
-			object.take_knockback(direction * deflection_force)
-		else:
-			# Set velocity directly for non-enemy objects (projectiles)
-			object.velocity = direction * deflection_force
-	
-	# Hide cost indicator
-	energy_wheel.hide_cost()
-	
-	# Reset shockwave state
-	is_charging_shockwave = false
-	current_shockwave_radius = 0
-	current_shockwave_force = shockwave_base_force
-	
-	# Remove range indicator
-	if range_indicator:
-		range_indicator.queue_free()
-		range_indicator = null
-
-func spawn_destabilizing_field() -> void:
-	if !destabilizing_field_active:
-		return
-		
-	if destabilizing_field or is_charging_shockwave or current_energy < destabilizing_field_drain_rate:
-		return
-		
-	# Create destabilizing field
-	destabilizing_field = DestabilizingField.instantiate()
-	effects_container.add_child(destabilizing_field)
-	destabilizing_field.fade_in()
-
-func handle_destabilizing_field(delta: float) -> void:
-	if !destabilizing_field_active:
-		if destabilizing_field:
-			destabilizing_field.fade_out()
-			destabilizing_field = null
-		time_since_last_move = 0.0
-		return
-		
-	if is_moving or is_dashing:
-		time_since_last_move = 0.0
-		if destabilizing_field:
-			destabilizing_field.fade_out()
-			destabilizing_field = null
-	else:
-		time_since_last_move += delta
-		if time_since_last_move >= destabilizing_field_delay and !destabilizing_field:
-			destabilizing_field = DestabilizingField.instantiate()
-			effects_container.add_child(destabilizing_field)
 
 func _on_hit_box_area_entered(area: Area2D) -> void:
 	if area.get_parent().has_method("is_in_lunge_state"):
@@ -547,14 +311,7 @@ func _on_hit_box_area_entered(area: Area2D) -> void:
 		take_damage()  # Use default damage amount
 
 func _physics_process(delta: float) -> void:
-	if not GameState.is_game_over():
 		super._physics_process(delta)  # This handles knockback and basic movement
-		
-		# Handle human-specific abilities and states
-		if is_charging_shockwave:
-			charge_shockwave(delta)
-		if time_since_last_move >= destabilizing_field_delay:
-			spawn_destabilizing_field()
 			
 		# Update animations and stamina
 		var movement = velocity

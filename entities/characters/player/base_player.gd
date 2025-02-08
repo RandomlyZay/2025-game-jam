@@ -2,7 +2,6 @@ extends CharacterBody2D
 
 signal health_changed(new_health: float, max_health: float)
 signal human_died
-signal robot_died
 
 @export_group("Health")
 @export var max_health: float = 100.0 
@@ -64,8 +63,6 @@ func take_damage(amount: float = 1.0) -> void:
 	if current_health <= 0:
 		if is_in_group("human"):
 			emit_signal("human_died")
-		elif is_in_group("robot"):
-			emit_signal("robot_died")
 		on_death()
 		return
 		
@@ -86,13 +83,3 @@ func on_death() -> void:
 	set_process(false)
 	set_physics_process(false)
 	set_process_input(false)
-
-func toggle_invincibility() -> void:
-	is_invincible = !is_invincible
-	set_invincibility_visuals(is_invincible)
-
-func set_invincibility_visuals(is_invincible: bool) -> void:
-	if is_invincible:
-		modulate = Color(0.3, 0.3, 0.3, 1.0)  
-	else:
-		modulate = Color.WHITE

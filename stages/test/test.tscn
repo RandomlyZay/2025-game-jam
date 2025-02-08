@@ -1,10 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://iyxmymt68386"]
+[gd_scene load_steps=4 format=3 uid="uid://iyxmymt68386"]
 
 [ext_resource type="Script" path="res://stages/test/test.gd" id="1_qwtvd"]
 [ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="2_a7jvq"]
+[ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="2_xlaae"]
 
 [node name="Test" type="Node2D"]
 script = ExtResource("1_qwtvd")
+
+[node name="Player" parent="." instance=ExtResource("2_xlaae")]
 
 [node name="HUDCamera" type="Camera2D" parent="."]
 editor_draw_limits = true
