@@ -33,7 +33,6 @@ const MASTER_BUS := "Master"
 const MUSIC_BUS := "Music"
 const SFX_BUS := "SFX"
 
-# --- Volume Properties with Bus Control ---
 # Changing these properties will automatically update the corresponding Audio Bus volume.
 var master_volume: float = 1.0:
 	set(value):

@@ -12,15 +12,12 @@ var settings_menu_scene = preload("res://ui/menus/gameplay/pause_menu/settings_m
 var controls_menu_scene = preload("res://ui/menus/gameplay/pause_menu/controls_menu/controls_menu.tscn")
 var settings_menu_instance: Control = null
 var controls_menu_instance: Control = null
-var countdown_label: Control = null
 var tutorial_popup: Control = null
 
 # Public Function to Show Menu
 func show_menu() -> void:
 	visible = true
 	get_tree().paused = true
-	if countdown_label:
-		countdown_label.hide()
 	if tutorial_popup:
 		tutorial_popup.hide()
 	
@@ -36,7 +33,6 @@ func _ready() -> void:
 	# Find the countdown label and tutorial popup
 	var hud = get_tree().get_first_node_in_group("hud")
 	if hud:
-		countdown_label = hud.get_node("CountdownLabel")
 		tutorial_popup = hud.get_node_or_null("TutorialPopup")
 
 func setup_focus() -> void:
@@ -63,8 +59,6 @@ func setup_focus() -> void:
 
 func _on_resume_pressed() -> void:
 	get_tree().paused = false
-	if countdown_label:
-		countdown_label.show()
 	if tutorial_popup:
 		tutorial_popup.show()
 	visible = false

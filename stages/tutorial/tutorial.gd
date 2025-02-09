@@ -1,7 +1,6 @@
 extends Node2D
 
-@onready var human: CharacterBody2D = $Player/Human
-@onready var robot: CharacterBody2D = $Player/Robot
+@onready var player: CharacterBody2D = $Player
 @onready var ui_manager: UIManager
 
 var tutorial_popup: Control = null
@@ -27,8 +26,8 @@ func _ready() -> void:
 		push_error("Critical scene components missing. Tutorial cannot proceed.")
 		return
 
-	AudioManager.play_music("tutorial_theme")
-	GameState.reset_game_state()
+	Audio.play_music("tutorial_theme")
+	print("music playing")
 	get_tree().paused = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
@@ -40,8 +39,8 @@ func _ready() -> void:
 	setup_movement_tutorial()
 
 func _validate_scene_setup() -> bool:
-	if not has_node("Player/Human") or not has_node("Player/Robot"):
-		push_error("Player characters not found in scene")
+	if not has_node("Player"):
+		push_error("Player not found in scene")
 		return false
 	if not has_node("HUDCamera/HUD"):
 		push_error("HUD not found in scene")
@@ -54,11 +53,10 @@ func _validate_scene_setup() -> bool:
 func initialize_enemies() -> void:
 	for enemy in $Enemies.get_children():
 		if enemy.has_method("initialize_references"):
-			if not is_instance_valid(human) or not is_instance_valid(robot):
+			if not is_instance_valid(player):
 				push_error("Player references invalid during enemy initialization")
 				continue
-			enemy.human = human
-			enemy.robot = robot
+			enemy.player = player
 			enemy.initialized = true
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -74,7 +72,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _notification(what: int) -> void:
 	if (what == NOTIFICATION_WM_WINDOW_FOCUS_OUT 
-		and !GameState.is_paused() 
 		and (!is_instance_valid(ui_manager.game_over_menu_instance) or !ui_manager.game_over_menu_instance.visible)):
 		ui_manager.show_pause_menu()
 
@@ -91,22 +88,14 @@ func connect_signals() -> void:
 	if not _validate_signal_requirements():
 		return
 
-	human.health_changed.connect(func(new_health, max_health): 
+	player.health_changed.connect(func(new_health, max_health): 
 		if is_instance_valid(ui_manager):
-			ui_manager.update_human_health(new_health, max_health))
-	human.human_died.connect(on_player_death)
-
-	robot.health_changed.connect(func(new_health, max_health): 
-		if is_instance_valid(ui_manager):
-			ui_manager.update_robot_health(new_health, max_health))
-	robot.robot_died.connect(on_player_death)
+			ui_manager.update_player_health(new_health, max_health))
+	player.player_died.connect(on_player_death)
 
 func _validate_signal_requirements() -> bool:
-	if not is_instance_valid(human):
-		push_error("Human player not valid for signal connection")
-		return false
-	if not is_instance_valid(robot):
-		push_error("Robot player not valid for signal connection")
+	if not is_instance_valid(player):
+		push_error("Player not valid for signal connection")
 		return false
 	if not is_instance_valid(ui_manager):
 		push_error("UI Manager not valid for signal connection")
@@ -114,7 +103,6 @@ func _validate_signal_requirements() -> bool:
 	return true
 
 func on_player_death() -> void:
-	GameState.trigger_game_over()
 	if is_instance_valid(ui_manager):
 		ui_manager.show_game_over_menu()
 	get_tree().paused = true
@@ -124,8 +112,8 @@ func setup_movement_tutorial() -> void:
 		return
 	
 	show_tutorial_popup("Use WASD to move", true)
-	if human:
-		human.connect("velocity_changed", _on_human_moved)
+	if player:
+		player.connect("velocity_changed", _on_player_moved)
 
 func setup_dashing_sprinting_tutorial() -> void:
 	if is_popup_active:
@@ -134,31 +122,31 @@ func setup_dashing_sprinting_tutorial() -> void:
 	has_sprinted = false
 	has_dashed = false
 	
-	if human:
+	if player:
 		# Ensure we're not double-connecting signals
-		if human.sprint.is_connected(_on_human_sprinted):
-			human.sprint.disconnect(_on_human_sprinted)
-		if human.dash.is_connected(_on_human_dashed):
-			human.dash.disconnect(_on_human_dashed)
-		if human.is_connected("velocity_changed", _on_human_moved_sprint):
-			human.disconnect("velocity_changed", _on_human_moved_sprint)
+		if player.sprint.is_connected(_on_player_sprinted):
+			player.sprint.disconnect(_on_player_sprinted)
+		if player.dash.is_connected(_on_player_dashed):
+			player.dash.disconnect(_on_player_dashed)
+		if player.is_connected("velocity_changed", _on_player_moved_sprint):
+			player.disconnect("velocity_changed", _on_player_moved_sprint)
 			
-		human.sprint.connect(_on_human_sprinted)
-		human.dash.connect(_on_human_dashed)
-		human.connect("velocity_changed", _on_human_moved_sprint)
+		player.sprint.connect(_on_player_sprinted)
+		player.dash.connect(_on_player_dashed)
+		player.connect("velocity_changed", _on_player_moved_sprint)
 	
 	show_tutorial_popup("Press SHIFT to sprint and SPACE to dash", false)
 
-func _on_human_moved_sprint(velocity: Vector2) -> void:
-	if human and Input.is_action_pressed("sprint") and velocity.length() > 0:
-		_on_human_sprinted()
+func _on_player_moved_sprint(velocity: Vector2) -> void:
+	if player and Input.is_action_pressed("sprint") and velocity.length() > 0:
+		_on_player_sprinted()
 
-func _on_human_sprinted() -> void:
+func _on_player_sprinted() -> void:
 	if not has_sprinted and current_tutorial_step == TutorialStep.DASH_SPRINT:
 		has_sprinted = true
 		check_sprint_dash_completion()
 
-func _on_human_dashed() -> void:
+func _on_player_dashed() -> void:
 	if not has_dashed and current_tutorial_step == TutorialStep.DASH_SPRINT:
 		has_dashed = true
 		check_sprint_dash_completion()
@@ -166,15 +154,15 @@ func _on_human_dashed() -> void:
 func check_sprint_dash_completion() -> void:
 	if (has_sprinted or has_dashed) and is_instance_valid(tutorial_popup):
 		# If either action is completed, disconnect its signal to prevent re-triggering
-		if has_sprinted and human.sprint.is_connected(_on_human_sprinted):
-			human.sprint.disconnect(_on_human_sprinted)
-		if has_dashed and human.dash.is_connected(_on_human_dashed):
-			human.dash.disconnect(_on_human_dashed)
+		if has_sprinted and player.sprint.is_connected(_on_player_sprinted):
+			player.sprint.disconnect(_on_player_sprinted)
+		if has_dashed and player.dash.is_connected(_on_player_dashed):
+			player.dash.disconnect(_on_player_dashed)
 		
 		# If both actions are completed, finish the tutorial
 		if has_sprinted and has_dashed:
-			if human.is_connected("velocity_changed", _on_human_moved_sprint):
-				human.disconnect("velocity_changed", _on_human_moved_sprint)
+			if player.is_connected("velocity_changed", _on_player_moved_sprint):
+				player.disconnect("velocity_changed", _on_player_moved_sprint)
 			tutorial_popup.tutorial_completed.emit()
 			tutorial_popup.fade_out()
 
@@ -186,8 +174,7 @@ func complete_tutorial() -> void:
 	await get_tree().create_timer(3.0).timeout
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # Show OS cursor before transition
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/controls_menu/controls_menu.tscn")
-	AudioManager.stop_music(0.0)  # Immediate stop
-	AudioManager.play_menu_music()
+	Audio.play_music("main_menu_theme")
 
 func _on_tutorial_completed() -> void:
 	if is_tutorial_transitioning:
@@ -248,7 +235,7 @@ func show_tutorial_popup(message: String, is_movement: bool = false) -> void:
 	tutorial_popup.tutorial_completed.connect(_on_tutorial_completed, CONNECT_ONE_SHOT)  # Only allow one completion
 	tutorial_popup.fade_in()
 
-func _on_human_moved(velocity: Vector2) -> void:
+func _on_player_moved(velocity: Vector2) -> void:
 	if velocity.length() == 0 or not is_instance_valid(tutorial_popup):
 		return
 		
