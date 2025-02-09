@@ -19,10 +19,6 @@ extends CharacterBody2D
 @export var attack_cooldown: float = 0.6
 @export var stun_duration: float = 0.2
 
-@export_group("Drops")
-@export var tech_part_scene: PackedScene = preload("res://entities/collectables/tech_part/tech_part.tscn")
-@export var tech_part_drop_chance: float = 0.2
-
 # Enemy States
 enum EnemyState {
 	IDLE,
@@ -35,7 +31,6 @@ var current_state: int = EnemyState.IDLE
 # Core
 var initialized: bool = false
 var human: Node2D = null
-var robot: Node2D = null
 var sprite: Node2D = null
 var original_color: Color = Color.WHITE
 var trail: CPUParticles2D = null
@@ -60,9 +55,6 @@ var knockback_decay: float = 1500.0
 var impact_scale: float = 1.0
 var is_dashing: bool = false
 var dash_timer: float = 0.0
-var wall_impact_speed_threshold: float = 400.0
-var wall_impact_damage_amount: float = 10.0
-var monitoring_wall_impact: bool = false
 var can_damage: bool = true
 var cooldown_timer: float = 0.0
 var is_attacking: bool = false
@@ -78,15 +70,6 @@ var dodge_direction: Vector2 = Vector2.ZERO
 var dodge_timer: float = 0.0
 var is_dodging: bool = false
 var dodge_success_count: int = 0
-
-# Personality System
-var personality_type: String = "neutral"
-var max_health: float = 60.0
-var base_aggression: float = 1.0
-var aggression_level: float = 1.0
-var hits_taken: int = 0
-const PERSONALITY_CHANGE_BASE_CHANCE: float = 0.15
-const MAX_PERSONALITY_CHANGE_CHANCE: float = 0.4
 
 # Positioning State
 var seeking_position: bool = false
@@ -106,20 +89,13 @@ func _ready() -> void:
 	# Trail effect is optional
 	trail = get_node_or_null("CPUParticles2D")
 	
-	# Setup personality visual effects
-	setup_personality_effects()
-	
-	# Initialize with small chance of starting personality
-	initialize_personality()
-	
 	setup_obstacle_avoidance()
 	initialize_references()
 	initialized = true
 
 func initialize_references() -> void:
 	if !initialized:
-		human = get_tree().root.get_node_or_null("Main/Player/Human")
-		robot = get_tree().root.get_node_or_null("Main/Player/Robot")
+		human = get_tree().root.get_node_or_null("Main/Player")
 	
 	reset_state()
 
@@ -225,7 +201,7 @@ func _on_hit(is_overheated: bool = false) -> void:
 	if !can_damage:
 		return
 	
-	AudioManager.play_sfx("enemy_hurt")
+	Audio.play_sfx("enemy_hurt")
 	
 	# Apply proper damage based on overheated state
 	var damage = 20.0 if is_overheated else 10.0
@@ -276,7 +252,7 @@ func take_damage(amount: float) -> void:
 	if !can_damage:
 		return
 		
-	AudioManager.play_sfx("enemy_hurt")
+	Audio.play_sfx("enemy_hurt")
 	
 	health -= amount
 	flash_hit()
@@ -291,7 +267,7 @@ func take_damage(amount: float) -> void:
 
 ### Death and Effects ###
 func die() -> void:
-	AudioManager.play_sfx("enemy_death")
+	Audio.play_sfx("enemy_death")
 	
 	# Visual effects
 	if sprite:
@@ -331,151 +307,11 @@ func die() -> void:
 	add_child(death_particles)
 	death_particles.emitting = true
 	
-	# Randomized drop logic for tech parts
-	if tech_part_scene and randf() <= tech_part_drop_chance:
-		var tech_part = tech_part_scene.instantiate()
-		get_parent().add_child(tech_part)
-		tech_part.global_position = global_position  # Drop at enemy's position
-	
 	# Remove enemy after particles finish
 	await get_tree().create_timer(0.5).timeout
 	queue_free()
 
 ### Dodging and Repositioning ###
-func get_separation_vector() -> Vector2:
-	var separation = Vector2.ZERO
-	var nearby_count = 0
-	
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		if enemy != self:
-			var distance = position.distance_to(enemy.position)
-			if distance < detection_radius:
-				var away = position - enemy.position
-				separation += away.normalized() * (detection_radius - distance)
-				nearby_count += 1
-	
-	if nearby_count > 0:
-		separation /= nearby_count
-		
-	return separation
-
-func try_dodge_projectiles() -> bool:
-	if !can_dodge or dodge_timer > 0:
-		return false
-		
-	var nearest_bullet = find_nearest_bullet()
-	if !nearest_bullet:
-		return false
-		
-	var bullet_velocity = nearest_bullet.velocity
-	if bullet_velocity == Vector2.ZERO:
-		return false
-		
-	var time_to_impact = position.distance_to(nearest_bullet.position) / bullet_velocity.length()
-	
-	# Adaptive dodge timing based on success
-	var min_dodge_time = 0.1 + (dodge_success_count * 0.02) 
-	var max_dodge_time = 0.5 + (dodge_success_count * 0.05) 
-	
-	# Only dodge if bullet will hit soon, with adaptive timing
-	if time_to_impact > max_dodge_time or time_to_impact < min_dodge_time:
-		return false
-		
-	# Calculate dodge direction perpendicular to bullet trajectory
-	var bullet_direction = bullet_velocity.normalized()
-	
-	# Dodge direction based on surroundings
-	var preferred_side = 1 if randf() < 0.5 else -1
-	dodge_direction = Vector2(bullet_direction.y, -bullet_direction.x) * preferred_side
-	
-	# Check both directions and choose the better one
-	var space_state = get_world_2d().direct_space_state
-	var left_pos = position + Vector2(bullet_direction.y, -bullet_direction.x) * dodge_speed * dodge_duration
-	var right_pos = position + Vector2(-bullet_direction.y, bullet_direction.x) * dodge_speed * dodge_duration
-	
-	var left_query = PhysicsRayQueryParameters2D.create(position, left_pos)
-	var right_query = PhysicsRayQueryParameters2D.create(position, right_pos)
-	
-	var left_hit = space_state.intersect_ray(left_query)
-	var right_hit = space_state.intersect_ray(right_query)
-	
-	if !left_hit and right_hit:
-		dodge_direction = Vector2(bullet_direction.y, -bullet_direction.x)
-	elif left_hit and !right_hit:
-		dodge_direction = Vector2(-bullet_direction.y, bullet_direction.x)
-	elif left_hit and right_hit:
-		# Both directions blocked, try to dodge backwards
-		dodge_direction = -bullet_direction
-	
-	# Adjust dodge speed based on adaptation
-	var adjusted_speed = dodge_speed * (1.0 + (dodge_success_count * 0.1))
-	velocity = dodge_direction * min(adjusted_speed, dodge_speed * 1.5)
-	
-	is_dashing = true
-	is_dodging = true
-	dash_timer = dodge_duration
-	dodge_timer = dodge_cooldown
-	
-	return true
-
-func find_nearest_bullet() -> Node2D:
-	var nearest_bullet: Node2D = null
-	var min_distance := dodge_detection_range * dodge_detection_range
-	
-	for bullet in get_tree().get_nodes_in_group("robot_bullets"):
-		var distance_squared := position.distance_squared_to(bullet.position)
-		if distance_squared < min_distance:
-			min_distance = distance_squared
-			nearest_bullet = bullet
-			
-	return nearest_bullet
-
-func has_clear_shot(target: Node2D) -> bool:
-	var to_target = target.position - position
-	var distance_to_target = to_target.length()
-	
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		if enemy != self:
-			var to_enemy = enemy.position - position
-			var enemy_distance = to_enemy.length()
-			
-			if enemy_distance < distance_to_target:
-				var angle = abs(to_target.angle_to(to_enemy))
-				if angle < deg_to_rad(20.0):
-					return false
-	
-	return true
-
-func find_better_position(target: Node2D) -> void:
-	var angles = [PI/4, -PI/4, PI/2, -PI/2]
-	var base_direction = (target.position - position).normalized()
-	
-	for angle in angles:
-		var test_direction = base_direction.rotated(angle)
-		var test_position = position + test_direction * repositioning_distance
-		
-		var space_state = get_world_2d().direct_space_state
-		var query = PhysicsRayQueryParameters2D.create(test_position, target.position, 1)
-		var result = space_state.intersect_ray(query)
-		
-		if !result or result.collider == target:
-			target_position = test_position
-			velocity = test_direction * dash_speed
-			is_dashing = true
-			dash_timer = dash_duration
-			seeking_position = true
-			trail.emitting = true
-			return
-
-func update_blocked_state(target: Node2D, delta: float) -> void:
-	blocked_timer += delta
-	if blocked_timer >= blocked_time_limit:
-		find_better_position(target)
-		blocked_timer = 0.0
-
-func reset_blocked_state() -> void:
-	blocked_timer = 0.0
-
 func check_obstacles(desired_velocity: Vector2) -> Vector2:
 	if obstacle_check_timer <= 0:
 		cached_obstacle_direction = Vector2.ZERO
@@ -514,19 +350,6 @@ func move_and_avoid(desired_velocity: Vector2, delta: float) -> void:
 	# Update position tracking
 	if !get_slide_collision_count():
 		last_valid_position = global_position
-
-func calculate_current_aggression() -> float:
-	# Base implementation - can be overridden by child classes
-	var health_ratio = health / max_health
-	var base_modifier = 1.0 + (1.0 - health_ratio) * 0.5 
-	
-	# Factor in dodge success
-	var dodge_modifier = min(1.0 + (dodge_success_count * 0.1), 1.5) 
-	
-	# Factor in time since last hit
-	var hit_modifier = min(1.0 + (last_hit_time / 10.0), 1.3) 
-	
-	return aggression_level * base_aggression * dodge_modifier * hit_modifier
 
 func _physics_process(delta: float) -> void:
 	if !initialized or !human:
@@ -594,95 +417,6 @@ func _on_timeout_reset_attack() -> void:
 	var timer = get_tree().create_timer(attack_cooldown)
 	timer.timeout.connect(_on_timeout_can_attack)
 
-func maybe_change_personality() -> void:
-	# Calculate chance based on hits taken
-	var change_chance = min(PERSONALITY_CHANGE_BASE_CHANCE + (hits_taken * 0.05), MAX_PERSONALITY_CHANGE_CHANCE)
-	
-	if randf() < change_chance:
-		var roll = randf()
-		if roll < 0.3: 
-			set_personality("aggressive")
-		elif roll < 0.6: 
-			set_personality("cautious")
-		else: 
-			set_personality("neutral")
-
 # Virtual function for child classes to override
 func _on_attack_area_area_entered(_area: Area2D) -> void:
 	pass  # Implement in child classes
-
-func initialize_personality() -> void:
-	var roll = randf()
-	if roll < 0.1: 
-		set_personality("aggressive")
-	elif roll < 0.2: 
-		set_personality("cautious")
-	else: 
-		set_personality("neutral")
-
-func set_personality(new_type: String) -> void:
-	personality_type = new_type
-	
-	# Stop all personality effects first
-	if sweat_particles:
-		sweat_particles.emitting = false
-	if rage_particles:
-		rage_particles.emitting = false
-	if sprite:
-		sprite.modulate = original_color
-	
-	match personality_type:
-		"aggressive":
-			base_aggression = 1.5
-			attack_cooldown *= 0.8
-			dodge_chance *= 0.7
-			stun_duration *= 0.8
-			if rage_particles:
-				rage_particles.emitting = true
-			if sprite:
-				sprite.modulate = Color(1.2, 0.8, 0.8)  # Slight red tint
-		"cautious":
-			base_aggression = 0.7
-			attack_cooldown *= 1.2
-			dodge_chance *= 1.3
-			stun_duration *= 1.2
-			if sweat_particles:
-				sweat_particles.emitting = true
-			if sprite:
-				sprite.modulate = Color(0.8, 0.8, 1.2)  # Slight blue tint
-		"neutral":
-			base_aggression = 1.0
-			if sprite:
-				sprite.modulate = original_color
-
-func setup_personality_effects() -> void:
-	# Setup sweat particles for cautious personality
-	sweat_particles = CPUParticles2D.new()
-	sweat_particles.emitting = false
-	sweat_particles.amount = 4
-	sweat_particles.lifetime = 1.0
-	sweat_particles.explosiveness = 0.0
-	sweat_particles.direction = Vector2.UP
-	sweat_particles.spread = 30.0
-	sweat_particles.gravity = Vector2(0, 98)
-	sweat_particles.initial_velocity_min = 50.0
-	sweat_particles.initial_velocity_max = 70.0
-	sweat_particles.scale_amount_min = 3.0 
-	sweat_particles.scale_amount_max = 4.0 
-	sweat_particles.color = Color(0.3, 0.3, 1.0, 0.8) 
-	add_child(sweat_particles)
-	
-	# Setup rage particles for aggressive personality
-	rage_particles = CPUParticles2D.new()
-	rage_particles.emitting = false
-	rage_particles.amount = 8
-	rage_particles.lifetime = 0.5
-	rage_particles.explosiveness = 0.1
-	rage_particles.spread = 180.0
-	rage_particles.gravity = Vector2.ZERO
-	rage_particles.initial_velocity_min = 30.0
-	rage_particles.initial_velocity_max = 50.0
-	rage_particles.scale_amount_min = 3.0 
-	rage_particles.scale_amount_max = 4.0 
-	rage_particles.color = Color(1.0, 0.3, 0.3, 0.8) 
-	add_child(rage_particles)

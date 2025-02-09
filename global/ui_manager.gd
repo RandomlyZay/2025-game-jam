@@ -1,7 +1,8 @@
 extends Node
 class_name UIManager
 
-var human_health_bar: ProgressBar
+var health_bar: ProgressBar
+var dialogue_box: CanvasLayer = null
 
 # Menus
 var pause_menu_scene: PackedScene = preload("res://ui/menus/gameplay/pause_menu/pause_menu.tscn")
@@ -11,12 +12,24 @@ var game_over_menu_instance: Node = null
 
 func initialize_UI(hud_node: Node) -> void:
 	# Get references to health bars
-	human_health_bar = hud_node.get_node("PlayerHUD/HumanHealth")
+	health_bar = hud_node.get_node("PlayerHUD/Health")
+	
+	dialogue_box = preload("res://ui/hud/dialogue/dialoguebox.tscn").instantiate()
+	hud_node.add_child(dialogue_box)
+	dialogue_box.hide()
 
-func update_human_health(health: int, max_health: int = 50) -> void:
-	if human_health_bar:
-		human_health_bar.max_value = max_health
-		human_health_bar.value = health
+func update_health(health: int, max_health: int = 50) -> void:
+	if health_bar:
+		health_bar.max_value = max_health
+		health_bar.value = health
+
+func start_dialogue(dialogue_data: Array):
+	if dialogue_box:
+		dialogue_box.show()
+		dialogue_box.start_dialogue(dialogue_data)
+
+func is_dialogue_active() -> bool:
+	return dialogue_box.visible if dialogue_box else false
 
 func show_pause_menu() -> void:
 	if !is_instance_valid(pause_menu_instance):

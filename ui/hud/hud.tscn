@@ -1,6 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://dq8qo4qvlvhwj"]
-
-[ext_resource type="PackedScene" uid="uid://c4q8yfkj6n2xw" path="res://ui/hud/energy_wheel.tscn" id="1_energy"]
+[gd_scene load_steps=2 format=3 uid="uid://dq8qo4qvlvhwj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Health"]
 bg_color = Color(1, 0, 0, 1)
@@ -19,12 +17,10 @@ offset_right = 420.0
 offset_bottom = 180.0
 theme_override_constants/separation = 15
 
-[node name="HumanHealth" type="ProgressBar" parent="PlayerHUD"]
+[node name="Health" type="ProgressBar" parent="PlayerHUD"]
 custom_minimum_size = Vector2(400, 30)
 layout_mode = 2
 theme_override_styles/fill = SubResource("StyleBoxFlat_Health")
 max_value = 50.0
 value = 50.0
 show_percentage = false
-
-[node name="EnergyWheel" parent="." instance=ExtResource("1_energy")]
