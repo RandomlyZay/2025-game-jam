@@ -29,7 +29,6 @@ func _ready() -> void:
 	Audio.play_music("tutorial_theme")
 	print("music playing")
 	get_tree().paused = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	
 	setup_ui_manager()
 	await get_tree().process_frame
@@ -172,7 +171,6 @@ func complete_tutorial() -> void:
 	show_tutorial_popup("Tutorial completed!")
 	# After showing completion message, wait 3 seconds then go to controls menu
 	await get_tree().create_timer(3.0).timeout
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # Show OS cursor before transition
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/controls_menu/controls_menu.tscn")
 	Audio.play_music("main_menu_theme")
 
@@ -280,10 +278,7 @@ func setup_stamina_warning() -> void:
 	)
 	auto_complete_timer.start()
 
-func _on_tutorial_complete() -> void:
-	# Show the OS cursor for the controls menu
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	
+func _on_tutorial_complete() -> void:	
 	# Wait 3 seconds before transitioning
 	await get_tree().create_timer(3.0).timeout
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/controls_menu/controls_menu.tscn")
