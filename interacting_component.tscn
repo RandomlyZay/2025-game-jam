@@ -36,3 +36,5 @@ text = "E to interact"
 label_settings = SubResource("LabelSettings_5ndwm")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[connection signal="area_entered" from="InteractRange" to="." method="_on_interact_range_area_entered"]

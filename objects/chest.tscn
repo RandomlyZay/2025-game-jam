@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cykihoei5jotd" path="res://objects/interactable.tscn" id="2_hynx4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_38tjh"]
-size = Vector2(336, 195)
+size = Vector2(554, 321)
 
 [node name="chest" type="Node2D"]
 script = ExtResource("1_2ells")
@@ -16,8 +16,9 @@ scale = Vector2(0.430208, 0.392708)
 texture = ExtResource("1_lpubl")
 
 [node name="interactable" parent="." instance=ExtResource("2_hynx4")]
+collision_mask = 2
 interact_name = "ChestInteract"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="interactable"]
-position = Vector2(10, -28.5)
+position = Vector2(4, -38)
 shape = SubResource("RectangleShape2D_38tjh")
