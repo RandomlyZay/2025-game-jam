@@ -1,26 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://cykihoei5jotd"]
+[gd_scene load_steps=5 format=3 uid="uid://kbnowphrd7y2"]
 
+[ext_resource type="Script" path="res://objects/chest.gd" id="1_2ells"]
 [ext_resource type="Texture2D" uid="uid://bbyja5yan8f6h" path="res://stolenchestpng.png" id="1_lpubl"]
-[ext_resource type="Script" path="res://objects/area_2d.gd" id="1_mk7l2"]
+[ext_resource type="PackedScene" uid="uid://cykihoei5jotd" path="res://objects/interactable.tscn" id="2_hynx4"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_jqejh"]
-size = Vector2(229, 157)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b118o"]
+size = Vector2(321, 113)
 
-[sub_resource type="GDScript" id="GDScript_yka4a"]
+[node name="chest" type="Node2D"]
+script = ExtResource("1_2ells")
 
-[node name="Chest" type="Node2D"]
-
-[node name="Area2D" type="Area2D" parent="."]
-script = ExtResource("1_mk7l2")
-
-[node name="Sprite2D" type="Sprite2D" parent="Area2D"]
-position = Vector2(124, -55)
-scale = Vector2(0.318229, 0.357813)
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(3.00006, -27.9999)
+scale = Vector2(0.430208, 0.392708)
 texture = ExtResource("1_lpubl")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(128.5, -47.5)
-shape = SubResource("RectangleShape2D_jqejh")
-script = SubResource("GDScript_yka4a")
+[node name="interactable" parent="." instance=ExtResource("2_hynx4")]
+position = Vector2(-126, 34)
+interact_name = "Open Chest"
 
-[connection signal="input_event" from="Area2D" to="Area2D/CollisionShape2D" method="_on_area_2d_input_event"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="interactable"]
+position = Vector2(137.5, -25.5)
+shape = SubResource("RectangleShape2D_b118o")

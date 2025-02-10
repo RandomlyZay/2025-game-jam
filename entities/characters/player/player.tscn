@@ -1,7 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://o0q0t4eik226"]
+[gd_scene load_steps=15 format=3 uid="uid://o0q0t4eik226"]
 
 [ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_eklt3"]
 [ext_resource type="Texture2D" uid="uid://c8kcmcouxnqhc" path="res://graphics/characters/player/Power-Element.png" id="2_y0ftg"]
+[ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://interacting_component.tscn" id="3_qperh"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bwdqf"]
 atlas = ExtResource("2_y0ftg")
@@ -140,5 +141,7 @@ shape = SubResource("CapsuleShape2D_wkpqt")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(3, 3)
 shape = SubResource("CapsuleShape2D_wkpqt")
+
+[node name="InteractingComponent" parent="." instance=ExtResource("3_qperh")]
 
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]
