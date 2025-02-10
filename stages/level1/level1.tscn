@@ -72,11 +72,11 @@ position_smoothing_enabled = true
 [node name="Player" parent="AspectRatioContainer/SubViewportContainer/SubViewport/GameWorld" instance=ExtResource("2_1emke")]
 position = Vector2(571, 1286)
 
+[node name="chest" parent="AspectRatioContainer/SubViewportContainer/SubViewport/GameWorld" instance=ExtResource("4_6ms3x")]
+position = Vector2(1051, 1308)
+
 [node name="UILayer" type="CanvasLayer" parent="AspectRatioContainer/SubViewportContainer/SubViewport"]
 
 [node name="HUD" parent="AspectRatioContainer/SubViewportContainer/SubViewport/UILayer" instance=ExtResource("3_m5yk3")]
 
 [node name="DialogueBox" parent="AspectRatioContainer/SubViewportContainer/SubViewport/UILayer" instance=ExtResource("4_sjw0w")]
-
-[node name="chest" parent="." instance=ExtResource("4_6ms3x")]
-position = Vector2(1102, 1222)

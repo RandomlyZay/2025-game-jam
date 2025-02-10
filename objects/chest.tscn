@@ -4,8 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://bbyja5yan8f6h" path="res://stolenchestpng.png" id="1_lpubl"]
 [ext_resource type="PackedScene" uid="uid://cykihoei5jotd" path="res://objects/interactable.tscn" id="2_hynx4"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_b118o"]
-size = Vector2(321, 113)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_38tjh"]
+size = Vector2(336, 195)
 
 [node name="chest" type="Node2D"]
 script = ExtResource("1_2ells")
@@ -16,9 +16,8 @@ scale = Vector2(0.430208, 0.392708)
 texture = ExtResource("1_lpubl")
 
 [node name="interactable" parent="." instance=ExtResource("2_hynx4")]
-position = Vector2(-126, 34)
-interact_name = "Open Chest"
+interact_name = "ChestInteract"
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="interactable"]
-position = Vector2(137.5, -25.5)
-shape = SubResource("RectangleShape2D_b118o")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="interactable"]
+position = Vector2(10, -28.5)
+shape = SubResource("RectangleShape2D_38tjh")
