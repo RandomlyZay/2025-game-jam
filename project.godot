@@ -79,4 +79,8 @@ dash={
 
 [rendering]
 
+viewport/transparent_background=true
 shading/canvas_textures/default_texture_filter=1
+viewport/stretch/mode="disabled"
+viewport/size/viewport_height=648
+viewport/size/viewport_width=1152

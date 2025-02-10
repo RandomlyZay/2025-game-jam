@@ -116,7 +116,7 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wkpqt"]
 radius = 16.0
-height = 80.0
+height = 88.0
 
 [node name="Player" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
@@ -124,7 +124,7 @@ script = ExtResource("1_eklt3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-2.86102e-06, 0)
-scale = Vector2(0.179, 0.5)
+scale = Vector2(0.15, 0.42)
 sprite_frames = SubResource("SpriteFrames_7ncv6")
 animation = &"dash"
 autoplay = "idle_right"
@@ -134,16 +134,11 @@ collision_layer = 4
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
-scale = Vector2(4, 4)
+scale = Vector2(3, 3)
 shape = SubResource("CapsuleShape2D_wkpqt")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2(4, 4)
+scale = Vector2(3, 3)
 shape = SubResource("CapsuleShape2D_wkpqt")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position_smoothing_enabled = true
-drag_horizontal_enabled = true
-drag_vertical_enabled = true
 
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]

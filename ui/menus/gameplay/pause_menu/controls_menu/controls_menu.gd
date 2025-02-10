@@ -28,7 +28,7 @@ func _on_back_pressed() -> void:
 
 func _on_input_mode_changed(mode: String) -> void:
 	# Update control visibility
-	keyboard_controls.visible = (mode == "mouse")
+	keyboard_controls.visible = (mode == "keyboard")
 	controller_controls.visible = (mode == "controller")
 	v_separator.visible = false
 	
