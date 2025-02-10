@@ -59,4 +59,14 @@ theme_override_constants/separation = 15
 custom_minimum_size = Vector2(900, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
+text = "ARTISTS
+Lead Artist: Eliza Theisen
+Background Art: Kayla McClenney
+Concept Art: Michael Rosa
+
+
+PROGRAMMERS
+Isaiah Haughton
+Caleb Tucker"
 horizontal_alignment = 1
+autowrap_mode = 2
