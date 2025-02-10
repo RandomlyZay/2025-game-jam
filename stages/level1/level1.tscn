@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://du65lx8b1n67x"]
+[gd_scene load_steps=7 format=3 uid="uid://du65lx8b1n67x"]
 
 [ext_resource type="Script" path="res://stages/level1/level1.gd" id="1_tpwex"]
 [ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="2_1emke"]
 [ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="3_m5yk3"]
+[ext_resource type="PackedScene" uid="uid://cykihoei5jotd" path="res://objects/chest.tscn" id="4_6ms3x"]
 [ext_resource type="PackedScene" uid="uid://dn3bfbk078hey" path="res://ui/hud/dialogue/dialoguebox.tscn" id="4_sjw0w"]
 [ext_resource type="Texture2D" uid="uid://c0rwjegvug8f" path="res://graphics/backgrounds/background.png" id="5_vx4yd"]
 
@@ -34,6 +35,12 @@ size = Vector2i(1152, 647)
 render_target_update_mode = 4
 
 [node name="GameWorld" type="Node2D" parent="AspectRatioContainer/SubViewportContainer/SubViewport"]
+
+[node name="Player" parent="AspectRatioContainer/SubViewportContainer/SubViewport/GameWorld" instance=ExtResource("2_1emke")]
+position = Vector2(571, 1286)
+
+[node name="Chest" parent="AspectRatioContainer/SubViewportContainer/SubViewport/GameWorld" instance=ExtResource("4_6ms3x")]
+position = Vector2(887, 1267)
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="AspectRatioContainer/SubViewportContainer/SubViewport/GameWorld"]
 
@@ -67,9 +74,6 @@ limit_left = 0
 limit_top = 0
 limit_bottom = 680
 position_smoothing_enabled = true
-
-[node name="Player" parent="AspectRatioContainer/SubViewportContainer/SubViewport/GameWorld" instance=ExtResource("2_1emke")]
-position = Vector2(576, 488)
 
 [node name="UILayer" type="CanvasLayer" parent="AspectRatioContainer/SubViewportContainer/SubViewport"]
 
