@@ -34,6 +34,17 @@ func _ready() -> void:
 	var hud = get_tree().get_first_node_in_group("hud")
 	if hud:
 		tutorial_popup = hud.get_node_or_null("TutorialPopup")
+	
+	# Enable focus for all buttons
+	resume_button.focus_mode = Control.FOCUS_ALL
+	settings_button.focus_mode = Control.FOCUS_ALL
+	controls_button.focus_mode = Control.FOCUS_ALL
+	quit_button.focus_mode = Control.FOCUS_ALL
+	
+	# Connect to input mode changes
+	InputManager.input_mode_changed.connect(_on_input_mode_changed)
+	
+	setup_focus()
 
 func setup_focus() -> void:
 	# Setup focus neighbors
@@ -68,6 +79,7 @@ func _on_controls_pressed() -> void:
 	if not controls_menu_instance:
 		controls_menu_instance = controls_menu_scene.instantiate()
 		add_child(controls_menu_instance)
+		controls_menu_instance.back_pressed.connect(_on_submenu_back_pressed.bind("controls"))
 	
 	# Hide pause menu elements
 	background.hide()
@@ -75,12 +87,15 @@ func _on_controls_pressed() -> void:
 	
 	# Show controls menu
 	controls_menu_instance.show()
+	if InputManager.get_current_mode() == "controller":
+		controls_menu_instance.grab_initial_focus()
 
 func _on_settings_pressed() -> void:
 	# Create settings menu if it doesn't exist
 	if not settings_menu_instance:
 		settings_menu_instance = settings_menu_scene.instantiate()
 		add_child(settings_menu_instance)
+		settings_menu_instance.back_pressed.connect(_on_submenu_back_pressed.bind("settings"))
 	
 	# Hide pause menu elements
 	background.hide()
@@ -88,6 +103,19 @@ func _on_settings_pressed() -> void:
 	
 	# Show settings menu
 	settings_menu_instance.show()
+	if InputManager.get_current_mode() == "controller":
+		settings_menu_instance.grab_initial_focus()
+
+func _on_submenu_back_pressed(menu_type: String) -> void:
+	background.show()
+	center_container.show()
+	
+	if InputManager.get_current_mode() == "controller":
+		match menu_type:
+			"controls":
+				controls_button.grab_focus()
+			"settings":
+				settings_button.grab_focus()
 
 func _on_quit_pressed() -> void:
 	# Stop all audio before quitting
@@ -96,8 +124,13 @@ func _on_quit_pressed() -> void:
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/main_menu.tscn")
 
 func _on_input_mode_changed(mode: String) -> void:
-	if mode == "controller" and visible:
-		resume_button.grab_focus()
+	if mode == "controller":
+		if visible and center_container.visible:
+			resume_button.grab_focus()
+		elif settings_menu_instance and settings_menu_instance.visible:
+			settings_menu_instance.grab_initial_focus()
+		elif controls_menu_instance and controls_menu_instance.visible:
+			controls_menu_instance.grab_initial_focus()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and visible: 

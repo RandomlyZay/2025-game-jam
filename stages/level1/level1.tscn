@@ -59,7 +59,7 @@ polygon = PackedVector2Array(0, 0, 2560, 0)
 
 [node name="BottomWall" type="CollisionPolygon2D" parent="AspectRatioContainer/SubViewportContainer/SubViewport/GameWorld/LevelBounds"]
 build_mode = 1
-polygon = PackedVector2Array(0, 1440, 1280, 1440)
+polygon = PackedVector2Array(0, 1440, 2560, 1440)
 
 [node name="GameCamera" type="Camera2D" parent="AspectRatioContainer/SubViewportContainer/SubViewport/GameWorld"]
 position = Vector2(640, 360)
