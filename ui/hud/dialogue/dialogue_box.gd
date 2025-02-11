@@ -13,6 +13,7 @@ var visible_characters: int = 0
 var current_commands: Array = []
 var current_sound: String = "text"
 var current_pitch_range: Vector2 = Vector2(0.9, 1.1)
+var last_sound_character: int = 0  # Track the last character we played a sound for
 
 @onready var speaker_label: Label = $Panel/MarginContainer/VBoxContainer/SpeakerName
 @onready var text_label: Label = $Panel/MarginContainer/VBoxContainer/DialogueText
@@ -47,6 +48,7 @@ func next_line():
 	# Reset sound to defaults for new line
 	current_sound = "text"
 	current_pitch_range = Vector2(0.9, 1.1)
+	last_sound_character = 0  # Reset the last sound character counter
 	
 	if is_animating:
 		complete_line()
@@ -154,11 +156,27 @@ func _on_text_timer_timeout():
 	if visible_characters < text_label.get_total_character_count():
 		visible_characters += 1
 		text_label.visible_characters = visible_characters
-		# Play character sound with current settings
-		Audio.play_sfx(
-			current_sound,
-			{"pitch": randf_range(current_pitch_range.x, current_pitch_range.y)}
-		)
+		
+		# Calculate how many characters to wait between sounds based on speed
+		var speed_ratio = dialogue_speed / 0.05
+		var chars_between_sounds = 1  # Default to every character at normal speed
+		
+		if speed_ratio < 1.0:  # For faster speeds
+			# As speed increases (ratio decreases), we increase characters between sounds
+			# At 0.025 (2x speed) -> every 2 chars
+			# At 0.0125 (4x speed) -> every 3 chars
+			# At 0.00625 (8x speed) -> every 4 chars, etc
+			chars_between_sounds = ceili(1.0 / speed_ratio * 0.5)
+			chars_between_sounds = clampi(chars_between_sounds, 1, 4)  # Never wait more than 4 chars
+		
+		# Play sound if we've passed enough characters since the last sound
+		if visible_characters - last_sound_character >= chars_between_sounds:
+			Audio.play_sfx(
+				current_sound,
+				{"pitch": randf_range(current_pitch_range.x, current_pitch_range.y)}
+			)
+			last_sound_character = visible_characters
+		
 		# Process commands
 		for cmd in current_commands:
 			if cmd.position == visible_characters and not cmd.get("executed", false):

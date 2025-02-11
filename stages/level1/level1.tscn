@@ -1,20 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://du65lx8b1n67x"]
+[gd_scene load_steps=6 format=3 uid="uid://du65lx8b1n67x"]
 
 [ext_resource type="Script" path="res://stages/level1/level1.gd" id="1_tpwex"]
 [ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="2_1emke"]
 [ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="3_m5yk3"]
 [ext_resource type="PackedScene" uid="uid://kbnowphrd7y2" path="res://objects/chest.tscn" id="4_6ms3x"]
-[ext_resource type="PackedScene" uid="uid://dn3bfbk078hey" path="res://ui/hud/dialogue/dialoguebox.tscn" id="4_sjw0w"]
 [ext_resource type="Texture2D" uid="uid://c0rwjegvug8f" path="res://graphics/backgrounds/background.png" id="5_vx4yd"]
 
 [node name="Level1" type="Node2D"]
 script = ExtResource("1_tpwex")
 
-[node name="UILayer" type="CanvasLayer" parent="."]
-
-[node name="HUD" parent="UILayer" instance=ExtResource("3_m5yk3")]
-
-[node name="DialogueBox" parent="UILayer" instance=ExtResource("4_sjw0w")]
+[node name="HUD" parent="." instance=ExtResource("3_m5yk3")]
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 

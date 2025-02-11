@@ -14,8 +14,7 @@ func initialize_UI(hud_node: Node) -> void:
 	# Get references to health bars
 	health_bar = hud_node.get_node("PlayerHUD/Health")
 	
-	dialogue_box = preload("res://ui/hud/dialogue/dialoguebox.tscn").instantiate()
-	hud_node.add_child(dialogue_box)
+	dialogue_box = hud_node.get_node("PlayerHUD/DialogueBox")
 	dialogue_box.hide()
 
 func update_health(health: int, max_health: int = 50) -> void:
