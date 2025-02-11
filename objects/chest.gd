@@ -9,9 +9,4 @@ func _ready() -> void:
 
 func _on_interact():
 	print("Chest is interacted with")
-<<<<<<< HEAD
 	queue_free()
-=======
-	#queue_free()
-	
->>>>>>> 377014ea43272914aad6eac2198bf1ed29e84c21
