@@ -17,7 +17,7 @@ texture = ExtResource("1_lpubl")
 
 [node name="interactable" parent="." instance=ExtResource("2_hynx4")]
 collision_mask = 2
-interact_name = "ChestInteract"
+interact_name = "Chest Interact"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="interactable"]
 position = Vector2(4, -38)

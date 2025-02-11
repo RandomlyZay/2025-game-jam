@@ -1,10 +1,13 @@
 extends Node2D
 
+#variable for label to be displayed
 @onready var interact_label: Label = $InteractLabel
 
+#array of interactable items
 var current_interactions := []
 var can_interact := true
 
+#check for interact 'e'
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") and can_interact:
 		if current_interactions:
@@ -34,10 +37,11 @@ func _process(_delta: float) -> void:
 	#var area2_dist = global_position.distance_to(area2.global_posiion)
 	#return area1_dist < area2_dist
 	
-
+#add area to array
 func _on_interact_range_area_entered(area: Area2D) -> void:
 	current_interactions.push_back(area)
 
-
+#remove from array
 func _on_interact_range_area_exited(area: Area2D) -> void:
 	current_interactions.erase(area)
+	
