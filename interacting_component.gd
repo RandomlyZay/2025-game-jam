@@ -39,9 +39,14 @@ func _process(_delta: float) -> void:
 	
 #add area to array
 func _on_interact_range_area_entered(area: Area2D) -> void:
+	print("area entered")
 	current_interactions.push_back(area)
 
 #remove from array
-func _on_interact_range_area_exited(area: Area2D) -> void:
-	current_interactions.erase(area)
+
 	
+
+
+func _on_interact_range_area_exited(area: Area2D) -> void:
+	print("area Exited")
+	current_interactions.erase(area)

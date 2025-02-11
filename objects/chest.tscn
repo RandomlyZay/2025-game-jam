@@ -20,5 +20,6 @@ collision_mask = 2
 interact_name = "Chest Interact"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="interactable"]
+visible = false
 position = Vector2(4, -38)
 shape = SubResource("RectangleShape2D_38tjh")

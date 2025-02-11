@@ -130,8 +130,6 @@ sprite_frames = SubResource("SpriteFrames_7ncv6")
 animation = &"dash"
 autoplay = "idle_right"
 
-[node name="InteractingComponent" parent="." instance=ExtResource("3_qperh")]
-
 [node name="HitBox" type="Area2D" parent="."]
 collision_layer = 4
 collision_mask = 2
@@ -143,5 +141,7 @@ shape = SubResource("CapsuleShape2D_wkpqt")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(3, 3)
 shape = SubResource("CapsuleShape2D_wkpqt")
+
+[node name="InteractingComponent" parent="." instance=ExtResource("3_qperh")]
 
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]
