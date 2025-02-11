@@ -7,7 +7,6 @@ func _ready() -> void:
 	interactable.interact = _on_interact
 	
 
-
 func _on_interact():
-	interactable.is_interactable = false
 	print("Chest is interacted with")
+	queue_free()

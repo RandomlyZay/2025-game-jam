@@ -18,10 +18,14 @@ func _input(event: InputEvent) -> void:
 
 func _process(_delta: float) -> void:
 	if current_interactions and can_interact:
-		#current_interactions.sort_custom(_sort_by_nearest)
-		if current_interactions[0].is_interactable:
+		# Remove any freed interactions
+		current_interactions = current_interactions.filter(func(area): return is_instance_valid(area))
+		
+		if current_interactions.size() > 0 and current_interactions[0].is_interactable:
 			interact_label.text = current_interactions[0].interact_name
 			interact_label.show()
+		else:
+			interact_label.hide()
 	else:
 		interact_label.hide()
 

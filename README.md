@@ -1,5 +1,5 @@
 # 2025 Game Jam - Developer Documentation
-TEST
+
 ## Project Structure
 
 ### Core Directories
@@ -9,8 +9,8 @@ TEST
 
 - `/entities` - Game objects and characters
   - `/characters` - Player and NPC implementations
-    - `/player` - Player character implementation
-    - `/enemies` - Enemy types and behaviors
+	- `/player` - Player character implementation
+	- `/enemies` - Enemy types and behaviors
   - `/items` - Collectibles and interactive objects
 
 - `/global` - Singleton managers and utilities
@@ -35,10 +35,10 @@ TEST
   - Base speed: 500 units/sec
   - Knockback system with resistance (30%) and recovery
   - Dash ability:
-    - Speed: 1500 units/sec
-    - Duration: 0.2 seconds
-    - Cooldown: 0.5 seconds
-    - Temporary invincibility (0.3 seconds)
+	- Speed: 1500 units/sec
+	- Duration: 0.2 seconds
+	- Cooldown: 0.5 seconds
+	- Temporary invincibility (0.3 seconds)
 
 ### Audio System
 - Three audio buses: Master, Music, and SFX
@@ -78,15 +78,15 @@ TEST
 ### UI System
 - Menu Structure:
   - Main Menu:
-    - Play, Controls, Settings, Credits, and Quit options
-    - Automatic controller focus management
-    - Responsive to input mode changes
+	- Play, Controls, Settings, Credits, and Quit options
+	- Automatic controller focus management
+	- Responsive to input mode changes
   - Gameplay Menus:
-    - Pause Menu (triggered by ESC/Controller Start)
-    - Game Over Menu
+	- Pause Menu (triggered by ESC/Controller Start)
+	- Game Over Menu
   - HUD Elements:
-    - Health bar
-    - Dialogue box system
+	- Health bar
+	- Dialogue box system
 
 ### Menu Navigation
 - Keyboard/Mouse:
@@ -149,16 +149,16 @@ TEST
 1. File Structure:
    - Create JSON files in stage-specific dialogue folders
    - Follow the format:
-     ```json
-     [
-       {
-         "speaker": "Character Name",
-         "text": "Dialogue text",
-         "sound": "text_sound",  // Optional
-         "pitch_range": [0.9, 1.1]  // Optional
-       }
-     ]
-     ```
+	 ```json
+	 [
+	   {
+		 "speaker": "Character Name",
+		 "text": "Dialogue text",
+		 "sound": "text_sound",  // Optional
+		 "pitch_range": [0.9, 1.1]  // Optional
+	   }
+	 ]
+	 ```
 2. Integration:
    - Load dialogues using `load_and_start_dialogue(stage_name, dialogue_name)`
    - Monitor dialogue state with `is_dialogue_active()`
