@@ -35,7 +35,7 @@ polygon = PackedVector2Array(0, 0, 100000, 0)
 
 [node name="BottomWall" type="CollisionPolygon2D" parent="LevelBounds"]
 build_mode = 1
-polygon = PackedVector2Array(0, 1080, 100000, 1080)
+polygon = PackedVector2Array(0, 1440, 100000, 1440)
 
 [node name="chest" parent="." instance=ExtResource("4_6ms3x")]
 position = Vector2(800, 630)
@@ -46,5 +46,5 @@ position = Vector2(500, 200)
 [node name="Camera" type="Camera2D" parent="Player"]
 limit_left = 0
 limit_top = 0
-limit_bottom = 1080
+limit_bottom = 1440
 position_smoothing_enabled = true
