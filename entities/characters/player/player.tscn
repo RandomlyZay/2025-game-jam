@@ -116,8 +116,8 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wkpqt"]
-radius = 16.0
-height = 88.0
+radius = 13.3333
+height = 64.0
 
 [node name="Player" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
@@ -125,7 +125,7 @@ script = ExtResource("1_eklt3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-2.86102e-06, 0)
-scale = Vector2(0.15, 0.42)
+scale = Vector2(0.107, 0.3)
 sprite_frames = SubResource("SpriteFrames_7ncv6")
 animation = &"dash"
 autoplay = "idle_right"

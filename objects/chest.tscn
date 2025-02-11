@@ -12,7 +12,7 @@ script = ExtResource("1_2ells")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(3.00006, -27.9999)
-scale = Vector2(0.430208, 0.392708)
+scale = Vector2(0.25, 0.228)
 texture = ExtResource("1_lpubl")
 
 [node name="interactable" parent="." instance=ExtResource("2_hynx4")]

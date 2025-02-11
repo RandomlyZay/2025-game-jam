@@ -24,7 +24,11 @@ UiManager="*res://global/ui_manager.gd"
 
 [display]
 
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/size/mode=3
+window/size/resizable=false
+window/stretch/mode="canvas_items"
 
 [input]
 
@@ -89,6 +93,7 @@ interact={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 viewport/transparent_background=true
 shading/canvas_textures/default_texture_filter=1
 viewport/stretch/mode="disabled"
