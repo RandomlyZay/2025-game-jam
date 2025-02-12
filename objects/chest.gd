@@ -5,6 +5,7 @@ extends Node2D
 @onready var floatingnumbers: Marker2D = $FloatingNumbers
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	interactable.health = 2
 	interactable.interact = _on_interact
 	
 
@@ -14,5 +15,6 @@ func _on_interact():
 	if interactable.health == 0:
 		queue_free()
 	else:
-		interactable.health -=1
+		interactable.health -= get_node("/root/Level1/Player").strength
+		
 		floatingnumbers.popup()

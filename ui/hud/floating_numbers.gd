@@ -1,6 +1,7 @@
 extends Marker2D
 
 @export var damage_node : PackedScene
+@onready var label_node: Label = $Label
 
 func _ready():
 	randomize()
@@ -8,6 +9,7 @@ func _ready():
 func popup():
 	var damage = damage_node.instantiate()
 	damage.position = global_position
+	
 	
 	var tween = get_tree().create_tween()
 	tween.tween_property(damage, "position", global_position + _get_direction(), 0.75)
