@@ -13,7 +13,7 @@
   },
   {
 	"speaker": "QWERTY",
-	"text": "[speaker Guy]You can also change the speaker!"
+	"text": "Look at the speaker... [wait 3][speaker Guy]You can also change the speaker!"
   },
   {
 	"speaker": "Skipping",
