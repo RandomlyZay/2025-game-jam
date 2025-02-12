@@ -127,7 +127,7 @@ script = ExtResource("1_eklt3")
 position = Vector2(-2.86102e-06, 0)
 scale = Vector2(0.107, 0.3)
 sprite_frames = SubResource("SpriteFrames_7ncv6")
-animation = &"dash"
+animation = &"move_up"
 autoplay = "idle_right"
 
 [node name="HitBox" type="Area2D" parent="."]

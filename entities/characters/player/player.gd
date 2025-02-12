@@ -11,10 +11,14 @@ signal dash_ended
 @export_group("Health")
 @export var max_health: float = 1000.0
 
+
 @export_group("Movement")
 @export var base_speed: float = 500.0
 @export var knockback_recovery_speed: float = 1200.0  # How fast you recover from getting knocked back
 @export var knockback_resistance: float = 0.3
+@export var jump_speed: float = 25.00
+@export var gravity: float = 5.00
+@export var acceleration: float = 500
 
 @export_group("Dash")
 @export var dash_speed: float = 1500.0
@@ -24,6 +28,7 @@ signal dash_ended
 
 # Node References
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
+
 
 # Timer References
 var dash_cooldown_timer: Timer
@@ -37,6 +42,12 @@ var is_invincible: bool = false
 var is_dying: bool = false
 var can_dash: bool = true
 var last_move_direction: Vector2 = Vector2.RIGHT
+var is_jumping: bool = false
+var z = 0
+var jumpMultiplyer = 8
+var direction_x = 0
+var direction_y = 0
+
 
 func _ready() -> void:
 	current_health = max_health
@@ -69,13 +80,33 @@ func create_timers() -> void:
 	add_child(invincibility_timer)
 
 func _physics_process(delta: float) -> void:
+	
+	
+	#keep track of direction vars
+	direction_var_checker()
+	
+	if direction_x == 0 && is_jumping == false:
+		#$AnimationPlayer.play("Idle")
+		pass
+	
+	
+	if is_jumping == false:
+		
+		pass
+		
+	
 	handle_knockback(delta)
+	
+	move_and_slide()
 	
 	if knockback_velocity.is_zero_approx():
 		handle_movement()
 		handle_dash_input()
-	
-	move_and_slide()
+		
+	if Input.is_action_just_pressed("jump") and is_jumping == false:
+		print("jump initiated")
+		jumping()
+		
 	update_animations()
 
 func handle_knockback(delta: float) -> void:
@@ -119,7 +150,9 @@ func start_dash() -> void:
 func end_dash() -> void:
 	emit_signal("dash_ended")
 	animated_sprite.speed_scale = 1.0
+	animated_sprite
 	modulate.a = 1.0
+	
 
 func update_animations() -> void:
 	if not dash_duration_timer.is_stopped():
@@ -165,3 +198,49 @@ func _on_dash_duration_timer_timeout() -> void:
 
 func _on_invincibility_timer_timeout() -> void:
 	is_invincible = false
+
+func jumping() -> void:
+	#$AnimationPlayer.play("Jump")
+		is_jumping = true
+		
+
+func direction_var_checker() -> void:
+	check_x()
+	check_y()
+	
+
+func check_x() -> void:
+	if Input.is_action_just_pressed('move_right'):
+		print("moving right")
+		direction_x += 1
+	
+	if Input.is_action_just_released("move_right"):
+		print("Stopped moving right")
+		direction_x -=1
+		
+	if Input.is_action_just_pressed('move_left'):
+		print("moving left")
+		direction_x -= 1
+	
+	if Input.is_action_just_released("move_left"):
+		print("Stopped moving left")
+		direction_x +=1
+
+
+
+func check_y() -> void:
+	if Input.is_action_just_pressed('move_down'):
+		print("moving down")
+		direction_y -= 1
+	
+	if Input.is_action_just_released("move_down"):
+		print("Stopped moving down")
+		direction_y +=1
+		
+	if Input.is_action_just_pressed('move_up'):
+		print("moving up")
+		direction_x += 1
+	
+	if Input.is_action_just_released("move_up"):
+		print("Stopped moving up")
+		direction_x -=1

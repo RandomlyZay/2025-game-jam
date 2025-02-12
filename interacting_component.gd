@@ -44,9 +44,6 @@ func _on_interact_range_area_entered(area: Area2D) -> void:
 
 #remove from array
 
-	
-
-
 func _on_interact_range_area_exited(area: Area2D) -> void:
 	print("area Exited")
 	current_interactions.erase(area)
