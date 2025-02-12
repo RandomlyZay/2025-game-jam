@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://kbnowphrd7y2"]
+[gd_scene load_steps=7 format=3 uid="uid://kbnowphrd7y2"]
 
 [ext_resource type="Script" path="res://objects/chest.gd" id="1_2ells"]
 [ext_resource type="Texture2D" uid="uid://bbyja5yan8f6h" path="res://stolenchestpng.png" id="1_lpubl"]
 [ext_resource type="PackedScene" uid="uid://cykihoei5jotd" path="res://objects/interactable.tscn" id="2_hynx4"]
+[ext_resource type="PackedScene" uid="uid://b08lb42hrodkb" path="res://ui/hud/floating_numbers.tscn" id="4_n28py"]
+[ext_resource type="Script" path="res://ui/hud/floating_numbers.gd" id="5_qsu5p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_38tjh"]
 size = Vector2(554, 321)
@@ -18,8 +20,14 @@ texture = ExtResource("1_lpubl")
 [node name="interactable" parent="." instance=ExtResource("2_hynx4")]
 collision_mask = 2
 interact_name = "Chest Interact"
+health = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="interactable"]
 visible = false
 position = Vector2(4, -38)
 shape = SubResource("RectangleShape2D_38tjh")
+
+[node name="FloatingNumbers" parent="." instance=ExtResource("4_n28py")]
+position = Vector2(0, -120)
+script = ExtResource("5_qsu5p")
+damage_node = ExtResource("4_n28py")

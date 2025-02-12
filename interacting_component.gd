@@ -17,6 +17,7 @@ func _input(event: InputEvent) -> void:
 			await current_interactions[0].interact.call()
 			
 			can_interact = true
+			
 
 
 func _process(_delta: float) -> void:
