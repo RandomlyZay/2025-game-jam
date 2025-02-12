@@ -3,9 +3,10 @@
 [ext_resource type="Script" path="res://ui/hud/dialogue/dialogue_box.gd" id="1_bxmsp"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8avye"]
-font_size = 32
+font_size = 64
 
 [sub_resource type="LabelSettings" id="LabelSettings_p1bry"]
+font_size = 32
 
 [node name="DialogueBox" type="CanvasLayer"]
 script = ExtResource("1_bxmsp")

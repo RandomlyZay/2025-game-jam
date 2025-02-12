@@ -38,7 +38,7 @@ build_mode = 1
 polygon = PackedVector2Array(0, 1440, 100000, 1440)
 
 [node name="chest" parent="." instance=ExtResource("4_6ms3x")]
-position = Vector2(800, 630)
+position = Vector2(960, 1056)
 
 [node name="Player" parent="." instance=ExtResource("2_1emke")]
 position = Vector2(500, 200)

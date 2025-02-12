@@ -1,0 +1,22 @@
+[
+  {
+	"speaker": "Dialogue System",
+	"text": "[auto 5][speed 0.5]This is the dialogue system. (This will auto-progress in 5 seconds)"
+  },
+  {
+	"speaker": "Hello",
+	"text": "[sound enemy_bullet][speed 1.5]Press enter or space to skip to the end of a line. You can use commands wrapped in brackets to control the dialogue."
+  },
+  {
+	"speaker": "Commands",
+	"text": "[sound enemy_hurt]These are the commands you can use: [wait 1][speed 3]speeeeeeeeeeeeeeeeeeed, [wait 1][speed 1][sound text]sound, [wait 3][music test]music, [wait 1][event scene_change]event, and of course[wait 3]...[wait 5] wait."
+  },
+  {
+	"speaker": "Dragon",
+	"text": "[speaker Guy]You can also change the speaker!"
+  },
+  {
+	"speaker": "Skipping",
+	"text": "Hold INTERACT (E) for 3 seconds at any time to skip straight to level 1!"
+  }
+]
