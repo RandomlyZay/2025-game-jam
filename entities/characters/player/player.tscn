@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://o0q0t4eik226"]
+[gd_scene load_steps=16 format=3 uid="uid://o0q0t4eik226"]
 
 [ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_eklt3"]
 [ext_resource type="Texture2D" uid="uid://c8kcmcouxnqhc" path="res://graphics/characters/player/Power-Element.png" id="2_y0ftg"]
@@ -116,8 +116,11 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wkpqt"]
-radius = 13.3333
+radius = 10.3333
 height = 64.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qri3w"]
+size = Vector2(27.6667, 5)
 
 [node name="Player" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
@@ -135,13 +138,18 @@ collision_layer = 4
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+visible = false
 scale = Vector2(3, 3)
 shape = SubResource("CapsuleShape2D_wkpqt")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="Wallhitbox" type="CollisionShape2D" parent="."]
+light_mask = 4
+visibility_layer = 0
+position = Vector2(1.5, 90.5)
 scale = Vector2(3, 3)
-shape = SubResource("CapsuleShape2D_wkpqt")
+shape = SubResource("RectangleShape2D_qri3w")
 
 [node name="InteractingComponent" parent="." instance=ExtResource("3_qperh")]
+visible = false
 
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]
