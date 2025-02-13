@@ -1,0 +1,36 @@
+[gd_scene load_steps=7 format=3 uid="uid://dy2fut3ndyie"]
+
+[ext_resource type="Texture2D" uid="uid://dd51xygmcit5y" path="res://entities/characters/enemies/enemy.png" id="1_10b74"]
+[ext_resource type="Script" path="res://enemytemplate.gd" id="1_elxsw"]
+[ext_resource type="PackedScene" uid="uid://cykihoei5jotd" path="res://objects/interactable.tscn" id="3_2c2fi"]
+[ext_resource type="PackedScene" uid="uid://b08lb42hrodkb" path="res://ui/hud/floating_numbers.tscn" id="4_2omuf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5tv4g"]
+size = Vector2(27.6667, 5)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0lnev"]
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+script = ExtResource("1_elxsw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-1, -7)
+scale = Vector2(0.217164, 0.281048)
+texture = ExtResource("1_10b74")
+
+[node name="Wallhitbox" type="CollisionShape2D" parent="."]
+visible = false
+light_mask = 4
+visibility_layer = 0
+position = Vector2(1.5, 90.5)
+scale = Vector2(3, 3)
+shape = SubResource("RectangleShape2D_5tv4g")
+
+[node name="interactable" parent="." instance=ExtResource("3_2c2fi")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="interactable"]
+position = Vector2(0, -7)
+scale = Vector2(1.20894, 1.9529)
+shape = SubResource("CapsuleShape2D_0lnev")
+
+[node name="FloatingNumbers" parent="." instance=ExtResource("4_2omuf")]

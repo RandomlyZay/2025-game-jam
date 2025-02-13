@@ -150,6 +150,5 @@ scale = Vector2(3, 3)
 shape = SubResource("RectangleShape2D_qri3w")
 
 [node name="InteractingComponent" parent="." instance=ExtResource("3_qperh")]
-visible = false
 
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]

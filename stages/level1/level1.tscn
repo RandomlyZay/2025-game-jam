@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://du65lx8b1n67x"]
+[gd_scene load_steps=9 format=3 uid="uid://du65lx8b1n67x"]
 
 [ext_resource type="Script" path="res://stages/level1/level1.gd" id="1_tpwex"]
 [ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="2_1emke"]
@@ -6,12 +6,17 @@
 [ext_resource type="PackedScene" uid="uid://kbnowphrd7y2" path="res://objects/chest.tscn" id="4_6ms3x"]
 [ext_resource type="Script" path="res://stages/level1/upper_floor_bound_2.gd" id="4_ntixd"]
 [ext_resource type="Texture2D" uid="uid://c0rwjegvug8f" path="res://graphics/backgrounds/background.png" id="5_vx4yd"]
+[ext_resource type="PackedScene" uid="uid://dy2fut3ndyie" path="res://enemytemplate.tscn" id="5_wnfah"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n5sdk"]
 size = Vector2(60, 299)
 
 [node name="Level1" type="Node2D"]
 script = ExtResource("1_tpwex")
+
+[node name="CharacterBody2D" parent="." instance=ExtResource("5_wnfah")]
+position = Vector2(751, 1024)
+scale = Vector2(2.24998, 3.29142)
 
 [node name="HUD" parent="." instance=ExtResource("3_m5yk3")]
 
@@ -48,7 +53,6 @@ build_mode = 1
 polygon = PackedVector2Array(1913, 795, 3, 228, 2, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
 
 [node name="UpperFloorBound2" type="CollisionPolygon2D" parent="LevelBounds"]
-visible = false
 light_mask = 4
 visibility_layer = 0
 position = Vector2(1918, 0)
