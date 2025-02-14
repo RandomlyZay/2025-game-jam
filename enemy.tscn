@@ -1,0 +1,27 @@
+[gd_scene load_steps=7 format=3 uid="uid://ck0rbmf6samj5"]
+
+[ext_resource type="Script" path="res://enemytemplate.gd" id="1_644ec"]
+[ext_resource type="PackedScene" uid="uid://dy2fut3ndyie" path="res://enemytemplate.tscn" id="1_cdjml"]
+[ext_resource type="PackedScene" uid="uid://b08lb42hrodkb" path="res://ui/hud/floating_numbers.tscn" id="2_4pcwm"]
+[ext_resource type="Script" path="res://ui/hud/floating_numbers.gd" id="3_xpj41"]
+[ext_resource type="PackedScene" uid="uid://cykihoei5jotd" path="res://objects/interactable.tscn" id="4_8bgn1"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_40k4b"]
+
+[node name="Enemy" type="Node2D"]
+
+[node name="CharacterBody2D" parent="." instance=ExtResource("1_cdjml")]
+script = ExtResource("1_644ec")
+
+[node name="interactable2" parent="CharacterBody2D" instance=ExtResource("4_8bgn1")]
+interact_name = "Enemy interact"
+
+[node name="EnemyHitbox" type="CollisionShape2D" parent="CharacterBody2D/interactable2"]
+position = Vector2(0, -7)
+scale = Vector2(1.20894, 1.9529)
+shape = SubResource("CapsuleShape2D_40k4b")
+
+[node name="FloatingNumbersEnemy" parent="CharacterBody2D" instance=ExtResource("2_4pcwm")]
+position = Vector2(-1, -59)
+script = ExtResource("3_xpj41")
+damage_node = ExtResource("2_4pcwm")

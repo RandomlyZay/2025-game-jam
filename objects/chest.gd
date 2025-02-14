@@ -13,7 +13,7 @@ func _on_interact():
 	print("Chest is interacted with")
 	
 	if interactable.health == 0:
-		queue_free()
+		interactable.queue_free()
 	else:
 		interactable.health -= get_node("/root/Level1/Player").strength
 		

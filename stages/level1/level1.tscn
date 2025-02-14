@@ -6,17 +6,13 @@
 [ext_resource type="PackedScene" uid="uid://kbnowphrd7y2" path="res://objects/chest.tscn" id="4_6ms3x"]
 [ext_resource type="Script" path="res://stages/level1/upper_floor_bound_2.gd" id="4_ntixd"]
 [ext_resource type="Texture2D" uid="uid://c0rwjegvug8f" path="res://graphics/backgrounds/background.png" id="5_vx4yd"]
-[ext_resource type="PackedScene" uid="uid://dy2fut3ndyie" path="res://enemytemplate.tscn" id="5_wnfah"]
+[ext_resource type="PackedScene" uid="uid://ck0rbmf6samj5" path="res://enemy.tscn" id="7_cx53i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n5sdk"]
 size = Vector2(60, 299)
 
 [node name="Level1" type="Node2D"]
 script = ExtResource("1_tpwex")
-
-[node name="CharacterBody2D" parent="." instance=ExtResource("5_wnfah")]
-position = Vector2(751, 1024)
-scale = Vector2(2.24998, 3.29142)
 
 [node name="HUD" parent="." instance=ExtResource("3_m5yk3")]
 
@@ -128,3 +124,7 @@ position_smoothing_enabled = true
 
 [node name="chest" parent="." instance=ExtResource("4_6ms3x")]
 position = Vector2(960, 1056)
+
+[node name="Enemy" parent="." instance=ExtResource("7_cx53i")]
+position = Vector2(1452, 980)
+scale = Vector2(3.52302, 3.33195)
