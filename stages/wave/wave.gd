@@ -13,9 +13,8 @@ extends Node2D
 
 ### Core and Setup Functions
 func _ready() -> void:
-	get_tree().paused = false
-	
-	Audio.play_music("sanctuary_riot")
+
+
 	
 	setup_ui_manager()
 	connect_player_signals()

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://x77m5b33wtgi"]
 
-[ext_resource type="Script" path="res://entities/enemies/melee_enemy/melee_enemy.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://cis0a1hw8bqkk" path="res://assets/textures/entities/enemies/enemy.svg" id="2_texture"]
+[ext_resource type="Script" path="res://entities/characters/enemies/melee_enemy/melee_enemy.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://5cidm5k2s6cj" path="res://graphics/icon.svg" id="2_texture"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 50.0

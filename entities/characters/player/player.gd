@@ -27,10 +27,6 @@ signal dash_ended
 @export var dash_cooldown: float = 0.5
 @export var dash_invincibility_duration: float = 0.3
 
-# Node References
-@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
-
-
 # Timer References
 var dash_cooldown_timer: Timer
 var dash_duration_timer: Timer
@@ -53,7 +49,6 @@ var direction_y = 0
 func _ready() -> void:
 	current_health = max_health
 	emit_signal("health_changed", current_health, max_health)
-	animated_sprite.play("move_right")
 	
 	# Initialize timers
 	create_timers()
@@ -107,8 +102,6 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("jump") and is_jumping == false:
 		print("jump initiated")
 		jumping()
-		
-	update_animations()
 
 func handle_knockback(delta: float) -> void:
 	if knockback_velocity.length() > 10:
@@ -145,26 +138,11 @@ func start_dash() -> void:
 	dash_cooldown_timer.start()
 	invincibility_timer.start()
 	
-	animated_sprite.speed_scale = 2.0
 	modulate.a = 0.7
 
 func end_dash() -> void:
 	emit_signal("dash_ended")
-	animated_sprite.speed_scale = 1.0
-	animated_sprite
 	modulate.a = 1.0
-	
-
-func update_animations() -> void:
-	if not dash_duration_timer.is_stopped():
-		animated_sprite.animation = "dash"
-	else:
-		# Use idle animation when not moving
-		if velocity.length() > 10:
-			animated_sprite.animation = "move_right"
-		else:
-			animated_sprite.animation = "idle_right"
-	animated_sprite.play()
 
 func take_damage(amount: float) -> void:
 	if is_invincible or is_dying:

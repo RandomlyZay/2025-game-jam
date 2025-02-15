@@ -1,15 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://du65lx8b1n67x"]
+[gd_scene load_steps=6 format=3 uid="uid://du65lx8b1n67x"]
 
 [ext_resource type="Script" path="res://stages/level1/level1.gd" id="1_tpwex"]
 [ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="2_1emke"]
 [ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="3_m5yk3"]
 [ext_resource type="PackedScene" uid="uid://kbnowphrd7y2" path="res://objects/chest.tscn" id="4_6ms3x"]
-[ext_resource type="Script" path="res://stages/level1/upper_floor_bound_2.gd" id="4_ntixd"]
 [ext_resource type="Texture2D" uid="uid://c0rwjegvug8f" path="res://graphics/backgrounds/background.png" id="5_vx4yd"]
-[ext_resource type="PackedScene" uid="uid://ck0rbmf6samj5" path="res://enemy.tscn" id="7_cx53i"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_n5sdk"]
-size = Vector2(60, 299)
 
 [node name="Level1" type="Node2D"]
 script = ExtResource("1_tpwex")
@@ -26,105 +21,70 @@ scale = Vector2(1.5, 1.5)
 texture = ExtResource("5_vx4yd")
 centered = false
 
-[node name="LevelBounds" type="StaticBody2D" parent="."]
+[node name="TerrainLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(1920, 0)
+
+[node name="TerrainBounds" type="Node2D" parent="."]
+
+[node name="Section1" type="StaticBody2D" parent="TerrainBounds"]
 collision_layer = 4
 collision_mask = 0
 
-[node name="EdgeOfScene" type="CollisionShape2D" parent="LevelBounds"]
-light_mask = 4
-visibility_layer = 0
-position = Vector2(1941, 932.5)
-shape = SubResource("RectangleShape2D_n5sdk")
-one_way_collision = true
-
-[node name="LeftWall" type="CollisionPolygon2D" parent="LevelBounds"]
-visibility_layer = 0
-build_mode = 1
-polygon = PackedVector2Array(0, 0, 0, 1080)
-
-[node name="UpperFloorBound" type="CollisionPolygon2D" parent="LevelBounds"]
+[node name="UpperFloorBound" type="CollisionPolygon2D" parent="TerrainBounds/Section1"]
 light_mask = 4
 visibility_layer = 0
 build_mode = 1
 polygon = PackedVector2Array(1913, 795, 3, 228, 2, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
 
-[node name="UpperFloorBound2" type="CollisionPolygon2D" parent="LevelBounds"]
+[node name="Section2" type="StaticBody2D" parent="TerrainBounds"]
+position = Vector2(1920, 0)
+collision_layer = 4
+collision_mask = 0
+
+[node name="UpperFloorBound" type="CollisionPolygon2D" parent="TerrainBounds/Section2"]
 light_mask = 4
 visibility_layer = 0
-position = Vector2(1918, 0)
 build_mode = 1
-polygon = PackedVector2Array(1913, 795, 3, 376, -1, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
-script = ExtResource("4_ntixd")
+polygon = PackedVector2Array(1913, 795, 3, 228, 2, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
 
-[node name="UpperFloorBound3" type="CollisionPolygon2D" parent="LevelBounds"]
+[node name="Section3" type="StaticBody2D" parent="TerrainBounds"]
+position = Vector2(3840, 0)
+collision_layer = 4
+collision_mask = 0
+
+[node name="UpperFloorBound" type="CollisionPolygon2D" parent="TerrainBounds/Section3"]
 light_mask = 4
 visibility_layer = 0
-position = Vector2(3836, 0)
 build_mode = 1
-polygon = PackedVector2Array(1913, 795, 3, 376, -1, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
-script = ExtResource("4_ntixd")
+polygon = PackedVector2Array(1913, 795, 3, 228, 2, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
 
-[node name="UpperFloorBound4" type="CollisionPolygon2D" parent="LevelBounds"]
-light_mask = 4
-visibility_layer = 0
-position = Vector2(5771, 0)
+[node name="OuterBounds" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="LeftWall" type="CollisionPolygon2D" parent="OuterBounds"]
 build_mode = 1
-polygon = PackedVector2Array(1913, 795, 3, 376, -1, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
-script = ExtResource("4_ntixd")
+polygon = PackedVector2Array(0, 0, 0, 1440)
 
-[node name="UpperFloorBound5" type="CollisionPolygon2D" parent="LevelBounds"]
-light_mask = 4
-visibility_layer = 0
-position = Vector2(7694, 0)
-build_mode = 1
-polygon = PackedVector2Array(1913, 795, 3, 376, -1, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
-script = ExtResource("4_ntixd")
-
-[node name="UpperFloorBound6" type="CollisionPolygon2D" parent="LevelBounds"]
-light_mask = 4
-visibility_layer = 0
-position = Vector2(9605, 0)
-build_mode = 1
-polygon = PackedVector2Array(1913, 795, 3, 376, -1, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
-script = ExtResource("4_ntixd")
-
-[node name="UpperFloorBound7" type="CollisionPolygon2D" parent="LevelBounds"]
-light_mask = 4
-visibility_layer = 0
-position = Vector2(11527, 0)
-build_mode = 1
-polygon = PackedVector2Array(1913, 795, 3, 376, -1, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
-script = ExtResource("4_ntixd")
-
-[node name="UpperFloorBound8" type="CollisionPolygon2D" parent="LevelBounds"]
-light_mask = 4
-visibility_layer = 0
-position = Vector2(13479, 0)
-build_mode = 1
-polygon = PackedVector2Array(1913, 795, 3, 376, -1, 889, 362, 937, 458, 934, 597, 921, 861, 883, 1093, 905, 1318, 862, 1689, 808)
-script = ExtResource("4_ntixd")
-
-[node name="TopWall" type="CollisionPolygon2D" parent="LevelBounds"]
+[node name="TopWall" type="CollisionPolygon2D" parent="OuterBounds"]
 build_mode = 1
 polygon = PackedVector2Array(0, 0, 100000, 0)
 
-[node name="BottomWall" type="CollisionPolygon2D" parent="LevelBounds"]
-visible = false
+[node name="BottomWall" type="CollisionPolygon2D" parent="OuterBounds"]
 build_mode = 1
 polygon = PackedVector2Array(0, 1440, 100000, 1440)
 
+[node name="chest" parent="." instance=ExtResource("4_6ms3x")]
+position = Vector2(960, 1056)
+
 [node name="Player" parent="." instance=ExtResource("2_1emke")]
-position = Vector2(196, 958)
+position = Vector2(144, 1112)
 
 [node name="Camera" type="Camera2D" parent="Player"]
 limit_left = 0
 limit_top = 0
 limit_bottom = 1440
 position_smoothing_enabled = true
-
-[node name="chest" parent="." instance=ExtResource("4_6ms3x")]
-position = Vector2(960, 1056)
-
-[node name="Enemy" parent="." instance=ExtResource("7_cx53i")]
-position = Vector2(1452, 980)
-scale = Vector2(3.52302, 3.33195)
+position_smoothing_speed = 3.0
+editor_draw_screen = false
+editor_draw_limits = true
