@@ -10,8 +10,7 @@ signal dash_ended
 
 @export_group("Health")
 @export var max_health: float = 1000.0
-@export var strength: float = 1.00
-
+@export var strength: float = 50.0
 
 @export_group("Movement")
 @export var base_speed: float = 500.0
@@ -40,10 +39,7 @@ var is_dying: bool = false
 var can_dash: bool = true
 var last_move_direction: Vector2 = Vector2.RIGHT
 var is_jumping: bool = false
-var z = 0
 var jumpMultiplyer = 8
-var direction_x = 0
-var direction_y = 0
 
 
 func _ready() -> void:
@@ -76,21 +72,6 @@ func create_timers() -> void:
 	add_child(invincibility_timer)
 
 func _physics_process(delta: float) -> void:
-	
-	
-	#keep track of direction vars
-	direction_var_checker()
-	
-	if direction_x == 0 && is_jumping == false:
-		#$AnimationPlayer.play("Idle")
-		pass
-	
-	
-	if is_jumping == false:
-		
-		pass
-		
-	
 	handle_knockback(delta)
 	
 	move_and_slide()
@@ -181,45 +162,3 @@ func _on_invincibility_timer_timeout() -> void:
 func jumping() -> void:
 	#$AnimationPlayer.play("Jump")
 		is_jumping = true
-		
-
-func direction_var_checker() -> void:
-	check_x()
-	check_y()
-	
-
-func check_x() -> void:
-	if Input.is_action_just_pressed('move_right'):
-		print("moving right")
-		direction_x += 1
-	
-	if Input.is_action_just_released("move_right"):
-		print("Stopped moving right")
-		direction_x -=1
-		
-	if Input.is_action_just_pressed('move_left'):
-		print("moving left")
-		direction_x -= 1
-	
-	if Input.is_action_just_released("move_left"):
-		print("Stopped moving left")
-		direction_x +=1
-
-
-
-func check_y() -> void:
-	if Input.is_action_just_pressed('move_down'):
-		print("moving down")
-		direction_y -= 1
-	
-	if Input.is_action_just_released("move_down"):
-		print("Stopped moving down")
-		direction_y +=1
-		
-	if Input.is_action_just_pressed('move_up'):
-		print("moving up")
-		direction_x += 1
-	
-	if Input.is_action_just_released("move_up"):
-		print("Stopped moving up")
-		direction_x -=1

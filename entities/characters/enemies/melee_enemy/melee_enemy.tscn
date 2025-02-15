@@ -1,16 +1,37 @@
-[gd_scene load_steps=8 format=3 uid="uid://x77m5b33wtgi"]
+[gd_scene load_steps=10 format=3 uid="uid://x77m5b33wtgi"]
 
 [ext_resource type="Script" path="res://entities/characters/enemies/melee_enemy/melee_enemy.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://5cidm5k2s6cj" path="res://graphics/icon.svg" id="2_texture"]
 [ext_resource type="Script" path="res://objects/interactable.gd" id="3_qytdd"]
 [ext_resource type="PackedScene" uid="uid://b08lb42hrodkb" path="res://ui/hud/floating_numbers.tscn" id="4_n8r63"]
-[ext_resource type="Script" path="res://ui/hud/floating_numbers.gd" id="5_0mm3f"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 50.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2"]
-radius = 70.0
+radius = 90.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_attack"]
+bg_color = Color(0.92, 0.2, 0.2, 0.3)
+corner_radius_top_left = 90
+corner_radius_top_right = 90
+corner_radius_bottom_right = 90
+corner_radius_bottom_left = 90
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_anticipation"]
+bg_color = Color(0.92549, 0.6, 0.2, 0.196078)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.92549, 0.6, 0.2, 0.392157)
+corner_radius_top_left = 90
+corner_radius_top_right = 90
+corner_radius_bottom_right = 90
+corner_radius_bottom_left = 90
+
+[sub_resource type="Gradient" id="Gradient_trail"]
+colors = PackedColorArray(0.3, 0.3, 0.3, 0.392157, 0.3, 0.3, 0.3, 0)
 
 [node name="MeleeEnemy" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
@@ -31,9 +52,9 @@ shape = SubResource("CircleShape2D_1")
 
 [node name="HitDetector" type="Area2D" parent="."]
 collision_layer = 2
-collision_mask = 4
 script = ExtResource("3_qytdd")
 interact_name = "Enemy_takes_a_hit"
+health = 120
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitDetector"]
 shape = SubResource("CircleShape2D_1")
@@ -45,10 +66,27 @@ collision_mask = 4
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
 shape = SubResource("CircleShape2D_2")
 
+[node name="AttackRange" type="Panel" parent="AttackArea"]
+visible = false
+offset_left = -90.0
+offset_top = -90.0
+offset_right = 90.0
+offset_bottom = 90.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_attack")
+
+[node name="AnticipationRange" type="Panel" parent="AttackArea"]
+visible = false
+offset_left = -90.0
+offset_top = -90.0
+offset_right = 90.0
+offset_bottom = 90.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_anticipation")
+
 [node name="TrailEffect" type="CPUParticles2D" parent="."]
 emitting = false
 amount = 20
 lifetime = 0.5
+local_coords = true
 direction = Vector2(-1, 0)
 spread = 20.0
 gravity = Vector2(0, 0)
@@ -57,10 +95,9 @@ initial_velocity_max = 200.0
 scale_amount_min = 5.0
 scale_amount_max = 10.0
 color = Color(0.3, 0.3, 0.3, 0.392157)
+color_ramp = SubResource("Gradient_trail")
 
 [node name="FloatingNumbers" parent="." instance=ExtResource("4_n8r63")]
-script = ExtResource("5_0mm3f")
-damage_node = ExtResource("4_n8r63")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="input_event" from="HitDetector" to="." method="_on_hit_detector_input_event"]

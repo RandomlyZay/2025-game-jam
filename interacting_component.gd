@@ -1,37 +1,36 @@
 extends Node2D
 
-#variable for label to be displayed
 @onready var interact_label: Label = $InteractLabel
+@onready var interact_range: Area2D = $InteractRange
 
-#array of interactable items
 var current_interactions := []
 var can_interact := true
 
-#check for interact 'e'
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("interact") and can_interact:
-		if current_interactions:
-			can_interact = false
-			interact_label.hide()
-			
-			await current_interactions[0].interact.call()
-			
-			can_interact = true
-			
+func _ready() -> void:
+	interact_range.collision_layer = 0
+	interact_range.collision_mask = 2
+	interact_label.hide()
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact") and can_interact and !current_interactions.is_empty():
+		can_interact = false
+		interact_label.hide()
+		
+		# Get the closest interaction, ensuring it's valid
+		var interaction = current_interactions[0]
+		if is_instance_valid(interaction) and interaction.has_method("interact"):
+			await interaction.interact()
+		
+		can_interact = true
+		_clean_invalid_interactions()
 
 func _process(_delta: float) -> void:
 	if current_interactions and can_interact:
+		_clean_invalid_interactions()
 		
-		# Remove any freed interactions
-		current_interactions = current_interactions.filter(func(area): return is_instance_valid(area))
-		
-		 # Sort and check for valid interactions
-		current_interactions.sort_custom(_sort_by_nearest)
-		if current_interactions.size() > 0:
-			# Make sure the area has the required properties before accessing them
+		if !current_interactions.is_empty():
 			var area = current_interactions[0]
-			if area.has_method("interact") and area.has_method("get_interact_name"):
+			if is_instance_valid(area) and area.has_method("get_interact_name"):
 				interact_label.text = area.get_interact_name()
 				interact_label.show()
 			else:
@@ -41,19 +40,27 @@ func _process(_delta: float) -> void:
 	else:
 		interact_label.hide()
 
-func _sort_by_nearest(area1, area2):
-	# Fix typo in 'position'
+func _clean_invalid_interactions() -> void:
+	# Remove any freed or invalid interactions
+	current_interactions = current_interactions.filter(func(area): 
+		return is_instance_valid(area) and !area.is_queued_for_deletion()
+	)
+	
+	# Sort remaining valid interactions
+	if !current_interactions.is_empty():
+		current_interactions.sort_custom(_sort_by_nearest)
+
+func _sort_by_nearest(area1, area2) -> bool:
+	if !is_instance_valid(area1) or !is_instance_valid(area2):
+		return false
 	var area1_dist = global_position.distance_to(area1.global_position)
 	var area2_dist = global_position.distance_to(area2.global_position)
 	return area1_dist < area2_dist
-	
-#add area to array
-func _on_interact_range_area_entered(area: Area2D) -> void:
-	print("area entered")
-	current_interactions.push_back(area)
 
-#remove from array
+func _on_interact_range_area_entered(area: Area2D) -> void:
+	if is_instance_valid(area) and area.has_method("interact"):
+		current_interactions.push_back(area)
 
 func _on_interact_range_area_exited(area: Area2D) -> void:
-	print("area Exited")
 	current_interactions.erase(area)
+	_clean_invalid_interactions()

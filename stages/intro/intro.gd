@@ -2,10 +2,12 @@ extends Node2D
 
 @onready var ui_manager: UIManager
 @onready var dialogue = $HUD/PlayerHUD/DialogueBox
-
+@onready var health = $HUD/PlayerHUD/Health
+	
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	setup_ui_manager()
+	health.hide()
 	Audio.play_music("intro")
 	
 	dialogue.dialogue_finished.connect(_on_dialogue_finished)

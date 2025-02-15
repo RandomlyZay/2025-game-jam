@@ -89,10 +89,6 @@ var dodge_success_count: int = 0
 var seeking_position: bool = false
 var target_position: Vector2 = Vector2.ZERO
 
-# Visual Effects
-var sweat_particles: CPUParticles2D
-var rage_particles: CPUParticles2D
-
 # Combat variables
 var combo_timer: float = 0.0
 var current_combo: int = 0
@@ -111,6 +107,13 @@ func _ready() -> void:
 	sprite = $Sprite2D
 	if sprite:
 		original_color = sprite.modulate
+	
+	# Set up interaction component and sync health
+	var hit_detector = get_node_or_null("HitDetector")
+	if hit_detector:
+		hit_detector.set_interaction_callable(Callable(self, "_on_interact"))
+		current_health = health  # Initialize current_health
+		hit_detector.health = current_health  # Sync with hit_detector
 	
 	# Trail effect is optional
 	trail = get_node_or_null("CPUParticles2D")
@@ -213,7 +216,7 @@ func end_dash() -> void:
 
 ### Movement and Combat ###
 # Virtual function for child classes to override
-func handle_movement(delta: float) -> Vector2:
+func handle_movement(_delta: float) -> Vector2:
 	return Vector2.ZERO  # Base implementation returns no movement
 
 func get_target() -> Node2D:
@@ -232,16 +235,22 @@ func _on_hit(is_overheated: bool = false) -> void:
 	
 	# Apply proper damage based on overheated state
 	var damage = 20.0 if is_overheated else 10.0
-	health -= damage
+	current_health -= damage  # Use current_health instead of health
+	health = current_health  # Keep health in sync
+	
+	# Update hit_detector health
+	var hit_detector = get_node_or_null("HitDetector")
+	if hit_detector:
+		hit_detector.health = current_health
 	
 	flash_hit()
 	apply_hit_stun()
 	
 	# Reset adaptation on hit
-	last_hit_time = 0.0
+	last_hit_time = 0
 	dodge_success_count = max(0, dodge_success_count - 1)  # Lose dodge experience
 	
-	if health <= 0:
+	if current_health <= 0:
 		die()
 
 func flash_hit() -> void:
@@ -286,15 +295,27 @@ func take_damage(amount: float) -> void:
 		
 	Audio.play_sfx("enemy_hurt")
 	
-	health -= amount
+	current_health -= amount  # Use current_health instead of health
+	health = current_health  # Keep health in sync
+	
+	# Update hit_detector health
+	var hit_detector = get_node_or_null("HitDetector")
+	if hit_detector:
+		hit_detector.health = current_health
+	
 	flash_hit()
 	apply_hit_stun() 
 	
+	# Show floating numbers if they exist
+	var floating_numbers = get_node_or_null("FloatingNumbers")
+	if is_instance_valid(floating_numbers) and not floating_numbers.is_queued_for_deletion():
+		floating_numbers.popup()
+	
 	# Reset adaptation like in _on_hit
-	last_hit_time = 0.0
+	last_hit_time = 0  # Changed from 0.0 to 0 to avoid narrowing conversion
 	dodge_success_count = max(0, dodge_success_count - 1)
 	
-	if health <= 0:
+	if current_health <= 0:
 		die()
 
 ### Death and Effects ###
@@ -308,10 +329,6 @@ func die() -> void:
 		tween.tween_property(sprite, "modulate", Color(1, 1, 1, 0), 0.3)
 	
 	# Stop all particles
-	if sweat_particles:
-		sweat_particles.emitting = false
-	if rage_particles:
-		rage_particles.emitting = false
 	if trail:
 		trail.emitting = false
 	
@@ -392,29 +409,44 @@ func _physics_process(delta: float) -> void:
 		handle_stunned_state(delta)
 		return
 
-	# Update timers and state
-	update_timers(delta)
+	# Handle knockback first if it exists
+	if knockback_velocity.length() > 0:
+		velocity = knockback_velocity * 1.2  
+		# Check for wall impacts during knockback
+		if monitoring_wall_impact and get_slide_collision_count() > 0:
+			for i in range(get_slide_collision_count()):
+				var collision = get_slide_collision(i)
+				if collision and velocity.length() >= wall_impact_speed_threshold:
+					take_damage(wall_impact_damage_amount)
+					monitoring_wall_impact = false
+					break
+		# Gradually reduce knockback
+		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_decay * delta)
+		# Scale effect during impact
+		var impact_amount = min(knockback_velocity.length() / 1200.0, 1.0)
+		scale = Vector2.ONE * (1.0 + impact_amount * 0.2)
+	else:
+		scale = Vector2.ONE  # Reset scale when not in knockback
+		# Normal state machine processing
+		match current_state:
+			EnemyState.IDLE:
+				velocity = Vector2.ZERO
+				if player and is_instance_valid(player):
+					current_state = EnemyState.CHASE
+			
+			EnemyState.CHASE:
+				handle_chase_state(delta)
+			
+			EnemyState.ATTACK:
+				handle_attack_state(delta)
+			
+			EnemyState.STUNNED:
+				handle_stunned_state(delta)
+		
+		if sprite and abs(velocity.x) > 0:
+			sprite.flip_h = velocity.x < 0
 	
-	# Handle movement and combat based on state
-	match current_state:
-		EnemyState.IDLE:
-			handle_idle_state(delta)
-		EnemyState.CHASE:
-			handle_chase_state(delta)
-		EnemyState.ATTACK:
-			handle_attack_state(delta)
-		EnemyState.STUNNED:
-			handle_stunned_state(delta)
-	
-	# Update visual effects
-	if impact_scale != 1.0:
-		impact_scale = move_toward(impact_scale, 1.0, delta * 5.0)
-		scale = Vector2.ONE * impact_scale
-	
-	if sprite and abs(velocity.x) > 0:
-		sprite.flip_h = velocity.x < 0
-	
-	move_and_avoid(velocity, delta)
+	move_and_slide()
 
 func handle_idle_state(_delta: float) -> void:
 	velocity = Vector2.ZERO
@@ -474,3 +506,17 @@ func attempt_block() -> void:
 	if randf() < block_chance:
 		is_blocking = true
 		# Add block animation/effect here
+
+func _on_interact() -> void:
+	if !is_instance_valid(player):
+		return
+		
+	var damage = player.strength
+	take_damage(damage)
+	
+	# Update hitdetector health display with instance validation
+	var hit_detector = get_node_or_null("HitDetector")
+	if is_instance_valid(hit_detector):
+		hit_detector.health = current_health
+	
+	# No need to call floating numbers popup here since it's handled in take_damage()

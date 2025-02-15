@@ -13,6 +13,7 @@ var game_over_menu_instance: Node = null
 func initialize_UI(hud_node: Node) -> void:
 	# Get references to health bars
 	health_bar = hud_node.get_node("PlayerHUD/Health")
+	health_bar.show() # Make sure health bar is visible
 	
 	dialogue_box = hud_node.get_node("PlayerHUD/DialogueBox")
 	dialogue_box.hide()

@@ -11,6 +11,7 @@ const SECTION_WIDTH = 1920
 
 func _ready() -> void:
 	setup_ui_manager()
+	connect_player_signals()
 	$HUD/PlayerHUD/Health.show()
 	Audio.stop_music()
 	#dialogue.load_and_start_dialogue("test", "test")  # Uncomment to run dialogue
@@ -19,6 +20,16 @@ func setup_ui_manager() -> void:
 	ui_manager = UIManager.new()
 	add_child(ui_manager)
 	ui_manager.initialize_UI($HUD)
+
+func connect_player_signals() -> void:
+	var player = $Player
+	if player:
+		player.health_changed.connect(func(new_health, max_health): 
+			if is_instance_valid(ui_manager):
+				ui_manager.update_health(new_health, max_health))
+		player.player_died.connect(func(): 
+			if is_instance_valid(ui_manager):
+				ui_manager.show_game_over_menu())
 
 func _process(_delta) -> void:
 	if !camera:

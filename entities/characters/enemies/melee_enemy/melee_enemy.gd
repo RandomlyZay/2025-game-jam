@@ -5,7 +5,7 @@ extends "res://entities/characters/enemies/base_enemy.gd"
 @onready var attack_area: Area2D = $AttackArea
 @onready var sprite_2d: Sprite2D = $Sprite2D
 
-@onready var floating_numbers: Marker2D = $FloatingNumbers
+@onready var floating_numbers: Node2D = $FloatingNumbers
 
 
 
@@ -32,13 +32,13 @@ func _ready() -> void:
 	attack_damage = 20.0
 	max_combo = 3
 	block_chance = 0.4
-	hit_detector.interact = _on_interact
+	hit_detector.set_interaction_callable(Callable(self, "_on_interact"))
 	hit_detector.health = current_health
 	super._ready()
 	$AttackArea.collision_mask = 4
 	setup_attack_area()
 
-func handle_chase_state(delta: float) -> void:
+func handle_chase_state(_delta: float) -> void:
 	if !player or !is_instance_valid(player):
 		current_state = EnemyState.IDLE
 		return
@@ -93,7 +93,6 @@ func handle_attack_state(delta: float) -> void:
 		check_for_hit()
 
 func check_for_hit() -> void:
-	var attack_area = $AttackArea
 	if !attack_area:
 		return
 		
@@ -236,7 +235,7 @@ func take_knockback(knockback: Vector2) -> void:
 
 func perform_combo_attack() -> void:
 	current_combo = (current_combo + 1) % (max_combo + 1)
-	var damage = attack_damage * pow(combo_damage_multiplier, current_combo - 1)
+	var _damage = attack_damage * pow(combo_damage_multiplier, current_combo - 1)
 	
 	# Different attack animations/effects based on combo stage
 	match current_combo:
@@ -254,16 +253,32 @@ func perform_combo_attack() -> void:
 	combo_timer = combo_window
 	start_attack()
 
-
-
-func _on_interact():
-	print("Enemy is interacted with")
-	if hit_detector.health == 0:
-		print("Enemy Slain")
-		queue_free()
-	else:
-		hit_detector.health -= get_node("/root/Level1/Player").strength
+func setup_attack_area() -> void:
+	if attack_area:
+		attack_area.collision_mask = 4
+		attack_area.call_deferred("set_monitorable", true)
+		attack_area.call_deferred("set_monitoring", true)
 		
-		floating_numbers.popup()
+		if not attack_area.area_entered.is_connected(_on_attack_area_area_entered):
+			attack_area.area_entered.connect(_on_attack_area_area_entered)
 
+func _on_interact() -> void:
+	var player_node = get_tree().get_first_node_in_group("player")
+	if !is_instance_valid(player_node):
+		return
+		
+	# Apply damage
+	take_damage(player_node.strength)
 	
+	# Apply knockback effect
+	var knockback_direction = (global_position - player_node.global_position).normalized()
+	take_knockback(knockback_direction * 500)
+	
+	# Visual feedback
+	if sprite_2d:
+		sprite_2d.modulate = Color(2, 2, 2)  # Flash bright white
+		var tween = create_tween()
+		tween.tween_property(sprite_2d, "modulate", Color.WHITE, 0.2)
+	
+	# Update health display
+	hit_detector.health = current_health
