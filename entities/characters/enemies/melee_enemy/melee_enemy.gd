@@ -1,5 +1,15 @@
 extends "res://entities/characters/enemies/base_enemy.gd"
 
+
+@onready var hit_detector: Area2D = $HitDetector
+@onready var attack_area: Area2D = $AttackArea
+@onready var sprite_2d: Sprite2D = $Sprite2D
+
+@onready var floating_numbers: Marker2D = $FloatingNumbers
+
+
+
+
 @export var attack_windup_time: float = 0.2
 @export var attack_lunge_speed: float = 1500.0
 @export var attack_lunge_duration: float = 0.15
@@ -22,6 +32,8 @@ func _ready() -> void:
 	attack_damage = 20.0
 	max_combo = 3
 	block_chance = 0.4
+	hit_detector.interact = _on_interact
+	hit_detector.health = current_health
 	super._ready()
 	$AttackArea.collision_mask = 4
 	setup_attack_area()
@@ -241,3 +253,17 @@ func perform_combo_attack() -> void:
 	# Start combo timer
 	combo_timer = combo_window
 	start_attack()
+
+
+
+func _on_interact():
+	print("Enemy is interacted with")
+	if hit_detector.health == 0:
+		print("Enemy Slain")
+		queue_free()
+	else:
+		hit_detector.health -= get_node("/root/Level1/Player").strength
+		
+		floating_numbers.popup()
+
+	

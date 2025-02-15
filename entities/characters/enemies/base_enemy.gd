@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+@onready var current_health = health
+
 @export_group("Movement")
 @export var base_speed: float = 250.0  # Slower base speed for beat 'em up style
 @export var acceleration: float = 800.0
