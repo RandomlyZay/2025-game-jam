@@ -75,7 +75,7 @@ polygon = PackedVector2Array(0, 0, 100000, 0)
 build_mode = 1
 polygon = PackedVector2Array(0, 1440, 100000, 1440)
 
-[node name="chest" parent="." instance=ExtResource("4_6ms3x")]
+[node name="Crate" parent="." instance=ExtResource("4_6ms3x")]
 position = Vector2(960, 1056)
 
 [node name="MeleeEnemy" parent="." instance=ExtResource("5_tn7t2")]

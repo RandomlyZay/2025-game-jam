@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="2025 Game Jam"
+config/name="Dracomachanics"
 run/main_scene="res://ui/menus/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"

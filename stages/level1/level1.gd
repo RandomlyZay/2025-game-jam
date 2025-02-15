@@ -12,7 +12,6 @@ const SECTION_WIDTH = 1920
 func _ready() -> void:
 	setup_ui_manager()
 	connect_player_signals()
-	$HUD/PlayerHUD/Health.show()
 	Audio.stop_music()
 	#dialogue.load_and_start_dialogue("test", "test")  # Uncomment to run dialogue
 

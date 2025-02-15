@@ -2,6 +2,7 @@ extends Node
 class_name UIManager
 
 var health_bar: ProgressBar
+var special_bar: ProgressBar
 var dialogue_box: CanvasLayer = null
 
 # Menus
@@ -11,9 +12,11 @@ var pause_menu_instance: Node = null
 var game_over_menu_instance: Node = null
 
 func initialize_UI(hud_node: Node) -> void:
-	# Get references to health bars
-	health_bar = hud_node.get_node("PlayerHUD/Health")
-	health_bar.show() # Make sure health bar is visible
+	# Get references to bars
+	health_bar = hud_node.get_node("PlayerHUD/Sprite2D/Health")
+	special_bar = hud_node.get_node("PlayerHUD/Sprite2D/Special")
+	health_bar.show()
+	special_bar.show()
 	
 	dialogue_box = hud_node.get_node("PlayerHUD/DialogueBox")
 	dialogue_box.hide()
@@ -22,6 +25,11 @@ func update_health(health: int, max_health: int = 50) -> void:
 	if health_bar:
 		health_bar.max_value = max_health
 		health_bar.value = health
+
+func update_special(special: int, max_special: int = 50) -> void:
+	if special_bar:
+		special_bar.max_value = max_special
+		special_bar.value = special
 
 func start_dialogue(dialogue_data: Array):
 	if dialogue_box:

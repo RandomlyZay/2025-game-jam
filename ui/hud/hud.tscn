@@ -1,13 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://dq8qo4qvlvhwj"]
+[gd_scene load_steps=5 format=3 uid="uid://dq8qo4qvlvhwj"]
 
 [ext_resource type="PackedScene" uid="uid://dn3bfbk078hey" path="res://ui/hud/dialogue/dialoguebox.tscn" id="1_okv1v"]
+[ext_resource type="Texture2D" uid="uid://by38m81x53uxi" path="res://graphics/ui/bar.png" id="2_gm24v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Health"]
 bg_color = Color(1, 0, 0, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Special"]
+bg_color = Color(0, 0.5, 1, 1)
 
 [node name="HUD" type="CanvasLayer" groups=["hud"]]
 layer = 2
@@ -15,20 +15,43 @@ scale = Vector2(0.75, 0.75)
 transform = Transform2D(0.75, 0, 0, 0.75, 0, 0)
 
 [node name="PlayerHUD" type="VBoxContainer" parent="."]
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 420.0
-offset_bottom = 180.0
+offset_left = 10.6667
+offset_top = 10.6667
+offset_right = 410.667
+offset_bottom = 170.667
 theme_override_constants/separation = 15
 
 [node name="DialogueBox" parent="PlayerHUD" instance=ExtResource("1_okv1v")]
 visible = false
 
-[node name="Health" type="ProgressBar" parent="PlayerHUD"]
-visible = false
+[node name="Sprite2D" type="Sprite2D" parent="PlayerHUD"]
+position = Vector2(-10, -75)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_gm24v")
+centered = false
+
+[node name="Health" type="ProgressBar" parent="PlayerHUD/Sprite2D"]
+show_behind_parent = true
 custom_minimum_size = Vector2(400, 30)
-layout_mode = 2
+offset_left = 185.0
+offset_top = 428.0
+offset_right = 1358.0
+offset_bottom = 535.0
+scale = Vector2(1, 2)
 theme_override_styles/fill = SubResource("StyleBoxFlat_Health")
+max_value = 50.0
+value = 50.0
+show_percentage = false
+
+[node name="Special" type="ProgressBar" parent="PlayerHUD/Sprite2D"]
+show_behind_parent = true
+custom_minimum_size = Vector2(400, 30)
+offset_left = 452.0
+offset_top = 241.0
+offset_right = 1305.0
+offset_bottom = 274.0
+scale = Vector2(1, 2)
+theme_override_styles/fill = SubResource("StyleBoxFlat_Special")
 max_value = 50.0
 value = 50.0
 show_percentage = false
