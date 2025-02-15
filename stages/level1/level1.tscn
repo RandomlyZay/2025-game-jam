@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://du65lx8b1n67x"]
+[gd_scene load_steps=7 format=3 uid="uid://du65lx8b1n67x"]
 
 [ext_resource type="Script" path="res://stages/level1/level1.gd" id="1_tpwex"]
 [ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="2_1emke"]
 [ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="3_m5yk3"]
 [ext_resource type="PackedScene" uid="uid://kbnowphrd7y2" path="res://objects/chest.tscn" id="4_6ms3x"]
+[ext_resource type="PackedScene" uid="uid://x77m5b33wtgi" path="res://entities/characters/enemies/melee_enemy/melee_enemy.tscn" id="5_tn7t2"]
 [ext_resource type="Texture2D" uid="uid://c0rwjegvug8f" path="res://graphics/backgrounds/background.png" id="5_vx4yd"]
 
 [node name="Level1" type="Node2D"]
@@ -76,6 +77,9 @@ polygon = PackedVector2Array(0, 1440, 100000, 1440)
 
 [node name="chest" parent="." instance=ExtResource("4_6ms3x")]
 position = Vector2(960, 1056)
+
+[node name="MeleeEnemy" parent="." instance=ExtResource("5_tn7t2")]
+position = Vector2(1400, 1120)
 
 [node name="Player" parent="." instance=ExtResource("2_1emke")]
 position = Vector2(144, 1112)

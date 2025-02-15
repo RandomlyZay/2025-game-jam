@@ -1,10 +1,13 @@
-extends "res://entities/enemies/base_enemy.gd"
+extends "res://entities/characters/enemies/base_enemy.gd"
 
 @export var attack_windup_time: float = 0.2
 @export var attack_lunge_speed: float = 1500.0
 @export var attack_lunge_duration: float = 0.15
 @export var knockback_force: float = 800.0
 @export var melee_damage: int = 15
+@export var combo_damage_multiplier: float = 1.2
+@export var attack_arc_degrees: float = 90.0
+@export var positioning_distance: float = 60.0
 
 # Melee specific variables
 var melee_attack_direction: Vector2 = Vector2.ZERO
@@ -13,39 +16,50 @@ var melee_lunge_timer: float = 0.0
 var is_in_attack_lunge: bool = false
 
 func _ready() -> void:
-	max_health = 80
+	base_speed = 200.0  # Make sure speed is set
+	max_health = 120
 	health = max_health
+	attack_damage = 20.0
+	max_combo = 3
+	block_chance = 0.4
 	super._ready()
 	$AttackArea.collision_mask = 4
 	setup_attack_area()
 
 func handle_chase_state(delta: float) -> void:
-	if !human or !is_instance_valid(human):
+	if !player or !is_instance_valid(player):
 		current_state = EnemyState.IDLE
 		return
 		
-	var direction = (human.global_position - global_position).normalized()
-	var target_velocity = direction * base_speed
-	velocity = velocity.move_toward(target_velocity, base_speed * 4 * delta)
+	var distance = global_position.distance_to(player.global_position)
+	var direction = (player.global_position - global_position).normalized()
 	
-	if human and is_instance_valid(human):
-		var distance = global_position.distance_to(human.global_position)
-		if distance <= attack_range and can_attack:
-			attack_target = human
-			current_state = EnemyState.ATTACK
+	# Always move towards player when in chase state
+	velocity = direction * base_speed
+	
+	# Switch to attack state when in range
+	if distance <= attack_range and can_attack:
+		attack_target = player
+		current_state = EnemyState.ATTACK
 
 func handle_attack_state(delta: float) -> void:
 	if !attack_target or !is_instance_valid(attack_target):
 		reset_attack_state()
 		return
 		
-	if !is_attacking:
+	var distance = global_position.distance_to(attack_target.global_position)
+	
+	if distance > attack_range:
+		# Circle around target while closing in
+		var direction = (attack_target.global_position - global_position).normalized()
+		var strafe = Vector2(-direction.y, direction.x)
+		velocity = (direction + strafe * 0.5).normalized() * base_speed
+	else:
 		if can_attack:
-			start_attack()
+			perform_combo_attack()
 		else:
 			reset_attack_state()
-		return
-		
+
 	if melee_attack_timer > 0:
 		melee_attack_timer -= delta
 		melee_attack_direction = (attack_target.global_position - global_position).normalized()
@@ -74,7 +88,8 @@ func check_for_hit() -> void:
 	var overlapping = attack_area.get_overlapping_areas()
 	
 	for area in overlapping:
-		if area.get_parent() == attack_target and area.name == "HitBox":
+		# Only check combat-related interactions
+		if is_valid_target_area(area):
 			register_hit()
 			if attack_target.has_method("take_damage"):
 				attack_target.take_damage(melee_damage)
@@ -115,18 +130,16 @@ func is_in_lunge_state() -> bool:
 	return current_state == EnemyState.ATTACK and is_in_attack_lunge
 
 func _on_attack_area_area_entered(area: Area2D) -> void:
-	if is_in_attack_lunge and !has_hit_target:
-		if area.get_parent() == attack_target and area.name == "HitBox":
-			register_hit()
-			if attack_target.has_method("take_damage"):
-				attack_target.take_damage(melee_damage)
-			if attack_target.has_method("apply_knockback"):
-				attack_target.apply_knockback(melee_attack_direction * knockback_force)
+	if is_in_attack_lunge and !has_hit_target and is_valid_target_area(area):
+		register_hit()
+		if attack_target.has_method("take_damage"):
+			attack_target.take_damage(melee_damage)
+		if attack_target.has_method("apply_knockback"):
+			attack_target.apply_knockback(melee_attack_direction * knockback_force)
 
 func take_damage(amount: float) -> void:
 	super.take_damage(amount)
 	hits_taken += 1
-	maybe_change_personality()
 	
 	current_state = EnemyState.STUNNED
 	stun_timer = stun_duration
@@ -169,7 +182,7 @@ func _physics_process(delta: float) -> void:
 		match current_state:
 			EnemyState.IDLE:
 				velocity = Vector2.ZERO
-				if human and is_instance_valid(human):
+				if player and is_instance_valid(player):
 					current_state = EnemyState.CHASE
 			
 			EnemyState.CHASE:
@@ -209,24 +222,22 @@ func take_knockback(knockback: Vector2) -> void:
 	if sprite:
 		sprite.modulate = Color(1.5, 1.5, 1.5)  # Flash white to indicate stun
 
-func initialize_personality() -> void:
-	var roll = randf()
-	if roll < 0.55: 
-		set_personality("aggressive")
-	elif roll < 0.60: 
-		set_personality("cautious")
-	else: 
-		set_personality("neutral")
-
-func maybe_change_personality() -> void:
-	# Calculate chance based on hits taken
-	var change_chance = min(PERSONALITY_CHANGE_BASE_CHANCE + (hits_taken * 0.05), MAX_PERSONALITY_CHANGE_CHANCE)
+func perform_combo_attack() -> void:
+	current_combo = (current_combo + 1) % (max_combo + 1)
+	var damage = attack_damage * pow(combo_damage_multiplier, current_combo - 1)
 	
-	if randf() < change_chance:
-		var roll = randf()
-		if roll < 0.7: 
-			set_personality("aggressive")
-		elif roll < 0.8: 
-			set_personality("cautious")
-		else: 
-			set_personality("neutral")
+	# Different attack animations/effects based on combo stage
+	match current_combo:
+		1: # Quick jab
+			attack_arc_degrees = 60.0
+			attack_range = 70.0
+		2: # Wide swing
+			attack_arc_degrees = 120.0
+			attack_range = 80.0
+		3: # Power attack
+			attack_arc_degrees = 90.0
+			attack_range = 90.0
+			
+	# Start combo timer
+	combo_timer = combo_window
+	start_attack()

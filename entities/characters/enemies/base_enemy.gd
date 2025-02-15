@@ -1,7 +1,10 @@
 extends CharacterBody2D
 
 @export_group("Movement")
-@export var base_speed: float = 600.0
+@export var base_speed: float = 250.0  # Slower base speed for beat 'em up style
+@export var acceleration: float = 800.0
+@export var deceleration: float = 1200.0
+@export var knockback_recovery: float = 900.0
 @export var dash_speed: float = 1200.0
 @export var dash_duration: float = 0.2
 @export var dodge_speed: float = 800.0
@@ -12,25 +15,34 @@ extends CharacterBody2D
 @export var blocked_time_limit: float = 2.0
 
 @export_group("Combat")
-@export var health: float = 60.0
+@export var health: float = 100.0
+@export var attack_damage: float = 15.0
+@export var attack_range: float = 80.0  # Closer range for melee combat
+@export var attack_cooldown: float = 1.2
+@export var stun_duration: float = 0.5
+@export var hit_stun_duration: float = 0.3
+@export var combo_window: float = 0.8  # Time window for combo hits
 @export var detection_radius: float = 150.0
-@export var hit_stun_duration: float = 0.4
-@export var attack_range: float = 120.0
-@export var attack_cooldown: float = 0.6
-@export var stun_duration: float = 0.2
 
-# Enemy States
+# Add these missing properties
+@export var max_health: float = 100.0
+@export var wall_impact_speed_threshold: float = 800.0
+@export var wall_impact_damage_amount: float = 15.0
+
+# Beat 'em up specific states
 enum EnemyState {
 	IDLE,
 	CHASE,
 	ATTACK,
-	STUNNED
+	STUNNED,
+	COMBO,
+	BLOCK
 }
 var current_state: int = EnemyState.IDLE
 
 # Core
 var initialized: bool = false
-var human: Node2D = null
+var player: Node2D = null
 var sprite: Node2D = null
 var original_color: Color = Color.WHITE
 var trail: CPUParticles2D = null
@@ -79,6 +91,18 @@ var target_position: Vector2 = Vector2.ZERO
 var sweat_particles: CPUParticles2D
 var rage_particles: CPUParticles2D
 
+# Combat variables
+var combo_timer: float = 0.0
+var current_combo: int = 0
+var max_combo: int = 3
+var is_blocking: bool = false
+var block_chance: float = 0.3
+var vulnerability_window: float = 0.0
+var hit_count: int = 0
+var max_super_armor: int = 3  # Hits before stun
+var hits_taken: int = 0
+var monitoring_wall_impact: bool = true
+
 ### Core Functions ###
 func _ready() -> void:
 	# Initialize core components
@@ -95,7 +119,8 @@ func _ready() -> void:
 
 func initialize_references() -> void:
 	if !initialized:
-		human = get_tree().root.get_node_or_null("Main/Player")
+		# Look for player in the scene tree without Main node
+		player = get_tree().get_first_node_in_group("player")
 	
 	reset_state()
 
@@ -151,12 +176,12 @@ func update_timers(delta: float) -> void:
 func handle_stunned_state(delta: float) -> void:
 	if stun_timer <= 0:
 		reset_state()
+		current_combo = 0  # Reset combo on stun recovery
 	else:
 		stun_timer -= delta
-		velocity = knockback_velocity
-		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, delta * knockback_decay)
+		velocity = velocity.move_toward(Vector2.ZERO, deceleration * delta)
 		if sprite:
-			sprite.modulate = Color(1.0, 0.3, 0.3, 1.0)  # Red tint
+			sprite.modulate = Color(1.0, 0.3, 0.3, 1.0)
 
 func handle_dash(delta: float) -> void:
 	if !trail.emitting:
@@ -190,12 +215,12 @@ func handle_movement(delta: float) -> Vector2:
 	return Vector2.ZERO  # Base implementation returns no movement
 
 func get_target() -> Node2D:
-	if !is_instance_valid(human):
+	if !is_instance_valid(player):
 		initialize_references()  # Try to get fresh references
-		if !human:
+		if !player:
 			return null
 			
-	return human  # Always target human for consistency
+	return player  # Always target player for consistency
 
 func _on_hit(is_overheated: bool = false) -> void:
 	if !can_damage:
@@ -249,8 +274,13 @@ func take_knockback(knockback_force: Vector2) -> void:
 	apply_hit_stun()
 
 func take_damage(amount: float) -> void:
-	if !can_damage:
-		return
+	if is_blocking:
+		amount *= 0.2  # Reduced damage when blocking
+		
+	hit_count += 1
+	if hit_count >= max_super_armor:
+		is_stunned = true
+		hit_count = 0
 		
 	Audio.play_sfx("enemy_hurt")
 	
@@ -352,7 +382,7 @@ func move_and_avoid(desired_velocity: Vector2, delta: float) -> void:
 		last_valid_position = global_position
 
 func _physics_process(delta: float) -> void:
-	if !initialized or !human:
+	if !initialized or !player:
 		initialize_references()
 		return
 
@@ -386,7 +416,7 @@ func _physics_process(delta: float) -> void:
 
 func handle_idle_state(_delta: float) -> void:
 	velocity = Vector2.ZERO
-	if human and is_instance_valid(human):
+	if player and is_instance_valid(player):
 		current_state = EnemyState.CHASE
 
 func handle_chase_state(_delta: float) -> void:
@@ -417,6 +447,28 @@ func _on_timeout_reset_attack() -> void:
 	var timer = get_tree().create_timer(attack_cooldown)
 	timer.timeout.connect(_on_timeout_can_attack)
 
-# Virtual function for child classes to override
-func _on_attack_area_area_entered(_area: Area2D) -> void:
-	pass  # Implement in child classes
+func is_valid_target_area(area: Area2D) -> bool:
+	if !area or !is_instance_valid(area):
+		return false
+	
+	# Only check for player hitbox for combat
+	var parent = area.get_parent()
+	if !parent:
+		return false
+		
+	# Check if it's specifically a hitbox from the player
+	return area.name == "HitBox" and parent.is_in_group("player")
+
+func _on_attack_area_area_entered(area: Area2D) -> void:
+	if !is_valid_target_area(area):
+		return
+	# Child classes will implement specific behavior
+
+# Override in child classes
+func perform_combo_attack() -> void:
+	pass
+
+func attempt_block() -> void:
+	if randf() < block_chance:
+		is_blocking = true
+		# Add block animation/effect here

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dy2fut3ndyie"]
 
-[ext_resource type="Texture2D" uid="uid://dd51xygmcit5y" path="res://entities/characters/enemies/enemy.png" id="1_10b74"]
+[ext_resource type="Texture2D" uid="uid://dd51xygmcit5y" path="res://graphics/characters/enemy.png" id="1_52rot"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5tv4g"]
 size = Vector2(27.6667, 5)
@@ -10,7 +10,7 @@ size = Vector2(27.6667, 5)
 [node name="EnemySprite" type="Sprite2D" parent="."]
 position = Vector2(-1, -7)
 scale = Vector2(0.217164, 0.281048)
-texture = ExtResource("1_10b74")
+texture = ExtResource("1_52rot")
 
 [node name="Wallhitbox" type="CollisionShape2D" parent="."]
 visible = false
