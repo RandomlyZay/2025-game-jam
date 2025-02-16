@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://kbnowphrd7y2"]
 
-[ext_resource type="Script" path="res://objects/chest.gd" id="1_2ells"]
+[ext_resource type="Script" path="res://objects/items/chest.gd" id="1_2ells"]
 [ext_resource type="Texture2D" uid="uid://iw7tpegfjs60" path="res://graphics/objects/crate.png" id="2_6cb6c"]
 [ext_resource type="Script" path="res://objects/interactable.gd" id="3_qytdd"]
 [ext_resource type="PackedScene" uid="uid://b08lb42hrodkb" path="res://ui/hud/floating_numbers.tscn" id="4_n28py"]
