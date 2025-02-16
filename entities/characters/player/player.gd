@@ -40,7 +40,9 @@ var can_dash: bool = true
 var last_move_direction: Vector2 = Vector2.RIGHT
 var is_jumping: bool = false
 var jumpMultiplyer = 8
+var last_horizontal_direction: int = 1  # 1 for right, -1 for left
 
+@onready var sprite = $Sprite2D
 
 func _ready() -> void:
 	current_health = max_health
@@ -77,7 +79,25 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	
 	if knockback_velocity.is_zero_approx():
-		handle_movement()
+		var move_direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+		
+		# Update direction only when moving
+		if move_direction.length() > 0:
+			last_move_direction = move_direction.normalized()
+			
+			# Update horizontal direction only when moving left or right
+			if move_direction.x != 0:
+				last_horizontal_direction = -1 if move_direction.x < 0 else 1
+				if sprite:
+					sprite.flip_h = last_horizontal_direction < 0
+		
+		# Only apply movement if not dashing and there's input
+		if dash_duration_timer.is_stopped():
+			if move_direction.length() > 0:
+				velocity = last_move_direction * base_speed
+			else:
+				velocity = Vector2.ZERO  # Stop when no input
+				
 		handle_dash_input()
 		
 	if Input.is_action_just_pressed("jump") and is_jumping == false:
@@ -97,6 +117,12 @@ func handle_movement() -> void:
 	# Update direction only when moving
 	if move_direction.length() > 0:
 		last_move_direction = move_direction.normalized()
+		
+		# Update horizontal direction only when moving left or right
+		if move_direction.x != 0:
+			last_horizontal_direction = -1 if move_direction.x < 0 else 1
+			if sprite:
+				sprite.flip_h = last_horizontal_direction < 0
 	
 	# Only apply movement if not dashing and there's input
 	if dash_duration_timer.is_stopped():

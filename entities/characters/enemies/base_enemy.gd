@@ -443,8 +443,7 @@ func _physics_process(delta: float) -> void:
 			EnemyState.STUNNED:
 				handle_stunned_state(delta)
 		
-		if sprite and abs(velocity.x) > 0:
-			sprite.flip_h = velocity.x < 0
+		# Remove default sprite flipping from base class to let child classes handle it
 	
 	move_and_slide()
 
