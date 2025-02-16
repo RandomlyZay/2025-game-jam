@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="2_1emke"]
 [ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="3_m5yk3"]
 [ext_resource type="PackedScene" uid="uid://kbnowphrd7y2" path="res://objects/items/chest.tscn" id="4_6ms3x"]
-[ext_resource type="PackedScene" uid="uid://x77m5b33wtgi" path="res://entities/characters/enemies/melee_enemy/melee_enemy.tscn" id="5_tn7t2"]
+[ext_resource type="PackedScene" uid="uid://x77m5b33wtgi" path="res://entities/characters/enemies/template/template.tscn" id="5_tn7t2"]
 [ext_resource type="Texture2D" uid="uid://c0rwjegvug8f" path="res://graphics/backgrounds/background.png" id="5_vx4yd"]
 [ext_resource type="PackedScene" uid="uid://c1eh02vx5evga" path="res://objects/items/goal.tscn" id="5_ykodm"]
 
@@ -82,7 +82,7 @@ position = Vector2(960, 1056)
 [node name="Goal" parent="." instance=ExtResource("5_ykodm")]
 position = Vector2(8928, 800)
 
-[node name="MeleeEnemy" parent="." instance=ExtResource("5_tn7t2")]
+[node name="Enemy Template" parent="." instance=ExtResource("5_tn7t2")]
 position = Vector2(1400, 1120)
 
 [node name="Player" parent="." instance=ExtResource("2_1emke")]
