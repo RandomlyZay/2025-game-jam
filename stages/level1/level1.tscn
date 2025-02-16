@@ -82,6 +82,12 @@ position = Vector2(8928, 800)
 [node name="CyclopsEnemy" parent="." instance=ExtResource("6_05wvj")]
 position = Vector2(1384, 1168)
 
+[node name="CyclopsEnemy2" parent="." instance=ExtResource("6_05wvj")]
+position = Vector2(2128, 1168)
+
+[node name="CyclopsEnemy3" parent="." instance=ExtResource("6_05wvj")]
+position = Vector2(1816, 1048)
+
 [node name="Player" parent="." instance=ExtResource("2_1emke")]
 position = Vector2(144, 1112)
 

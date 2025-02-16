@@ -15,6 +15,9 @@ extends CharacterBody2D
 @export var dodge_detection_range: float = 300.0
 @export var repositioning_distance: float = 150.0
 @export var blocked_time_limit: float = 2.0
+@export var personal_space: float = 120.0  # Minimum distance from other enemies
+@export var personal_space_weight: float = 0.5  # How strongly to avoid other enemies
+@export var position_update_frequency: float = 0.5  # How often to update target position
 
 @export_group("Combat")
 @export var health: float = 100.0
@@ -59,6 +62,9 @@ var last_valid_position: Vector2 = Vector2.ZERO
 
 # Movement
 var is_chasing: bool = false
+var target_position_timer: float = 0.0
+var current_target_position: Vector2 = Vector2.ZERO
+var position_noise_offset: float = 0.0
 
 # Combat
 var dodge_chance: float = 0.3
@@ -121,6 +127,7 @@ func _ready() -> void:
 	setup_obstacle_avoidance()
 	initialize_references()
 	initialized = true
+	position_noise_offset = randf() * 100  # Random offset for movement variation
 
 func initialize_references() -> void:
 	if !initialized:
@@ -519,3 +526,56 @@ func _on_interact() -> void:
 		hit_detector.health = current_health
 	
 	# No need to call floating numbers popup here since it's handled in take_damage()
+
+func get_avoidance_vector() -> Vector2:
+	var avoidance = Vector2.ZERO
+	var nearby_enemies = get_tree().get_nodes_in_group("enemies")
+	
+	for enemy in nearby_enemies:
+		if enemy == self or !is_instance_valid(enemy):
+			continue
+			
+		var to_enemy = global_position - enemy.global_position
+		var distance = to_enemy.length()
+		
+		if distance < personal_space:
+			var repulsion = to_enemy.normalized() * (1.0 - distance / personal_space)
+			avoidance += repulsion
+	
+	return avoidance
+
+func calculate_target_position() -> Vector2:
+	if !is_instance_valid(player):
+		return global_position
+		
+	var base_target = player.global_position
+	var ideal_distance = attack_range * 0.7
+	
+	# Add some noise to movement
+	var time = Time.get_ticks_msec() / 1000.0
+	var noise_x = sin(time + position_noise_offset) * 30.0
+	var noise_y = cos(time * 1.3 + position_noise_offset) * 20.0
+	
+	# Calculate position with personal space and noise
+	var avoidance = get_avoidance_vector() * personal_space_weight
+	var side_offset = Vector2(ideal_distance * (1.0 if randf() > 0.5 else -1.0), 0)
+	var target = base_target + side_offset + Vector2(noise_x, noise_y)
+	
+	# Apply avoidance
+	target += avoidance * base_speed
+	
+	return target
+
+func move_towards_position(target_pos: Vector2, delta: float) -> void:
+	var to_target = target_pos - global_position
+	var distance = to_target.length()
+	
+	if distance > 5.0:  # Only move if we're not already at the target
+		var desired_velocity = to_target.normalized() * base_speed
+		
+		# Apply avoidance
+		var avoidance = get_avoidance_vector() * personal_space_weight * base_speed
+		desired_velocity += avoidance
+		
+		# Smooth velocity change
+		velocity = velocity.move_toward(desired_velocity, acceleration * delta)

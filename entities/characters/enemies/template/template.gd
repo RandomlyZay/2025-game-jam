@@ -1,174 +1,182 @@
 extends "res://entities/characters/enemies/base_enemy.gd"
 
+@export var windup_time: float = 0.4
+@export var attack_duration: float = 0.2
+@export var recovery_time: float = 0.2
 
-@onready var hit_detector: Area2D = $HitDetector
-@onready var attack_area: Area2D = $AttackArea
-@onready var sprite_2d: Sprite2D = $Sprite2D
+@onready var attack_panel = $AttackArea/AttackRange
+@onready var attack_area = $AttackArea
+@onready var hit_detector = $HitDetector
 
-@onready var floating_numbers: Node2D = $FloatingNumbers
+var is_winding_up: bool = false
+var wind_up_timer: float = 0.0
+var recovery_timer: float = 0.0
+var attack_direction: Vector2 = Vector2.ZERO
 
+var flip_threshold: float = 20.0
+var last_flip_time: float = 0.0
+var flip_cooldown: float = 0.2
 
-
-
-@export var attack_windup_time: float = 0.2
-@export var attack_lunge_speed: float = 1500.0
-@export var attack_lunge_duration: float = 0.15
-@export var knockback_force: float = 800.0
-@export var melee_damage: int = 15
-@export var combo_damage_multiplier: float = 1.2
-@export var attack_arc_degrees: float = 90.0
-@export var positioning_distance: float = 60.0
-
-# Melee specific variables
-var melee_attack_direction: Vector2 = Vector2.ZERO
-var melee_attack_timer: float = 0.0
-var melee_lunge_timer: float = 0.0
-var is_in_attack_lunge: bool = false
+var combo_damage_multiplier: float = 1.2
+var attack_arc_degrees: float = 90.0
 
 func _ready() -> void:
-	base_speed = 200.0  # Make sure speed is set
-	max_health = 120
-	health = max_health
-	attack_damage = 20.0
-	max_combo = 3
-	block_chance = 0.4
-	hit_detector.set_interaction_callable(Callable(self, "_on_interact"))
-	hit_detector.health = current_health
+	health = 120.0
+	max_health = 120.0
+	base_speed = 200.0
+	attack_damage = 15.0
+	attack_range = 120.0
+	attack_cooldown = 1.2
+	current_health = health
 	super._ready()
-	$AttackArea.collision_mask = 4
-	setup_attack_area()
 
-func handle_chase_state(_delta: float) -> void:
+func handle_chase_state(delta: float) -> void:
 	if !player or !is_instance_valid(player):
 		current_state = EnemyState.IDLE
 		return
 		
+	# Update target position periodically
+	target_position_timer -= delta
+	if target_position_timer <= 0:
+		current_target_position = calculate_target_position()
+		target_position_timer = position_update_frequency
+	
 	var distance = global_position.distance_to(player.global_position)
-	var direction = (player.global_position - global_position).normalized()
+	var to_player = player.global_position - global_position
 	
-	# Always move towards player when in chase state
-	velocity = direction * base_speed
-	
-	# Switch to attack state when in range
-	if distance <= attack_range and can_attack:
+	if distance <= attack_range * 0.8 and can_attack:
 		attack_target = player
 		current_state = EnemyState.ATTACK
+		start_attack()
+	else:
+		move_towards_position(current_target_position, delta)
+		
+		# Handle sprite flipping with noise reduction
+		if sprite and abs(velocity.x) > 20:  # Increased threshold to reduce jitter
+			var new_facing_right = to_player.x > 0
+			var time = Time.get_ticks_msec() / 1000.0
+			
+			if time - last_flip_time >= flip_cooldown or abs(to_player.x) > flip_threshold:
+				if sprite.flip_h != new_facing_right:
+					sprite.flip_h = new_facing_right
+					attack_area.position.x = -60 if !sprite.flip_h else 60
+					attack_panel.position.x = -100 if !sprite.flip_h else -20
+					attack_panel.scale.x = 1 if !sprite.flip_h else -1
+					last_flip_time = time
 
 func handle_attack_state(delta: float) -> void:
-	if !attack_target or !is_instance_valid(attack_target):
+	if !is_instance_valid(player):
 		reset_attack_state()
+		current_state = EnemyState.IDLE
 		return
-		
-	var distance = global_position.distance_to(attack_target.global_position)
-	
-	if distance > attack_range:
-		# Circle around target while closing in
-		var direction = (attack_target.global_position - global_position).normalized()
-		var strafe = Vector2(-direction.y, direction.x)
-		velocity = (direction + strafe * 0.5).normalized() * base_speed
-	else:
-		if can_attack:
-			perform_combo_attack()
-		else:
-			reset_attack_state()
 
-	if melee_attack_timer > 0:
-		melee_attack_timer -= delta
-		melee_attack_direction = (attack_target.global_position - global_position).normalized()
-		velocity = velocity.move_toward(Vector2.ZERO, base_speed * 2 * delta)
-		
-	elif is_in_attack_lunge:
-		melee_lunge_timer -= delta
-		velocity = melee_attack_direction * attack_lunge_speed
-		
-		if !has_hit_target:
-			check_for_hit()
-		
-		if melee_lunge_timer <= 0 or has_hit_target:
+	if is_winding_up:
+		wind_up_timer -= delta
+		if wind_up_timer <= 0:
+			perform_attack()
+	elif recovery_timer > 0:
+		recovery_timer -= delta
+		if recovery_timer <= 0:
 			reset_attack_state()
-	else:
-		is_in_attack_lunge = true
-		melee_lunge_timer = attack_lunge_duration
-		velocity = melee_attack_direction * attack_lunge_speed
-		check_for_hit()
-
-func check_for_hit() -> void:
-	if !attack_area:
-		return
-		
-	var overlapping = attack_area.get_overlapping_areas()
-	
-	for area in overlapping:
-		# Only check combat-related interactions
-		if is_valid_target_area(area):
-			register_hit()
-			if attack_target.has_method("take_damage"):
-				attack_target.take_damage(melee_damage)
-			if attack_target.has_method("apply_knockback"):
-				attack_target.apply_knockback(melee_attack_direction * knockback_force)
-			return
+			current_state = EnemyState.CHASE
 
 func start_attack() -> void:
-	is_attacking = true
-	is_in_attack_lunge = false
-	has_hit_target = false
-	melee_attack_timer = attack_windup_time
-	melee_lunge_timer = 0.0
-	last_hit_position = attack_target.global_position
-	last_hit_time = Time.get_ticks_msec()
+	is_winding_up = true
+	wind_up_timer = windup_time
 	can_attack = false
 	
+	if attack_panel:
+		attack_panel.visible = true
+		attack_panel.modulate = Color(1, 1, 1, 0)
+		attack_panel.scale = Vector2(0.4, 0.4) * (1 if !sprite.flip_h else -1)
+		
+		var tween = create_tween()
+		tween.tween_property(attack_panel, "modulate", Color(1, 1, 1, 1), 0.2)
+	
+	if is_instance_valid(player):
+		var to_player = player.global_position - global_position
+		sprite.flip_h = to_player.x > 0
+		
+		sprite.rotation = 0
+		var tween = create_tween()
+		tween.tween_property(sprite, "rotation", 0.4 if !sprite.flip_h else -0.4, 0.3)
+		tween.parallel().tween_property(sprite, "scale", Vector2(0.35, 0.45), 0.3)
+		
+		attack_area.position.x = -60 if !sprite.flip_h else 60
+		attack_direction = to_player.normalized()
+
+func perform_attack() -> void:
+	is_winding_up = false
+	recovery_timer = recovery_time
+	
 	if sprite:
-		sprite.modulate = Color(1.5, 1.0, 1.0)
+		var tween = create_tween()
+		tween.tween_property(sprite, "rotation", -0.3 if !sprite.flip_h else 0.3, 0.1)
+		tween.tween_property(sprite, "rotation", 0.0, 0.1)
+		tween.parallel().tween_property(sprite, "scale", Vector2(0.4, 0.4), 0.2)
+	
+	if attack_panel:
+		var tween = create_tween()
+		tween.set_ease(Tween.EASE_IN)
+		tween.set_trans(Tween.TRANS_BACK)
+		
+		# Arc movement
+		var start_pos = Vector2(-40 if !sprite.flip_h else 40, -260)
+		var mid_pos = Vector2(-140 if !sprite.flip_h else 140, -80)
+		var end_pos = Vector2(-100 if !sprite.flip_h else 100, 20)
+		
+		tween.tween_property(attack_panel, "position", start_pos, 0.05)
+		tween.tween_property(attack_panel, "position", mid_pos, 0.08)
+		tween.tween_property(attack_panel, "position", end_pos, 0.08)
+		
+		# Visual effects
+		tween.parallel().tween_property(attack_panel, "scale", Vector2(0.2, 1.2) * (1 if !sprite.flip_h else -1), 0.08)
+		tween.parallel().tween_property(attack_panel, "scale", Vector2(1.0, 0.4) * (1 if !sprite.flip_h else -1), 0.08)
+		tween.parallel().tween_property(attack_panel, "rotation", PI/3 if !sprite.flip_h else -PI/3, 0.16)
+		
+		# Impact flash
+		tween.parallel().tween_property(attack_panel, "modulate", Color(6.0, 3.0, 3.0, 1), 0.08)
+		tween.parallel().tween_property(attack_panel, "modulate", Color(1, 1, 1, 0), 0.12)
+	
+	# Apply damage
+	if is_instance_valid(player):
+		var to_player = player.global_position - global_position
+		if abs(to_player.x) <= attack_range * 1.2 and abs(to_player.y) <= attack_range * 0.8:
+			if player.has_method("take_damage"):
+				player.take_damage(attack_damage)
+			if player.has_method("apply_knockback"):
+				var knockback_dir = Vector2(-1 if !sprite.flip_h else 1, 0.5).normalized()
+				player.apply_knockback(knockback_dir * 1200)
 
 func reset_attack_state() -> void:
-	is_attacking = false
-	is_in_attack_lunge = false
-	has_hit_target = false
-	melee_attack_timer = 0.0
-	melee_lunge_timer = 0.0
-	current_state = EnemyState.CHASE
-	if sprite:
-		sprite.modulate = original_color
+	is_winding_up = false
+	wind_up_timer = 0.0
+	recovery_timer = 0.0
 	
-	var timer = get_tree().create_timer(attack_cooldown)
-	timer.timeout.connect(func(): can_attack = true)
-
-func register_hit() -> void:
-	has_hit_target = true
-
-func is_in_lunge_state() -> bool:
-	return current_state == EnemyState.ATTACK and is_in_attack_lunge
-
-func _on_attack_area_area_entered(area: Area2D) -> void:
-	if is_in_attack_lunge and !has_hit_target and is_valid_target_area(area):
-		register_hit()
-		if attack_target.has_method("take_damage"):
-			attack_target.take_damage(melee_damage)
-		if attack_target.has_method("apply_knockback"):
-			attack_target.apply_knockback(melee_attack_direction * knockback_force)
+	if attack_panel:
+		attack_panel.visible = false
+		attack_panel.scale = Vector2(0.4, 0.4)
+		attack_panel.modulate = Color(1, 1, 1, 1)
+		attack_panel.rotation = 0
+	
+	if sprite:
+		sprite.rotation = 0
+		sprite.scale = Vector2(0.4, 0.4)
+	
+	attack_area.rotation = 0
+	
+	if current_state == EnemyState.ATTACK:
+		var timer = get_tree().create_timer(attack_cooldown)
+		timer.timeout.connect(func(): can_attack = true)
 
 func take_damage(amount: float) -> void:
-	super.take_damage(amount)
-	hits_taken += 1
-	
-	current_state = EnemyState.STUNNED
-	stun_timer = stun_duration
-	
-	var knockback_direction = -velocity.normalized()
-	if knockback_direction == Vector2.ZERO:
-		knockback_direction = Vector2.RIGHT.rotated(randf() * TAU)
-	knockback_velocity = knockback_direction * 500
-	
-	if sprite:
-		sprite.modulate = Color(1.0, 0.5, 0.5)
-
-func _on_hit(is_overheated: bool = false) -> void:
-	super._on_hit(is_overheated)
-	
-	# Reset attack state when hit
-	if is_attacking or is_in_attack_lunge:
+	if is_winding_up or current_state == EnemyState.ATTACK:
 		reset_attack_state()
+		can_attack = true
+	
+	super.take_damage(amount)
+	
+	stun_timer = hit_stun_duration
 
 func _physics_process(delta: float) -> void:
 	# Handle knockback first if it exists
@@ -233,26 +241,6 @@ func take_knockback(knockback: Vector2) -> void:
 	if sprite:
 		sprite.modulate = Color(1.5, 1.5, 1.5)  # Flash white to indicate stun
 
-func perform_combo_attack() -> void:
-	current_combo = (current_combo + 1) % (max_combo + 1)
-	var _damage = attack_damage * pow(combo_damage_multiplier, current_combo - 1)
-	
-	# Different attack animations/effects based on combo stage
-	match current_combo:
-		1: # Quick jab
-			attack_arc_degrees = 60.0
-			attack_range = 70.0
-		2: # Wide swing
-			attack_arc_degrees = 120.0
-			attack_range = 80.0
-		3: # Power attack
-			attack_arc_degrees = 90.0
-			attack_range = 90.0
-			
-	# Start combo timer
-	combo_timer = combo_window
-	start_attack()
-
 func setup_attack_area() -> void:
 	if attack_area:
 		attack_area.collision_mask = 4
@@ -275,10 +263,10 @@ func _on_interact() -> void:
 	take_knockback(knockback_direction * 500)
 	
 	# Visual feedback
-	if sprite_2d:
-		sprite_2d.modulate = Color(2, 2, 2)  # Flash bright white
+	if sprite:  # Use sprite instead of sprite_2d
+		sprite.modulate = Color(2, 2, 2)  # Flash bright white
 		var tween = create_tween()
-		tween.tween_property(sprite_2d, "modulate", Color.WHITE, 0.2)
+		tween.tween_property(sprite, "modulate", Color.WHITE, 0.2)
 	
 	# Update health display
 	hit_detector.health = current_health
