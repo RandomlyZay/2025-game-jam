@@ -10,7 +10,7 @@ signal dash_ended
 
 @export_group("Health")
 @export var max_health: float = 1000.0
-@export var strength: float = 50.0
+@export var strength: float = 10.0
 
 @export_group("Movement")
 @export var base_speed: float = 500.0

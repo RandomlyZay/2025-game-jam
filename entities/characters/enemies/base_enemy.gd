@@ -182,6 +182,7 @@ func handle_stunned_state(delta: float) -> void:
 	if stun_timer <= 0:
 		reset_state()
 		current_combo = 0  # Reset combo on stun recovery
+		current_state = EnemyState.CHASE  # Add this line to resume chasing
 	else:
 		stun_timer -= delta
 		velocity = velocity.move_toward(Vector2.ZERO, deceleration * delta)
@@ -270,6 +271,7 @@ func flash_hit() -> void:
 func apply_hit_stun() -> void:
 	is_stunned = true
 	stun_timer = hit_stun_duration
+	current_state = EnemyState.STUNNED  # Add this to ensure state change
 	velocity = Vector2.ZERO
 	# Reset all movement states
 	is_dashing = false
@@ -322,17 +324,15 @@ func take_damage(amount: float) -> void:
 func die() -> void:
 	Audio.play_sfx("enemy_death")
 	
-	# Visual effects
+	# Clean fade out
 	if sprite:
-		sprite.modulate = Color(1, 0.3, 0.3)  # Red flash
 		var tween = create_tween()
+		tween.set_ease(Tween.EASE_IN)
+		tween.set_trans(Tween.TRANS_SINE)
+		tween.tween_property(sprite, "modulate", Color(1, 0.3, 0.3, 1), 0.1)
 		tween.tween_property(sprite, "modulate", Color(1, 1, 1, 0), 0.3)
 	
-	# Stop all particles
-	if trail:
-		trail.emitting = false
-	
-	# Safely disable collision shapes
+	# Disable collisions immediately
 	for child in get_children():
 		if child is CollisionShape2D or child is CollisionPolygon2D:
 			child.call_deferred("set_disabled", true)
@@ -340,11 +340,11 @@ func die() -> void:
 			child.call_deferred("set_monitoring", false)
 			child.call_deferred("set_monitorable", false)
 	
-	# Create simple death particles
+	# Create red death particles
 	var death_particles = CPUParticles2D.new()
 	death_particles.emitting = false
 	death_particles.amount = 16
-	death_particles.lifetime = 0.5
+	death_particles.lifetime = 0.4
 	death_particles.explosiveness = 0.8
 	death_particles.spread = 180.0
 	death_particles.gravity = Vector2.ZERO
@@ -352,12 +352,12 @@ func die() -> void:
 	death_particles.initial_velocity_max = 150.0
 	death_particles.scale_amount_min = 4.0
 	death_particles.scale_amount_max = 6.0
-	death_particles.color = Color(1.0, 0.3, 0.3, 0.8)
+	death_particles.color = Color(1.0, 0.3, 0.3, 0.8)  # Red particles
 	add_child(death_particles)
 	death_particles.emitting = true
 	
-	# Remove enemy after particles finish
-	await get_tree().create_timer(0.5).timeout
+	# Remove enemy after effects finish
+	await get_tree().create_timer(0.4).timeout
 	queue_free()
 
 ### Dodging and Repositioning ###

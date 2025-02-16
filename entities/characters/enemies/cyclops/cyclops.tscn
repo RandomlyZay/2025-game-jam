@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b6j8u6n0mej7k"]
+[gd_scene load_steps=9 format=3 uid="uid://b6j8u6n0mej7k"]
 
 [ext_resource type="Script" path="res://entities/characters/enemies/cyclops/cyclops.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://bwo4utb5sio0q" path="res://graphics/characters/enemies/cyclops.png" id="2_1460o"]
@@ -14,18 +14,23 @@ radius = 56.0
 height = 192.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vqsea"]
-radius = 24.0
-height = 146.0
+radius = 80.0
+height = 300.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_attack"]
-bg_color = Color(0.92, 0.2, 0.2, 0.3)
+bg_color = Color(1, 0.2, 0.2, 0.3)
+skew = Vector2(0.4, 0)
+border_width_left = 24
+border_width_top = 24
+border_width_right = 24
+border_width_bottom = 24
+border_color = Color(1, 0.3, 0.3, 0.7)
 corner_radius_top_left = 100
 corner_radius_top_right = 100
 corner_radius_bottom_right = 100
 corner_radius_bottom_left = 100
-
-[sub_resource type="Gradient" id="Gradient_trail"]
-colors = PackedColorArray(0.3, 0.3, 0.3, 0.392157, 0.3, 0.3, 0.3, 0)
+shadow_color = Color(1, 0.2, 0.2, 0.6)
+shadow_size = 12
 
 [node name="CyclopsEnemy" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
@@ -33,7 +38,6 @@ collision_mask = 5
 script = ExtResource("1_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(1.2, 0.4, 0.4, 1)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2_1460o")
 
@@ -56,31 +60,19 @@ collision_layer = 0
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
-position = Vector2(-80, 8)
+position = Vector2(-60, -100)
+rotation = -1.5708
 shape = SubResource("CapsuleShape2D_vqsea")
 
-[node name="AttackRange" type="Panel" parent="AttackArea"]
+[node name="AttackPanel" type="Panel" parent="AttackArea"]
 visible = false
 offset_left = -100.0
 offset_top = -100.0
 offset_right = 100.0
 offset_bottom = 100.0
+scale = Vector2(0.4, 0.4)
+pivot_offset = Vector2(100, 100)
 theme_override_styles/panel = SubResource("StyleBoxFlat_attack")
-
-[node name="TrailEffect" type="CPUParticles2D" parent="."]
-emitting = false
-amount = 20
-lifetime = 0.5
-local_coords = true
-direction = Vector2(-1, 0)
-spread = 20.0
-gravity = Vector2(0, 0)
-initial_velocity_min = 100.0
-initial_velocity_max = 200.0
-scale_amount_min = 5.0
-scale_amount_max = 10.0
-color = Color(0.3, 0.3, 0.3, 0.392157)
-color_ramp = SubResource("Gradient_trail")
 
 [node name="FloatingNumbers" parent="." instance=ExtResource("3_numbers")]
 

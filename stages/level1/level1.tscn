@@ -23,9 +23,6 @@ scale = Vector2(1.5, 1.5)
 texture = ExtResource("5_vx4yd")
 centered = false
 
-[node name="TerrainLayer" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1920, 0)
-
 [node name="TerrainBounds" type="Node2D" parent="."]
 
 [node name="Section1" type="StaticBody2D" parent="TerrainBounds"]
