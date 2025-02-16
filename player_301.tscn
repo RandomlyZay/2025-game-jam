@@ -1,8 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://o0q0t4eik226"]
+[gd_scene load_steps=6 format=3 uid="uid://bwm1jyn108is5"]
 
-[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_eklt3"]
-[ext_resource type="Texture2D" uid="uid://bekm6isn44ive" path="res://graphics/characters/player/Base.png" id="2_pltwv"]
-[ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_qperh"]
+[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_unk8i"]
+[ext_resource type="Texture2D" uid="uid://j820jdtv7anx" path="res://graphics/characters/player/Speed+Armor.png" id="2_xenl5"]
+[ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_otnrs"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wkpqt"]
 radius = 5.33333
@@ -12,13 +12,14 @@ height = 37.3333
 radius = 32.0
 height = 64.0
 
-[node name="Player000" type="CharacterBody2D" groups=["human", "player"]]
+[node name="Player301" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
-script = ExtResource("1_eklt3")
+script = ExtResource("1_unk8i")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.12, 0.12)
-texture = ExtResource("2_pltwv")
+position = Vector2(0, 32)
+scale = Vector2(0.0873571, 0.0873571)
+texture = ExtResource("2_xenl5")
 
 [node name="HitBox" type="Area2D" parent="."]
 collision_layer = 4
@@ -33,7 +34,7 @@ shape = SubResource("CapsuleShape2D_wkpqt")
 position = Vector2(-24, 56)
 shape = SubResource("CapsuleShape2D_8u7o8")
 
-[node name="InteractingComponent" parent="." instance=ExtResource("3_qperh")]
+[node name="InteractingComponent" parent="." instance=ExtResource("3_otnrs")]
 position = Vector2(-3, 30)
 scale = Vector2(2.18998, 2.27496)
 

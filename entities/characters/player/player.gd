@@ -12,7 +12,6 @@ signal dash_ended
 @export var max_health: float = 1.0
 @export var strength: float = 10.0
 
-
 @export_group("Movement")
 @export var base_speed: float = 500.0
 @export var knockback_recovery_speed: float = 1200.0  # How fast you recover from getting knocked back
@@ -29,6 +28,10 @@ signal dash_ended
 
 #abilities
 @export_group("Abilities")
+@export var strength_upgrades = 0
+@export var defense_upgrades = 0
+@export var speed_upgrades = 0
+
 @export var can_fly = false
 @export var can_berserk = false
 @export var can_super_laser = false
@@ -55,9 +58,28 @@ var last_horizontal_direction: int = 1  # 1 for right, -1 for left
 func _ready() -> void:
 	current_health = max_health
 	emit_signal("health_changed", current_health, max_health)
+	set_abilities()
 	
 	# Initialize timers
 	create_timers()
+	
+
+func set_abilities() -> void:
+	
+	if(strength_upgrades > 0):
+		strength = strength_upgrades * strength
+	else:
+		pass
+		
+	if(defense_upgrades > 0):
+		current_health += defense_upgrades * current_health
+	else:
+		pass
+		
+	if(speed_upgrades > 0):
+		pass
+	else:
+		pass
 
 func create_timers() -> void:
 	# Dash duration timer

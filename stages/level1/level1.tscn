@@ -87,10 +87,10 @@ position = Vector2(2376, 1056)
 [node name="TemplateEnemy2" parent="Enemies" instance=ExtResource("6_hyhca")]
 position = Vector2(3112, 1256)
 
-[node name="Player" parent="." instance=ExtResource("2_1emke")]
+[node name="Player000" parent="." instance=ExtResource("2_1emke")]
 position = Vector2(144, 1112)
 
-[node name="Camera" type="Camera2D" parent="Player"]
+[node name="Camera" type="Camera2D" parent="Player000"]
 limit_left = 0
 limit_top = 0
 limit_bottom = 1440
