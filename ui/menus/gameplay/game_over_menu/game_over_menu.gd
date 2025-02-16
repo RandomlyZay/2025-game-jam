@@ -13,6 +13,8 @@ func show_menu(message: String = "") -> void:
 	visible = true
 	get_tree().paused = true
 	
+	Audio.play_music("game_over")
+	
 	if InputManager.get_current_mode() == "controller":
 		retry_button.grab_focus()
 

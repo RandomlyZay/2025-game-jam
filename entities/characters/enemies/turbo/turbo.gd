@@ -11,8 +11,8 @@ var is_winding_up: bool = false
 var wind_up_timer: float = 0.0
 var recovery_timer: float = 0.0
 
-@onready var animated_sprite = $AnimatedSprite2D  # Fixed node name to match scene file
-@onready var attack_panel = $AttackArea/AttackPanel
+@onready var animated_sprite = $AnimatedSprite2D
+@onready var attack_panel = $AttackArea/AttackRange  # Fix reference to match scene
 @onready var attack_area = $AttackArea
 @onready var hit_detector = $HitDetector
 
@@ -28,6 +28,16 @@ func _ready() -> void:
 	attack_range = 100.0
 	attack_cooldown = 1.0  # Faster cooldown
 	current_health = health
+	
+	# Ensure sprite references are properly set
+	sprite = $AnimatedSprite2D  # Set the base class sprite reference
+	if sprite:
+		original_color = sprite.modulate
+	
+	# Ensure attack panel exists and is visible when needed
+	if attack_panel:
+		attack_panel.visible = false
+	
 	super._ready()
 
 func start_swipe_attack() -> void:
@@ -100,12 +110,12 @@ func handle_chase_state(delta: float) -> void:
 	else:
 		move_towards_position(current_target_position, delta)
 		
-		# Simple directional flipping - if player is to our right, face right
+		 # Fix flipping direction - flip when player is to the left of the enemy
 		if animated_sprite and is_instance_valid(player):
 			animated_sprite.flip_h = to_player.x < 0
 			attack_area.position.x = -60 if animated_sprite.flip_h else 60
 			attack_panel.position.x = -100 if animated_sprite.flip_h else -20
-			attack_panel.scale.x = 1 if animated_sprite.flip_h else -1
+			attack_panel.scale.x = -1 if animated_sprite.flip_h else 1  # Fixed scale direction
 
 func handle_attack_state(delta: float) -> void:
 	if !is_instance_valid(player):
@@ -167,9 +177,15 @@ func perform_attack() -> void:
 				player.apply_knockback(knockback_dir * 1200)
 
 func take_damage(amount: float) -> void:
+	# Cancel attack first and ensure animations reset
 	if is_winding_up or current_state == EnemyState.ATTACK:
 		reset_attack_state()
 		can_attack = true
+	
+	if animated_sprite:
+		animated_sprite.play("default")  # Return to default animation
+		animated_sprite.rotation = 0.0
+		animated_sprite.scale = Vector2(0.4, 0.4)
 	
 	super.take_damage(amount)
 	
@@ -221,6 +237,8 @@ func handle_stunned_state(delta: float) -> void:
 		current_state = EnemyState.CHASE
 		if animated_sprite:
 			animated_sprite.modulate = original_color
+			animated_sprite.rotation = 0.0
+			animated_sprite.scale = Vector2(0.4, 0.4)
 	else:
 		stun_timer -= delta
 		velocity = knockback_velocity

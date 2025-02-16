@@ -171,9 +171,14 @@ func reset_attack_state() -> void:
 		timer.timeout.connect(func(): can_attack = true)
 
 func take_damage(amount: float) -> void:
+	# First cancel any ongoing attack
 	if is_winding_up or current_state == EnemyState.ATTACK:
 		reset_attack_state()
 		can_attack = true
+	
+	if sprite:
+		sprite.rotation = 0.0
+		sprite.scale = Vector2(0.4, 0.4)
 	
 	super.take_damage(amount)
 	

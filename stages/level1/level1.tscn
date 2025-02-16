@@ -8,8 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://brn3h1qqn2dau" path="res://graphics/backgrounds/crystals.png" id="4_r3dlt"]
 [ext_resource type="Texture2D" uid="uid://d0w4v5isrh5av" path="res://graphics/backgrounds/ground.png" id="5_se46x"]
 [ext_resource type="PackedScene" uid="uid://c1eh02vx5evga" path="res://objects/items/goal.tscn" id="5_ykodm"]
-[ext_resource type="PackedScene" uid="uid://b6j8u6n0mej7k" path="res://entities/characters/enemies/cyclops/cyclops.tscn" id="6_05wvj"]
-[ext_resource type="PackedScene" uid="uid://x77m5b33wtgi" path="res://entities/characters/enemies/template/template.tscn" id="6_hyhca"]
+[ext_resource type="PackedScene" uid="uid://b6j8u6n0mej7k" path="res://entities/characters/enemies/glorbus/glorbus.tscn" id="6_05wvj"]
+[ext_resource type="PackedScene" uid="uid://x77m5b33wtgi" path="res://entities/characters/enemies/turbo/turbo.tscn" id="6_hyhca"]
 
 [node name="Level1" type="Node2D"]
 script = ExtResource("1_tpwex")
@@ -70,19 +70,21 @@ position = Vector2(960, 1056)
 [node name="Goal" parent="." instance=ExtResource("5_ykodm")]
 position = Vector2(8928, 800)
 
-[node name="CyclopsEnemy" parent="." instance=ExtResource("6_05wvj")]
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="CyclopsEnemy" parent="Enemies" instance=ExtResource("6_05wvj")]
 position = Vector2(1384, 1168)
 
-[node name="CyclopsEnemy2" parent="." instance=ExtResource("6_05wvj")]
+[node name="CyclopsEnemy2" parent="Enemies" instance=ExtResource("6_05wvj")]
 position = Vector2(2128, 1168)
 
-[node name="CyclopsEnemy3" parent="." instance=ExtResource("6_05wvj")]
+[node name="CyclopsEnemy3" parent="Enemies" instance=ExtResource("6_05wvj")]
 position = Vector2(1816, 1048)
 
-[node name="TemplateEnemy" parent="." instance=ExtResource("6_hyhca")]
+[node name="TemplateEnemy" parent="Enemies" instance=ExtResource("6_hyhca")]
 position = Vector2(2376, 1056)
 
-[node name="TemplateEnemy2" parent="." instance=ExtResource("6_hyhca")]
+[node name="TemplateEnemy2" parent="Enemies" instance=ExtResource("6_hyhca")]
 position = Vector2(3112, 1256)
 
 [node name="Player" parent="." instance=ExtResource("2_1emke")]

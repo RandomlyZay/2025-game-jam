@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bp5p4lthogdfq"]
+[gd_scene load_steps=3 format=3 uid="uid://bp5p4lthogdfq"]
 
 [ext_resource type="Script" path="res://ui/menus/main_menu/main_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://d3ir1x5pbxdxa" path="res://graphics/backgrounds/title.png" id="2_nrwy8"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -11,76 +12,50 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="Title" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -350.0
-offset_right = 300.0
-offset_bottom = -250.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 72
-text = "2025 Game Jam"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_nrwy8")
+centered = false
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -200.0
-offset_right = 300.0
-offset_bottom = 200.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
-
-[node name="PlayButton" type="Button" parent="VBoxContainer"]
+[node name="PlayButton" type="Button" parent="."]
 custom_minimum_size = Vector2(400, 70)
 layout_mode = 2
+offset_left = 736.0
+offset_top = 752.0
+offset_right = 1136.0
+offset_bottom = 888.0
 theme_override_font_sizes/font_size = 32
-text = "PLAY"
+flat = true
 
-[node name="ControlsButton" type="Button" parent="VBoxContainer"]
+[node name="SettingsButton" type="Button" parent="."]
 custom_minimum_size = Vector2(400, 70)
 layout_mode = 2
+offset_left = 240.0
+offset_top = 720.0
+offset_right = 712.0
+offset_bottom = 904.0
 theme_override_font_sizes/font_size = 32
-text = "CONTROLS"
+text = "
+"
+flat = true
 
-[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+[node name="CreditsButton" type="Button" parent="."]
 custom_minimum_size = Vector2(400, 70)
 layout_mode = 2
+offset_left = 1232.0
+offset_top = 728.0
+offset_right = 1632.0
+offset_bottom = 896.0
 theme_override_font_sizes/font_size = 32
-text = "SETTINGS"
+flat = true
 
-[node name="CreditsButton" type="Button" parent="VBoxContainer"]
+[node name="QuitButton" type="Button" parent="."]
 custom_minimum_size = Vector2(400, 70)
 layout_mode = 2
+offset_left = 712.0
+offset_top = 920.0
+offset_right = 1112.0
+offset_bottom = 1080.0
 theme_override_font_sizes/font_size = 32
-text = "CREDITS"
-
-[node name="QuitButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(400, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "QUIT"
-
-[node name="Credits" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -45.0
-offset_right = 380.0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 32
-text = "Fantastic Monsters 2025"
+text = "
+"
+flat = true

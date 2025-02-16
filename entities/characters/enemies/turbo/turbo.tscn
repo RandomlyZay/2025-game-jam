@@ -1,17 +1,17 @@
 [gd_scene load_steps=12 format=3 uid="uid://x77m5b33wtgi"]
 
-[ext_resource type="Script" path="res://entities/characters/enemies/template/template.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://bvqmeg0vopv7f" path="res://graphics/characters/enemies/snail_guy_charging.png" id="2_jtoi7"]
-[ext_resource type="Texture2D" uid="uid://wdp21ti5k8c6" path="res://graphics/characters/enemies/snail_guy.png" id="3_16tvo"]
-[ext_resource type="Script" path="res://objects/interactable.gd" id="3_qytdd"]
-[ext_resource type="PackedScene" uid="uid://b08lb42hrodkb" path="res://ui/hud/floating_numbers.tscn" id="4_n8r63"]
+[ext_resource type="Script" path="res://entities/characters/enemies/turbo/turbo.gd" id="1_2j8ji"]
+[ext_resource type="Texture2D" uid="uid://bvqmeg0vopv7f" path="res://graphics/characters/enemies/snail_guy_charging.png" id="2_0ibe7"]
+[ext_resource type="Texture2D" uid="uid://wdp21ti5k8c6" path="res://graphics/characters/enemies/snail_guy.png" id="3_rqvx6"]
+[ext_resource type="Script" path="res://objects/interactable.gd" id="4_7bai2"]
+[ext_resource type="PackedScene" uid="uid://b08lb42hrodkb" path="res://ui/hud/floating_numbers.tscn" id="5_ysugf"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s2o73"]
-atlas = ExtResource("2_jtoi7")
+atlas = ExtResource("2_0ibe7")
 region = Rect2(855, 500, 246, 294)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_o1d8u"]
-atlas = ExtResource("3_16tvo")
+atlas = ExtResource("3_rqvx6")
 region = Rect2(710, 262, 435, 530)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_0vy0t"]
@@ -54,12 +54,12 @@ corner_radius_bottom_left = 100
 shadow_color = Color(1, 0.2, 0.2, 0.6)
 shadow_size = 12
 
-[node name="TemplateEnemy" type="CharacterBody2D" groups=["enemies"]]
+[node name="Turbo" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
 collision_mask = 5
-script = ExtResource("1_script")
+script = ExtResource("1_2j8ji")
 
-[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 modulate = Color(1.5, 1.5, 1.5, 1)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_0vy0t")
@@ -70,7 +70,7 @@ shape = SubResource("CircleShape2D_1")
 
 [node name="HitDetector" type="Area2D" parent="."]
 collision_layer = 2
-script = ExtResource("3_qytdd")
+script = ExtResource("4_7bai2")
 interact_name = "Enemy_takes_a_hit"
 health = 120
 
@@ -96,7 +96,7 @@ scale = Vector2(0.4, 0.4)
 pivot_offset = Vector2(100, 100)
 theme_override_styles/panel = SubResource("StyleBoxFlat_attack")
 
-[node name="FloatingNumbers" parent="." instance=ExtResource("4_n8r63")]
+[node name="FloatingNumbers" parent="." instance=ExtResource("5_ysugf")]
 
 [connection signal="input_event" from="HitDetector" to="." method="_on_hit_detector_input_event"]
 [connection signal="area_entered" from="AttackArea" to="." method="_on_attack_area_area_entered"]

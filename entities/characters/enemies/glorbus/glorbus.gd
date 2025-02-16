@@ -185,10 +185,13 @@ func take_damage(amount: float) -> void:
 	# First cancel any ongoing attack
 	if is_winding_up or current_state == EnemyState.ATTACK:
 		reset_attack_state()
-		can_attack = true  # Allow attacking again after recovery
+		can_attack = true
 	
-	# Call parent's take_damage which handles stun state
 	super.take_damage(amount)
 	
-	# Ensure proper stun duration
+	# Ensure animation reset
+	if sprite:
+		sprite.rotation = 0.0
+		sprite.scale = Vector2(0.4, 0.4)
+	
 	stun_timer = hit_stun_duration

@@ -1,6 +1,6 @@
 extends Control
 
-@onready var first_button: Button = $VBoxContainer/PlayButton
+@onready var first_button: Button = $PlayButton
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -15,19 +15,17 @@ func _ready() -> void:
 
 func setup_buttons() -> void:
 	# Connect button signals
-	$VBoxContainer/PlayButton.pressed.connect(_on_play_pressed)
-	$VBoxContainer/ControlsButton.pressed.connect(_on_controls_pressed)
-	$VBoxContainer/SettingsButton.pressed.connect(_on_settings_pressed)
-	$VBoxContainer/CreditsButton.pressed.connect(_on_credits_pressed)
-	$VBoxContainer/QuitButton.pressed.connect(_on_quit_pressed)
+	$PlayButton.pressed.connect(_on_play_pressed)
+	$SettingsButton.pressed.connect(_on_settings_pressed)
+	$CreditsButton.pressed.connect(_on_credits_pressed)
+	$QuitButton.pressed.connect(_on_quit_pressed)
 	
 	# Setup controller focus neighbors
 	var buttons = [
-		$VBoxContainer/PlayButton,
-		$VBoxContainer/ControlsButton,
-		$VBoxContainer/SettingsButton,
-		$VBoxContainer/CreditsButton,
-		$VBoxContainer/QuitButton
+		$SettingsButton,
+		$PlayButton,
+		$CreditsButton,
+		$QuitButton
 	]
 	 
 	for i in range(buttons.size()):
@@ -46,9 +44,6 @@ func _on_input_mode_changed(mode: String) -> void:
 
 func _on_play_pressed() -> void:
 	get_tree().change_scene_to_file("res://stages/level1/level1.tscn")
-
-func _on_controls_pressed() -> void:
-	get_tree().change_scene_to_file("res://ui/menus/main_menu/controls_menu/controls_menu.tscn")
 
 func _on_settings_pressed() -> void:
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/settings_menu/settings_menu.tscn")

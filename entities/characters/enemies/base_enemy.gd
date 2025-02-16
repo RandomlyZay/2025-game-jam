@@ -190,6 +190,11 @@ func handle_stunned_state(delta: float) -> void:
 		reset_state()
 		current_combo = 0  # Reset combo on stun recovery
 		current_state = EnemyState.CHASE  # Add this line to resume chasing
+		# Ensure sprite is reset
+		if sprite:
+			sprite.modulate = original_color
+			sprite.rotation = 0.0
+			sprite.scale = Vector2(0.4, 0.4)
 	else:
 		stun_timer -= delta
 		velocity = velocity.move_toward(Vector2.ZERO, deceleration * delta)
@@ -286,6 +291,11 @@ func apply_hit_stun() -> void:
 	cooldown_timer = 0.0
 	dash_timer = 0.0
 	dodge_timer = 0.0
+	
+	# Reset sprite transformations
+	if sprite:
+		sprite.rotation = 0.0
+		sprite.scale = Vector2(0.4, 0.4)
 
 func take_knockback(knockback_force: Vector2) -> void:
 	knockback_velocity = knockback_force * 1.2 
@@ -294,6 +304,14 @@ func take_knockback(knockback_force: Vector2) -> void:
 	apply_hit_stun()
 
 func take_damage(amount: float) -> void:
+	# Reset attack state and sprite transformations first
+	if current_state == EnemyState.ATTACK:
+		# Reset sprite transformations
+		if sprite:
+			sprite.rotation = 0.0
+			sprite.scale = Vector2(0.4, 0.4)
+		current_state = EnemyState.STUNNED
+	
 	if is_blocking:
 		amount *= 0.2  # Reduced damage when blocking
 		

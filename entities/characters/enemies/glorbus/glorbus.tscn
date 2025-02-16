@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://b6j8u6n0mej7k"]
 
-[ext_resource type="Script" path="res://entities/characters/enemies/cyclops/cyclops.gd" id="1_script"]
+[ext_resource type="Script" path="res://entities/characters/enemies/glorbus/glorbus.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://bwo4utb5sio0q" path="res://graphics/characters/enemies/cyclops.png" id="2_1460o"]
 [ext_resource type="PackedScene" uid="uid://b08lb42hrodkb" path="res://ui/hud/floating_numbers.tscn" id="3_numbers"]
 [ext_resource type="Script" path="res://objects/interactable.gd" id="3_qytdd"]

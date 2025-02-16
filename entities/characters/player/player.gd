@@ -9,7 +9,7 @@ signal dash_started
 signal dash_ended
 
 @export_group("Health")
-@export var max_health: float = 1000.0
+@export var max_health: float = 1.0
 @export var strength: float = 10.0
 
 
@@ -176,6 +176,8 @@ func take_damage(amount: float) -> void:
 func on_death() -> void:
 	is_dying = true
 	emit_signal("player_died")
+	
+	Audio.play_sfx("bad_explosion")
 	queue_free()
 
 func apply_knockback(force: Vector2) -> void:
