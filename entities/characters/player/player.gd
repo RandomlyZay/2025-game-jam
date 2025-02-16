@@ -12,6 +12,7 @@ signal dash_ended
 @export var max_health: float = 1000.0
 @export var strength: float = 10.0
 
+
 @export_group("Movement")
 @export var base_speed: float = 500.0
 @export var knockback_recovery_speed: float = 1200.0  # How fast you recover from getting knocked back
@@ -25,6 +26,13 @@ signal dash_ended
 @export var dash_duration: float = 0.2
 @export var dash_cooldown: float = 0.5
 @export var dash_invincibility_duration: float = 0.3
+
+#abilities
+@export_group("Abilities")
+@export var can_fly = false
+@export var can_berserk = false
+@export var can_super_laser = false
+@export var can_super_bomb = false
 
 # Timer References
 var dash_cooldown_timer: Timer

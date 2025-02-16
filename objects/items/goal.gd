@@ -10,4 +10,4 @@ func get_interact_name() -> String:
 	
 func _on_interact() -> void:
 	print("Goal is interacted with")
-	# get_tree().change_scene_to_file("res://stages/level2/level2.tscn")
+	get_tree().change_scene_to_file("res://stages/UpgradeStages/upgrade_scene_base.tscn")
