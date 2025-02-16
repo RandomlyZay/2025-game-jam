@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://dpxlqkoghck0t"]
 
-[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_1wfyl"]
-[ext_resource type="Texture2D" uid="uid://bihs12u4g807n" path="res://graphics/characters/player/Speed+Wing.png" id="2_qwhq8"]
-[ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_uuam5"]
+[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_hc66y"]
+[ext_resource type="Texture2D" uid="uid://bihs12u4g807n" path="res://graphics/characters/player/Speed+Wing.png" id="2_8idlg"]
+[ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_as30b"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wkpqt"]
 radius = 5.33333
@@ -14,12 +14,12 @@ height = 64.0
 
 [node name="Player303" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
-script = ExtResource("1_1wfyl")
+script = ExtResource("1_hc66y")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-24, 32)
 scale = Vector2(0.0987308, 0.0987308)
-texture = ExtResource("2_qwhq8")
+texture = ExtResource("2_8idlg")
 
 [node name="HitBox" type="Area2D" parent="."]
 collision_layer = 4
@@ -34,7 +34,7 @@ shape = SubResource("CapsuleShape2D_wkpqt")
 position = Vector2(-24, 56)
 shape = SubResource("CapsuleShape2D_8u7o8")
 
-[node name="InteractingComponent" parent="." instance=ExtResource("3_uuam5")]
+[node name="InteractingComponent" parent="." instance=ExtResource("3_as30b")]
 position = Vector2(-3, 30)
 scale = Vector2(2.18998, 2.27496)
 

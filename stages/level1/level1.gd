@@ -17,7 +17,7 @@ func setup_ui_manager() -> void:
 	ui_manager.initialize_UI($HUD)
 
 func connect_player_signals() -> void:
-	var player = $Player
+	var player = $Player000
 	if player:
 		player.health_changed.connect(func(new_health, max_health): 
 			if is_instance_valid(ui_manager):
