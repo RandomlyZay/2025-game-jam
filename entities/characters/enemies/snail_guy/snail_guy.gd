@@ -1,18 +1,18 @@
 extends "res://entities/characters/enemies/base_enemy.gd"
 
-# Customize these values per enemy type
-@export var swipe_damage: float = 25.0
-@export var swipe_range: float = 120.0
-@export var swipe_arc: float = 160.0
-@export var swipe_windup: float = 0.4
-@export var swipe_recovery: float = 0.2
+@export var swipe_damage: float = 20.0  # Lower damage but faster attacks
+@export var swipe_range: float = 100.0  # Slightly shorter range
+@export var swipe_arc: float = 140.0
+@export var swipe_windup: float = 0.3  # Faster windup
+@export var swipe_recovery: float = 0.15  # Faster recovery
 
 var swipe_direction: Vector2 = Vector2.ZERO
 var is_winding_up: bool = false
 var wind_up_timer: float = 0.0
 var recovery_timer: float = 0.0
 
-@onready var attack_panel = $AttackArea/AttackRange
+@onready var animated_sprite = $AnimatedSprite2D  # Fixed node name to match scene file
+@onready var attack_panel = $AttackArea/AttackPanel
 @onready var attack_area = $AttackArea
 @onready var hit_detector = $HitDetector
 
@@ -21,15 +21,63 @@ var last_flip_time: float = 0.0
 var flip_cooldown: float = 0.2
 
 func _ready() -> void:
-	# Customize these values per enemy type
-	health = 100.0
-	max_health = 100.0
-	base_speed = 180.0
+	health = 60.0  # Less health than cyclops
+	max_health = 60.0
+	base_speed = 220.0  # Faster than cyclops
 	attack_damage = swipe_damage
-	attack_range = 140.0
-	attack_cooldown = 1.5
+	attack_range = 100.0
+	attack_cooldown = 1.0  # Faster cooldown
 	current_health = health
 	super._ready()
+
+func start_swipe_attack() -> void:
+	is_winding_up = true
+	wind_up_timer = swipe_windup
+	can_attack = false
+	
+	if attack_panel:
+		attack_panel.visible = true
+		attack_panel.modulate = Color(1, 1, 1, 0)
+		attack_panel.position = Vector2(-40, -240)
+		
+		var tween = create_tween()
+		tween.tween_property(attack_panel, "modulate", Color(1, 1, 1, 1), 0.2)
+	
+	if is_instance_valid(player):
+		var to_player = player.global_position - global_position
+		animated_sprite.flip_h = to_player.x < 0  # Match chase state flipping
+		animated_sprite.play("charging")  # Use charging animation
+		
+		# Windup animation
+		animated_sprite.rotation = 0
+		var tween = create_tween()
+		tween.tween_property(animated_sprite, "rotation", 0.4 if !animated_sprite.flip_h else -0.4, 0.3)  # Swapped rotation
+		tween.parallel().tween_property(animated_sprite, "scale", Vector2(0.35, 0.45), 0.3)
+		
+		attack_area.position.x = -60 if !animated_sprite.flip_h else 60  # Swapped positions
+		attack_panel.scale = Vector2(0.4, 0.4) * (1 if !animated_sprite.flip_h else -1)  # Inverted scale
+		swipe_direction = to_player.normalized()
+
+func reset_attack_state() -> void:
+	is_winding_up = false
+	wind_up_timer = 0.0
+	recovery_timer = 0.0
+	
+	if attack_panel:
+		attack_panel.visible = false
+		attack_panel.scale = Vector2(0.4, 0.4)
+		attack_panel.modulate = Color(1, 1, 1, 1)
+	
+	if animated_sprite:
+		animated_sprite.play("default")  # Return to default animation
+		animated_sprite.rotation = 0
+		animated_sprite.scale = Vector2(0.4, 0.4)
+	
+	attack_area.rotation = 0
+	
+	if current_state == EnemyState.ATTACK:
+		var timer = get_tree().create_timer(attack_cooldown)
+		timer.timeout.connect(func(): can_attack = true)
 
 func handle_chase_state(delta: float) -> void:
 	if !player or !is_instance_valid(player):
@@ -48,22 +96,16 @@ func handle_chase_state(delta: float) -> void:
 	if distance <= attack_range * 0.8 and can_attack:
 		attack_target = player
 		current_state = EnemyState.ATTACK
-		start_attack()
+		start_swipe_attack()
 	else:
 		move_towards_position(current_target_position, delta)
 		
-		# Handle sprite flipping with noise reduction
-		if sprite and abs(velocity.x) > 20:  # Increased threshold to reduce jitter
-			var new_facing_right = to_player.x > 0
-			var time = Time.get_ticks_msec() / 1000.0
-			
-			if time - last_flip_time >= flip_cooldown or abs(to_player.x) > flip_threshold:
-				if sprite.flip_h != new_facing_right:
-					sprite.flip_h = new_facing_right
-					attack_area.position.x = -60 if !sprite.flip_h else 60
-					attack_panel.position.x = -100 if !sprite.flip_h else -20
-					attack_panel.scale.x = 1 if !sprite.flip_h else -1
-					last_flip_time = time
+		# Simple directional flipping - if player is to our right, face right
+		if animated_sprite and is_instance_valid(player):
+			animated_sprite.flip_h = to_player.x < 0
+			attack_area.position.x = -60 if animated_sprite.flip_h else 60
+			attack_panel.position.x = -100 if animated_sprite.flip_h else -20
+			attack_panel.scale.x = 1 if animated_sprite.flip_h else -1
 
 func handle_attack_state(delta: float) -> void:
 	if !is_instance_valid(player):
@@ -81,40 +123,15 @@ func handle_attack_state(delta: float) -> void:
 			reset_attack_state()
 			current_state = EnemyState.CHASE
 
-func start_attack() -> void:
-	is_winding_up = true
-	wind_up_timer = swipe_windup
-	can_attack = false
-	
-	if attack_panel:
-		attack_panel.visible = true
-		attack_panel.modulate = Color(1, 1, 1, 0)
-		attack_panel.scale = Vector2(0.4, 0.4) * (1 if !sprite.flip_h else -1)
-		
-		var tween = create_tween()
-		tween.tween_property(attack_panel, "modulate", Color(1, 1, 1, 1), 0.2)
-	
-	if is_instance_valid(player):
-		var to_player = player.global_position - global_position
-		sprite.flip_h = to_player.x > 0
-		
-		sprite.rotation = 0
-		var tween = create_tween()
-		tween.tween_property(sprite, "rotation", 0.4 if !sprite.flip_h else -0.4, 0.3)
-		tween.parallel().tween_property(sprite, "scale", Vector2(0.35, 0.45), 0.3)
-		
-		attack_area.position.x = -60 if !sprite.flip_h else 60
-		swipe_direction = to_player.normalized()
-
 func perform_attack() -> void:
 	is_winding_up = false
 	recovery_timer = swipe_recovery
 	
-	if sprite:
+	if animated_sprite:
 		var tween = create_tween()
-		tween.tween_property(sprite, "rotation", -0.3 if !sprite.flip_h else 0.3, 0.1)
-		tween.tween_property(sprite, "rotation", 0.0, 0.1)
-		tween.parallel().tween_property(sprite, "scale", Vector2(0.4, 0.4), 0.2)
+		tween.tween_property(animated_sprite, "rotation", -0.3 if !animated_sprite.flip_h else 0.3, 0.1)
+		tween.tween_property(animated_sprite, "rotation", 0.0, 0.1)
+		tween.parallel().tween_property(animated_sprite, "scale", Vector2(0.4, 0.4), 0.2)
 	
 	if attack_panel:
 		var tween = create_tween()
@@ -122,18 +139,18 @@ func perform_attack() -> void:
 		tween.set_trans(Tween.TRANS_BACK)
 		
 		# Arc movement
-		var start_pos = Vector2(-40 if !sprite.flip_h else 40, -260)
-		var mid_pos = Vector2(-140 if !sprite.flip_h else 140, -80)
-		var end_pos = Vector2(-100 if !sprite.flip_h else 100, 20)
+		var start_pos = Vector2(-40 if !animated_sprite.flip_h else 40, -260)
+		var mid_pos = Vector2(-140 if !animated_sprite.flip_h else 140, -80)
+		var end_pos = Vector2(-100 if !animated_sprite.flip_h else 100, 20)
 		
 		tween.tween_property(attack_panel, "position", start_pos, 0.05)
 		tween.tween_property(attack_panel, "position", mid_pos, 0.08)
 		tween.tween_property(attack_panel, "position", end_pos, 0.08)
 		
 		# Visual effects
-		tween.parallel().tween_property(attack_panel, "scale", Vector2(0.2, 1.2) * (1 if !sprite.flip_h else -1), 0.08)
-		tween.parallel().tween_property(attack_panel, "scale", Vector2(1.0, 0.4) * (1 if !sprite.flip_h else -1), 0.08)
-		tween.parallel().tween_property(attack_panel, "rotation", PI/3 if !sprite.flip_h else -PI/3, 0.16)
+		tween.parallel().tween_property(attack_panel, "scale", Vector2(0.2, 1.2) * (1 if !animated_sprite.flip_h else -1), 0.08)
+		tween.parallel().tween_property(attack_panel, "scale", Vector2(1.0, 0.4) * (1 if !animated_sprite.flip_h else -1), 0.08)
+		tween.parallel().tween_property(attack_panel, "rotation", PI/3 if !animated_sprite.flip_h else -PI/3, 0.16)
 		
 		# Impact flash
 		tween.parallel().tween_property(attack_panel, "modulate", Color(6.0, 3.0, 3.0, 1), 0.08)
@@ -142,33 +159,12 @@ func perform_attack() -> void:
 	# Apply damage
 	if is_instance_valid(player):
 		var to_player = player.global_position - global_position
-		if abs(to_player.x) <= swipe_range * 1.2 and abs(to_player.y) <= swipe_range * 0.8:
+		if abs(to_player.x) <= attack_range * 1.2 and abs(to_player.y) <= attack_range * 0.8:
 			if player.has_method("take_damage"):
-				player.take_damage(swipe_damage)
+				player.take_damage(attack_damage)
 			if player.has_method("apply_knockback"):
-				var knockback_dir = Vector2(-1 if !sprite.flip_h else 1, 0.5).normalized()
+				var knockback_dir = Vector2(-1 if !animated_sprite.flip_h else 1, 0.5).normalized()
 				player.apply_knockback(knockback_dir * 1200)
-
-func reset_attack_state() -> void:
-	is_winding_up = false
-	wind_up_timer = 0.0
-	recovery_timer = 0.0
-	
-	if attack_panel:
-		attack_panel.visible = false
-		attack_panel.scale = Vector2(0.4, 0.4)
-		attack_panel.modulate = Color(1, 1, 1, 1)
-		attack_panel.rotation = 0
-	
-	if sprite:
-		sprite.rotation = 0
-		sprite.scale = Vector2(0.4, 0.4)
-	
-	attack_area.rotation = 0
-	
-	if current_state == EnemyState.ATTACK:
-		var timer = get_tree().create_timer(attack_cooldown)
-		timer.timeout.connect(func(): can_attack = true)
 
 func take_damage(amount: float) -> void:
 	if is_winding_up or current_state == EnemyState.ATTACK:
@@ -216,16 +212,15 @@ func _physics_process(delta: float) -> void:
 				if !is_stunned:  # If stun ended, return to chase
 					current_state = EnemyState.CHASE
 		
-		if sprite and abs(velocity.x) > 0:
-			sprite.flip_h = velocity.x < 0
+		# Remove the movement-based flipping since we handle it in chase state
 	
 	move_and_slide()
 
 func handle_stunned_state(delta: float) -> void:
 	if stun_timer <= 0:
 		current_state = EnemyState.CHASE
-		if sprite:
-			sprite.modulate = original_color
+		if animated_sprite:
+			animated_sprite.modulate = original_color
 	else:
 		stun_timer -= delta
 		velocity = knockback_velocity
@@ -239,8 +234,8 @@ func take_knockback(knockback: Vector2) -> void:
 	current_state = EnemyState.STUNNED
 	is_stunned = true
 	stun_timer = 1.0  # 1 second stun duration
-	if sprite:
-		sprite.modulate = Color(1.5, 1.5, 1.5)  # Flash white to indicate stun
+	if animated_sprite:
+		animated_sprite.modulate = Color(1.5, 1.5, 1.5)  # Flash white to indicate stun
 
 func setup_attack_area() -> void:
 	if attack_area:
@@ -264,10 +259,10 @@ func _on_interact() -> void:
 	take_knockback(knockback_direction * 500)
 	
 	# Visual feedback
-	if sprite:  # Use sprite instead of sprite_2d
-		sprite.modulate = Color(2, 2, 2)  # Flash bright white
+	if animated_sprite:  # Use animated_sprite instead of sprite_2d
+		animated_sprite.modulate = Color(2, 2, 2)  # Flash bright white
 		var tween = create_tween()
-		tween.tween_property(sprite, "modulate", Color.WHITE, 0.2)
+		tween.tween_property(animated_sprite, "modulate", Color.WHITE, 0.2)
 	
 	# Update health display
 	hit_detector.health = current_health

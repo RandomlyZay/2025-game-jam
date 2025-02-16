@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://du65lx8b1n67x"]
+[gd_scene load_steps=11 format=3 uid="uid://du65lx8b1n67x"]
 
 [ext_resource type="Script" path="res://stages/level1/level1.gd" id="1_tpwex"]
 [ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="2_1emke"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://d0w4v5isrh5av" path="res://graphics/backgrounds/ground.png" id="5_se46x"]
 [ext_resource type="PackedScene" uid="uid://c1eh02vx5evga" path="res://objects/items/goal.tscn" id="5_ykodm"]
 [ext_resource type="PackedScene" uid="uid://b6j8u6n0mej7k" path="res://entities/characters/enemies/cyclops/cyclops.tscn" id="6_05wvj"]
+[ext_resource type="PackedScene" uid="uid://x77m5b33wtgi" path="res://entities/characters/enemies/snail_guy/snail_guy.tscn" id="6_hyhca"]
 
 [node name="Level1" type="Node2D"]
 script = ExtResource("1_tpwex")
@@ -59,6 +60,10 @@ polygon = PackedVector2Array(0, 0, 100000, 0)
 build_mode = 1
 polygon = PackedVector2Array(0, 1440, 100000, 1440)
 
+[node name="HorizonWall" type="CollisionPolygon2D" parent="OuterBounds"]
+build_mode = 1
+polygon = PackedVector2Array(0, 864, 100000, 864)
+
 [node name="Crate" parent="." instance=ExtResource("4_6ms3x")]
 position = Vector2(960, 1056)
 
@@ -73,6 +78,12 @@ position = Vector2(2128, 1168)
 
 [node name="CyclopsEnemy3" parent="." instance=ExtResource("6_05wvj")]
 position = Vector2(1816, 1048)
+
+[node name="TemplateEnemy" parent="." instance=ExtResource("6_hyhca")]
+position = Vector2(2376, 1056)
+
+[node name="TemplateEnemy2" parent="." instance=ExtResource("6_hyhca")]
+position = Vector2(3112, 1256)
 
 [node name="Player" parent="." instance=ExtResource("2_1emke")]
 position = Vector2(144, 1112)

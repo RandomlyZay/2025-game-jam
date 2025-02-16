@@ -416,41 +416,38 @@ func _physics_process(delta: float) -> void:
 		handle_stunned_state(delta)
 		return
 
-	# Handle knockback first if it exists
+	# Handle knockback and states
 	if knockback_velocity.length() > 0:
-		velocity = knockback_velocity * 1.2  
-		# Check for wall impacts during knockback
-		if monitoring_wall_impact and get_slide_collision_count() > 0:
-			for i in range(get_slide_collision_count()):
-				var collision = get_slide_collision(i)
-				if collision and velocity.length() >= wall_impact_speed_threshold:
-					take_damage(wall_impact_damage_amount)
-					monitoring_wall_impact = false
-					break
-		# Gradually reduce knockback
-		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_decay * delta)
-		# Scale effect during impact
-		var impact_amount = min(knockback_velocity.length() / 1200.0, 1.0)
-		scale = Vector2.ONE * (1.0 + impact_amount * 0.2)
+		# Handle knockback first if it exists
+		if knockback_velocity.length() > 0:
+			velocity = knockback_velocity * 1.2  
+			# Check for wall impacts during knockback
+			if monitoring_wall_impact and get_slide_collision_count() > 0:
+				for i in range(get_slide_collision_count()):
+					var collision = get_slide_collision(i)
+					if collision and velocity.length() >= wall_impact_speed_threshold:
+						take_damage(wall_impact_damage_amount)
+						monitoring_wall_impact = false
+						break
+			# Gradually reduce knockback
+			knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_decay * delta)
+			# Scale effect during impact
+			var impact_amount = min(knockback_velocity.length() / 1200.0, 1.0)
+			scale = Vector2.ONE * (1.0 + impact_amount * 0.2)
 	else:
 		scale = Vector2.ONE  # Reset scale when not in knockback
 		# Normal state machine processing
 		match current_state:
 			EnemyState.IDLE:
-				velocity = Vector2.ZERO
-				if player and is_instance_valid(player):
-					current_state = EnemyState.CHASE
-			
+				handle_idle_state(delta)
 			EnemyState.CHASE:
 				handle_chase_state(delta)
-			
 			EnemyState.ATTACK:
 				handle_attack_state(delta)
-			
 			EnemyState.STUNNED:
 				handle_stunned_state(delta)
 		
-		# Remove default sprite flipping from base class to let child classes handle it
+		# Remove sprite flipping from base class entirely
 	
 	move_and_slide()
 
