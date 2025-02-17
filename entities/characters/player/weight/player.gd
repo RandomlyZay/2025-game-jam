@@ -9,10 +9,9 @@ signal dash_started
 signal dash_ended
 
 @export_group("Health")
-@export var max_health: float = 4.0
+@export var max_health: float = 1.0
 @export var weak_attack: float = 10.0
 @export var heavy_attack: float = 25.0
-@export var projectile_attack: float = 10
 
 @export_group("Movement")
 @export var base_speed: float = 500.0
@@ -25,7 +24,7 @@ signal dash_ended
 @export_group("Dash")
 @export var dash_speed: float = 1500.0
 @export var dash_duration: float = 0.2
-@export var dash_cooldown: float = 1.0
+@export var dash_cooldown: float = 0.5
 @export var dash_invincibility_duration: float = 0.3
 
 #abilities

@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=3 uid="uid://dtm8ee3kn4ewt"]
+[gd_scene load_steps=5 format=3 uid="uid://dxkpejwj1uup4"]
 
-[ext_resource type="Script" path="res://entities/characters/player/player_201.gd" id="1_xku1q"]
 [ext_resource type="Texture2D" uid="uid://dj8g77ovcft1q" path="res://graphics/characters/player/Power+Armor.png" id="2_k2g52"]
 [ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_qx8l3"]
 
@@ -14,7 +13,6 @@ height = 64.0
 
 [node name="Player201" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
-script = ExtResource("1_xku1q")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-33, 29)
@@ -22,6 +20,7 @@ scale = Vector2(0.0835803, 0.0835803)
 texture = ExtResource("2_k2g52")
 
 [node name="HitBox" type="Area2D" parent="."]
+visibility_layer = 0
 collision_layer = 4
 collision_mask = 2
 
@@ -31,6 +30,7 @@ scale = Vector2(3, 3)
 shape = SubResource("CapsuleShape2D_wkpqt")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visibility_layer = 0
 position = Vector2(-24, 56)
 shape = SubResource("CapsuleShape2D_8u7o8")
 
