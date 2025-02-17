@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+@onready var sprite_2d: Sprite2D = $Sprite2D
+
 # Health Signals
 signal health_changed(new_health: float, max_health: float)
 signal player_died
@@ -7,6 +9,8 @@ signal player_died
 # Movement Signals
 signal dash_started
 signal dash_ended
+signal berserk_started
+signal berserk_ended
 
 @export_group("Health")
 @export var max_health: float = 1.0
@@ -27,18 +31,27 @@ signal dash_ended
 @export var dash_cooldown: float = 0.5
 @export var dash_invincibility_duration: float = 0.3
 
+@export_group("Berserk")
+@export var berserk_speed: float = 1500.0
+@export var berserk_duration: float = 15
+@export var berserk_cooldown: float = 5
+@export var berserk_invincibility_duration: float = 15
+
 #abilities
 @export_group("Abilities")
 
 @export var can_fly = false
-@export var can_berserk = false
+@export var can_berserk = true
 @export var can_super_laser = false
 @export var can_super_bomb = false
 
 # Timer References
 var dash_cooldown_timer: Timer
 var dash_duration_timer: Timer
+var berserk_invincibility_timer: Timer
 var invincibility_timer: Timer
+var berserk_cooldown_timer: Timer
+var berserk_duration_timer: Timer
 
 # State Variables
 var current_health: float
@@ -47,7 +60,7 @@ var is_invincible: bool = false
 var is_dying: bool = false
 var can_dash: bool = false
 var last_move_direction: Vector2 = Vector2.RIGHT
-var can_jump = true
+var can_jump = false
 var is_jumping: bool = false
 var jumpMultiplyer = 8
 var last_horizontal_direction: int = 1  # 1 for right, -1 for left
@@ -64,6 +77,21 @@ func _ready() -> void:
 	
 
 func create_timers() -> void:
+	
+	#Berserk Timer
+	berserk_duration_timer = Timer.new()
+	berserk_duration_timer.wait_time = berserk_duration
+	berserk_duration_timer.one_shot = true
+	berserk_duration_timer.timeout.connect(_on_berserk_duration_timer_timeout)
+	add_child(berserk_duration_timer)
+	
+	# berserk cooldown timer
+	dash_cooldown_timer = Timer.new()
+	dash_cooldown_timer.wait_time = dash_cooldown
+	dash_cooldown_timer.one_shot = true
+	dash_cooldown_timer.timeout.connect(_on_berserk_cooldown_timer_timeout)
+	add_child(dash_cooldown_timer)
+	
 	# Dash duration timer
 	dash_duration_timer = Timer.new()
 	dash_duration_timer.wait_time = dash_duration
@@ -77,6 +105,13 @@ func create_timers() -> void:
 	dash_cooldown_timer.one_shot = true
 	dash_cooldown_timer.timeout.connect(_on_dash_cooldown_timer_timeout)
 	add_child(dash_cooldown_timer)
+	
+	# Invincibility timer
+	berserk_invincibility_timer = Timer.new()
+	berserk_invincibility_timer.wait_time = dash_invincibility_duration
+	berserk_invincibility_timer.one_shot = true
+	berserk_invincibility_timer.timeout.connect(_on_invincibility_timer_timeout)
+	add_child(berserk_invincibility_timer)
 	
 	# Invincibility timer
 	invincibility_timer = Timer.new()
@@ -150,8 +185,27 @@ func handle_dash_input() -> void:
 func start_dash() -> void:
 	can_dash = false
 	is_invincible = true
-	velocity = last_move_direction * dash_speed
+	#MAKE BIGGER AND STRONGER AND AURA
 	emit_signal("dash_started")
+	
+	berserk_duration_timer.start()
+	berserk_cooldown_timer.start()
+	invincibility_timer.start()
+	
+	modulate.a = 0.7
+
+func end_dash() -> void:
+	emit_signal("dash_ended")
+	modulate.a = 1.0
+	
+	
+func start_berserk() -> void:
+	can_berserk = false
+	is_invincible = true
+	
+	emit_signal("berserk_started")
+	
+	sprite_2d.scale = Vector2(3,3)
 	
 	dash_duration_timer.start()
 	dash_cooldown_timer.start()
@@ -159,8 +213,9 @@ func start_dash() -> void:
 	
 	modulate.a = 0.7
 
-func end_dash() -> void:
-	emit_signal("dash_ended")
+func end_berserk() -> void:
+	emit_signal("berserk_ended")
+	sprite_2d.scale = Vector2(1,1)
 	modulate.a = 1.0
 
 func take_damage(amount: float) -> void:
@@ -198,6 +253,12 @@ func _on_dash_duration_timer_timeout() -> void:
 
 func _on_invincibility_timer_timeout() -> void:
 	is_invincible = false
+	
+func _on_berserk_cooldown_timer_timeout() -> void:
+	can_berserk = true
+	
+func _on_berserk_duration_timer_timeout() -> void:
+	end_berserk()
 
 func jumping() -> void:
 	#$AnimationPlayer.play("Jump")

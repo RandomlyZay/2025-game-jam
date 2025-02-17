@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://dgalmrsygt6rf"]
 
-[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_1uxm6"]
+[ext_resource type="Script" path="res://entities/characters/player/player_101.gd" id="1_1020c"]
 [ext_resource type="Texture2D" uid="uid://dyh0f5i3b3s4q" path="res://graphics/characters/player/Weight+Armor.png" id="2_sslph"]
 [ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_ak22d"]
 
@@ -14,7 +14,7 @@ height = 64.0
 
 [node name="Player101" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
-script = ExtResource("1_1uxm6")
+script = ExtResource("1_1020c")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-28, 29)
