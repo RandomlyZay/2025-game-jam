@@ -42,9 +42,11 @@ func _on_interact() -> void:
 		var final_tween = create_tween()
 		final_tween.tween_property(sprite_2d, "modulate", Color(1, 1, 1, 0), 0.3)
 		await final_tween.finished
+		
 		queue_free()
 	else:
 		interactable.health -= 1
+		Audio.play_sfx("punch")
 		
 		# Update floating numbers damage display
 		if is_instance_valid(floatingnumbers):
