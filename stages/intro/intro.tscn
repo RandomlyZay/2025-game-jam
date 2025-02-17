@@ -1,9 +1,51 @@
-[gd_scene load_steps=3 format=3 uid="uid://ds1bn740oldts"]
+[gd_scene load_steps=4 format=3 uid="uid://ds1bn740oldts"]
 
 [ext_resource type="Script" path="res://stages/intro/intro.gd" id="1_45568"]
-[ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="2_rat55"]
+[ext_resource type="Texture2D" uid="uid://c12i3q6tqokfq" path="res://graphics/backgrounds/stars.png" id="2_p34ef"]
+[ext_resource type="Texture2D" uid="uid://ks74pel0e66f" path="res://graphics/backgrounds/planet.png" id="3_3m3dm"]
 
 [node name="Intro" type="Node2D"]
 script = ExtResource("1_45568")
 
-[node name="HUD" parent="." instance=ExtResource("2_rat55")]
+[node name="StarParallax" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="StarParallax"]
+motion_mirroring = Vector2(0, 1080)
+
+[node name="StarsBackground" type="Sprite2D" parent="StarParallax/ParallaxLayer"]
+texture = ExtResource("2_p34ef")
+centered = false
+
+[node name="PlanetBackground" type="Sprite2D" parent="."]
+position = Vector2(0, 1080)
+scale = Vector2(2, 2)
+texture = ExtResource("3_3m3dm")
+centered = false
+
+[node name="SkipText" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(1200, 100)
+offset_left = 360.0
+offset_top = 952.0
+offset_right = 1560.0
+offset_bottom = 1052.0
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+text = "[center]Hold E to skip[/center]"
+
+[node name="ScrollingText" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(1200, 1200)
+offset_left = 360.0
+offset_top = 1080.0
+offset_right = 1560.0
+offset_bottom = 3960.0
+theme_override_colors/default_color = Color(1, 0.92, 0, 1)
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+text = "[center]A long time ago, in a Galaxy far, far away… Ok, it wasn't that long ago, but it did happen far far away!
+
+There was a race of Dragons who discovered a crystalline planet, whose crystals could be used to power their machines. The planet, however, already supported another race called \"Everyone else\" that called it home.
+
+The Dragons, seeing themselves as superior, decided to invade the planet to claim the crystals for themselves. They built massive mechanical machines to eradicate all those who stood in their way. 
+
+And thus we witness them now, on their path of destruction with only few who could possibly stand up to their Mechanical Dragon Might.[/center]"

@@ -43,7 +43,7 @@ func _on_input_mode_changed(mode: String) -> void:
 		first_button.grab_focus()
 
 func _on_play_pressed() -> void:
-	get_tree().change_scene_to_file("res://stages/level1/level1.tscn")
+	get_tree().change_scene_to_file("res://stages/intro/intro.tscn")
 
 func _on_settings_pressed() -> void:
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/settings_menu/settings_menu.tscn")
