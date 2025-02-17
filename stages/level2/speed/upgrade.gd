@@ -11,15 +11,12 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_weight_pressed() -> void:
-	PlayerVariables.set_current_player("res://entities/characters/player/speed_armor/player.tscn")
 	next_level()
 
 func _on_power_pressed() -> void:
-	PlayerVariables.set_current_player("res://entities/characters/player/speed_element/player.tscn")
 	next_level()
 
 func _on_speed_pressed() -> void:
-	PlayerVariables.set_current_player("res://entities/characters/player/speed_flying/player.tscn")
 	next_level()
 	
 func next_level() -> void:

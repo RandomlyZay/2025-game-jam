@@ -5,19 +5,19 @@
 [ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_qperh"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wkpqt"]
-radius = 13.3333
-height = 58.6667
+radius = 5.33333
+height = 37.3333
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8u7o8"]
-radius = 56.0
-height = 112.0
+radius = 32.0
+height = 64.0
 
 [node name="Player000" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
 script = ExtResource("1_eklt3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.2, 0.2)
+scale = Vector2(0.12, 0.12)
 texture = ExtResource("2_pltwv")
 
 [node name="HitBox" type="Area2D" parent="."]
@@ -26,21 +26,17 @@ collision_layer = 4
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
-position = Vector2(0, 48)
+position = Vector2(0, 32)
 scale = Vector2(3, 3)
 shape = SubResource("CapsuleShape2D_wkpqt")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-<<<<<<< Updated upstream
 visibility_layer = 0
 position = Vector2(-24, 56)
-=======
-position = Vector2(-48, 96)
->>>>>>> Stashed changes
 shape = SubResource("CapsuleShape2D_8u7o8")
 
 [node name="InteractingComponent" parent="." instance=ExtResource("3_qperh")]
-position = Vector2(64, 30)
+position = Vector2(-3, 30)
 scale = Vector2(2.18998, 2.27496)
 
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]
