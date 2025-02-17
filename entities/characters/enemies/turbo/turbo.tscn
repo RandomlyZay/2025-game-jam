@@ -66,9 +66,11 @@ sprite_frames = SubResource("SpriteFrames_0vy0t")
 autoplay = "default"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visibility_layer = 0
 shape = SubResource("CircleShape2D_1")
 
 [node name="HitDetector" type="Area2D" parent="."]
+visibility_layer = 0
 collision_layer = 2
 script = ExtResource("4_7bai2")
 interact_name = "Enemy_takes_a_hit"
@@ -78,10 +80,12 @@ health = 120
 shape = SubResource("CircleShape2D_1")
 
 [node name="AttackArea" type="Area2D" parent="."]
+visibility_layer = 0
 collision_layer = 0
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+visibility_layer = 0
 position = Vector2(-60, -100)
 rotation = -1.5708
 shape = SubResource("CapsuleShape2D_attack")
@@ -97,11 +101,6 @@ pivot_offset = Vector2(100, 100)
 theme_override_styles/panel = SubResource("StyleBoxFlat_attack")
 
 [node name="FloatingNumbers" parent="." instance=ExtResource("5_ysugf")]
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-40, 11)
-scale = Vector2(0.416154, 0.416154)
-texture = ExtResource("3_rqvx6")
 
 [connection signal="input_event" from="HitDetector" to="." method="_on_hit_detector_input_event"]
 [connection signal="area_entered" from="AttackArea" to="." method="_on_attack_area_area_entered"]

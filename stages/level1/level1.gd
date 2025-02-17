@@ -27,3 +27,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if is_instance_valid(ui_manager.game_over_menu_instance) and ui_manager.game_over_menu_instance.visible:
 			return
 		ui_manager.handle_pause_input(event)
+
+
+func _on_cyclops_enemy_child_exiting_tree(node: Node) -> void:
+	print("Cyclops Slain")

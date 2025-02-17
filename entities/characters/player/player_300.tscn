@@ -22,6 +22,7 @@ scale = Vector2(0.0867055, 0.0867055)
 texture = ExtResource("2_50fpe")
 
 [node name="HitBox" type="Area2D" parent="."]
+visibility_layer = 0
 collision_layer = 4
 collision_mask = 2
 
@@ -31,6 +32,7 @@ scale = Vector2(3, 3)
 shape = SubResource("CapsuleShape2D_wkpqt")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visibility_layer = 0
 position = Vector2(-24, 56)
 shape = SubResource("CapsuleShape2D_8u7o8")
 

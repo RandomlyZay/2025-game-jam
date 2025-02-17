@@ -1,6 +1,6 @@
 extends "res://entities/characters/enemies/base_enemy.gd"
 
-@export var swipe_damage: float = 25.0
+@export var swipe_damage: float = 1.0
 @export var swipe_range: float = 120.0
 @export var swipe_arc: float = 160.0
 @export var swipe_windup: float = 0.4  # Reduced from 0.6
@@ -19,7 +19,7 @@ var last_flip_time: float = 0.0
 var flip_cooldown: float = 0.2
 
 func _ready() -> void:
-	health = 80.0
+	health = 75.0
 	max_health = 80.0
 	base_speed = 180.0
 	attack_damage = swipe_damage

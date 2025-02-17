@@ -383,6 +383,7 @@ func die() -> void:
 	
 	# Remove enemy after effects finish
 	await get_tree().create_timer(0.4).timeout
+	get_node("l")
 	queue_free()
 
 ### Dodging and Repositioning ###

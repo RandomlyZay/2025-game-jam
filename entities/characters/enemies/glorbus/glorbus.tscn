@@ -42,10 +42,12 @@ scale = Vector2(0.4, 0.4)
 texture = ExtResource("2_1460o")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visibility_layer = 0
 position = Vector2(0, 15)
 shape = SubResource("CapsuleShape2D_3sby1")
 
 [node name="HitDetector" type="Area2D" parent="."]
+visibility_layer = 0
 collision_layer = 2
 script = ExtResource("3_qytdd")
 interact_name = "CyclopsEnemy_takes_a_hit"
@@ -56,6 +58,7 @@ position = Vector2(0, 16)
 shape = SubResource("CapsuleShape2D_4m6gh")
 
 [node name="AttackArea" type="Area2D" parent="."]
+visibility_layer = 0
 collision_layer = 0
 collision_mask = 4
 
