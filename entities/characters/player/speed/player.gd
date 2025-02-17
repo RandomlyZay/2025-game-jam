@@ -9,13 +9,13 @@ signal dash_started
 signal dash_ended
 
 @export_group("Health")
-@export var max_health: float = 1000.0
-@export var weak_attack: float = 15.0
-@export var arial_attack: float = 15.0
-@export var heavy_attack: float = 20.0
+@export var max_health: float = 2.0
+@export var weak_attack: float = 20.0
+@export var heavy_attack: float = 25.0
+@export var arial_attack: float = 20.0
 
 @export_group("Movement")
-@export var base_speed: float = 500.0
+@export var base_speed: float = 750.0
 @export var knockback_recovery_speed: float = 1200.0  # How fast you recover from getting knocked back
 @export var knockback_resistance: float = 0.3
 @export var jump_speed: float = 25.00
@@ -25,7 +25,7 @@ signal dash_ended
 @export_group("Dash")
 @export var dash_speed: float = 1500.0
 @export var dash_duration: float = 0.2
-@export var dash_cooldown: float = 0.5
+@export var dash_cooldown: float = 0.25
 @export var dash_invincibility_duration: float = 0.3
 
 #abilities
@@ -48,19 +48,20 @@ var is_invincible: bool = false
 var is_dying: bool = false
 var can_dash: bool = true
 var last_move_direction: Vector2 = Vector2.RIGHT
-var can_jump = true
+var can_jump = false
 var is_jumping: bool = false
 var jumpMultiplyer = 8
 var last_horizontal_direction: int = 1  # 1 for right, -1 for left
 
 @onready var sprite = $Sprite2D
-@onready var interacting_component = $InteractingComponent
-@onready var hitbox = $HitBox
-@onready var collision_shape = $CollisionShape2D
 
 func _ready() -> void:
 	current_health = max_health
 	emit_signal("health_changed", current_health, max_health)
+	
+	get_node("InteractingComponent").interact_cooldown = .25
+
+	
 	
 	# Initialize timers
 	create_timers()
@@ -105,7 +106,6 @@ func _physics_process(delta: float) -> void:
 				last_horizontal_direction = -1 if move_direction.x < 0 else 1
 				if sprite:
 					sprite.flip_h = last_horizontal_direction < 0
-					flip_components(last_horizontal_direction < 0)
 		
 		# Only apply movement if not dashing and there's input
 		if dash_duration_timer.is_stopped():
@@ -206,9 +206,3 @@ func _on_invincibility_timer_timeout() -> void:
 func jumping() -> void:
 	#$AnimationPlayer.play("Jump")
 		is_jumping = true
-
-func flip_components(face_left: bool) -> void:
-	var flip_scale = -1 if face_left else 1
-	hitbox.scale.x = abs(hitbox.scale.x) * -flip_scale  # Inverted flip for hitboxes
-	collision_shape.scale.x = abs(collision_shape.scale.x) * -flip_scale  # Inverted flip for collision
-	interacting_component.position.x = abs(interacting_component.position.x) * (flip_scale * -1)

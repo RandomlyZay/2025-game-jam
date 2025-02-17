@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dgewbw4hvhwwm"]
+[gd_scene load_steps=3 format=3 uid="uid://dgewbw4hvhwwm"]
 
 [ext_resource type="Script" path="res://ui/menus/main_menu/settings_menu/settings_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://be0la2ihmifp5" path="res://graphics/backgrounds/dracomechanics.png" id="2_afwtl"]
 
 [node name="SettingsMenu" type="Control"]
 layout_mode = 3
@@ -10,6 +11,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_afwtl")
+centered = false
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 1
@@ -21,6 +26,7 @@ offset_top = 50.0
 offset_right = 300.0
 offset_bottom = 120.0
 grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 72
 text = "SETTINGS"
 horizontal_alignment = 1
@@ -52,6 +58,7 @@ icon_alignment = 1
 
 [node name="MusicLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "Music Volume"
 
@@ -63,6 +70,7 @@ rounded = true
 
 [node name="SFXLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "SFX Volume"
 

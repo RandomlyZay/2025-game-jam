@@ -68,6 +68,7 @@ polygon = PackedVector2Array(0, 864, 100000, 864)
 [node name="Goal" parent="." instance=ExtResource("6_ejjjx")]
 position = Vector2(3631, 1016)
 script = ExtResource("7_dmbx4")
+<<<<<<< Updated upstream
 
 [node name="Player000" parent="." instance=ExtResource("6_01npf")]
 position = Vector2(736, 980)
@@ -116,3 +117,5 @@ position = Vector2(-14, 167)
 
 [node name="Crate" parent="Turbo3/Crate2/Crate/Crate" instance=ExtResource("11_e8b0q")]
 position = Vector2(-1777, -9)
+=======
+>>>>>>> Stashed changes

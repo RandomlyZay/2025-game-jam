@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+@onready var sprite_2d: Sprite2D = $Sprite2D
+
 # Health Signals
 signal health_changed(new_health: float, max_health: float)
 signal player_died
@@ -7,15 +9,18 @@ signal player_died
 # Movement Signals
 signal dash_started
 signal dash_ended
+signal berserk_started
+signal berserk_ended
 
 @export_group("Health")
-@export var max_health: float = 1000.0
-@export var weak_attack: float = 15.0
-@export var arial_attack: float = 15.0
-@export var heavy_attack: float = 20.0
+@export var max_health: float = 4.0
+@export var weak_attack: float = 30.0
+@export var heavy_attack: float = 30.0
+@export var arial_attack: float = 25.0
+
 
 @export_group("Movement")
-@export var base_speed: float = 500.0
+@export var base_speed: float = 750.0
 @export var knockback_recovery_speed: float = 1200.0  # How fast you recover from getting knocked back
 @export var knockback_resistance: float = 0.3
 @export var jump_speed: float = 25.00
@@ -25,14 +30,19 @@ signal dash_ended
 @export_group("Dash")
 @export var dash_speed: float = 1500.0
 @export var dash_duration: float = 0.2
-@export var dash_cooldown: float = 0.5
+@export var dash_cooldown: float = 0.15
 @export var dash_invincibility_duration: float = 0.3
+
+@export_group("Berserk")
+@export var berserk_speed: float = 1500.0
+@export var berserk_duration: float = 15
+@export var berserk_cooldown: float = 5
+@export var berserk_invincibility_duration: float = 15
 
 #abilities
 @export_group("Abilities")
-
 @export var can_fly = false
-@export var can_berserk = false
+@export var can_berserk = true
 @export var can_super_laser = false
 @export var can_super_bomb = false
 
@@ -40,33 +50,49 @@ signal dash_ended
 var dash_cooldown_timer: Timer
 var dash_duration_timer: Timer
 var invincibility_timer: Timer
+var berserk_invincibility_timer: Timer
+var berserk_cooldown_timer: Timer
+var berserk_duration_timer: Timer
 
 # State Variables
 var current_health: float
 var knockback_velocity: Vector2 = Vector2.ZERO
 var is_invincible: bool = false
 var is_dying: bool = false
-var can_dash: bool = true
+var can_dash: bool = false
 var last_move_direction: Vector2 = Vector2.RIGHT
-var can_jump = true
+var can_jump = false
 var is_jumping: bool = false
 var jumpMultiplyer = 8
 var last_horizontal_direction: int = 1  # 1 for right, -1 for left
 
 @onready var sprite = $Sprite2D
-@onready var interacting_component = $InteractingComponent
-@onready var hitbox = $HitBox
-@onready var collision_shape = $CollisionShape2D
 
 func _ready() -> void:
 	current_health = max_health
 	emit_signal("health_changed", current_health, max_health)
+	get_node("InteractingComponent").interact_cooldown = .05
 	
 	# Initialize timers
 	create_timers()
 	
 
 func create_timers() -> void:
+	
+	#Berserk Timer
+	berserk_duration_timer = Timer.new()
+	berserk_duration_timer.wait_time = berserk_duration
+	berserk_duration_timer.one_shot = true
+	berserk_duration_timer.timeout.connect(_on_berserk_duration_timer_timeout)
+	add_child(berserk_duration_timer)
+	
+	# berserk cooldown timer
+	berserk_cooldown_timer = Timer.new()
+	berserk_cooldown_timer.wait_time = dash_cooldown
+	berserk_cooldown_timer.one_shot = true
+	berserk_cooldown_timer.timeout.connect(_on_berserk_cooldown_timer_timeout)
+	add_child(berserk_cooldown_timer)
+	
 	# Dash duration timer
 	dash_duration_timer = Timer.new()
 	dash_duration_timer.wait_time = dash_duration
@@ -80,6 +106,13 @@ func create_timers() -> void:
 	dash_cooldown_timer.one_shot = true
 	dash_cooldown_timer.timeout.connect(_on_dash_cooldown_timer_timeout)
 	add_child(dash_cooldown_timer)
+	
+	# Invincibility timer
+	berserk_invincibility_timer = Timer.new()
+	berserk_invincibility_timer.wait_time = dash_invincibility_duration
+	berserk_invincibility_timer.one_shot = true
+	berserk_invincibility_timer.timeout.connect(_on_invincibility_timer_timeout)
+	add_child(berserk_invincibility_timer)
 	
 	# Invincibility timer
 	invincibility_timer = Timer.new()
@@ -105,7 +138,6 @@ func _physics_process(delta: float) -> void:
 				last_horizontal_direction = -1 if move_direction.x < 0 else 1
 				if sprite:
 					sprite.flip_h = last_horizontal_direction < 0
-					flip_components(last_horizontal_direction < 0)
 		
 		# Only apply movement if not dashing and there's input
 		if dash_duration_timer.is_stopped():
@@ -154,17 +186,37 @@ func handle_dash_input() -> void:
 func start_dash() -> void:
 	can_dash = false
 	is_invincible = true
-	velocity = last_move_direction * dash_speed
+	#MAKE BIGGER AND STRONGER AND AURA
 	emit_signal("dash_started")
 	
-	dash_duration_timer.start()
-	dash_cooldown_timer.start()
+	berserk_duration_timer.start()
+	berserk_cooldown_timer.start()
 	invincibility_timer.start()
 	
 	modulate.a = 0.7
 
 func end_dash() -> void:
 	emit_signal("dash_ended")
+	modulate.a = 1.0
+	
+	
+func start_berserk() -> void:
+	can_berserk = false
+	is_invincible = true
+	
+	emit_signal("berserk_started")
+	
+	sprite_2d.scale = Vector2(3,3)
+	
+	berserk_duration_timer.start()
+	berserk_cooldown_timer.start()
+	invincibility_timer.start()
+	
+	modulate.a = 0.7
+
+func end_berserk() -> void:
+	emit_signal("berserk_ended")
+	sprite_2d.scale = Vector2(1,1)
 	modulate.a = 1.0
 
 func take_damage(amount: float) -> void:
@@ -202,13 +254,13 @@ func _on_dash_duration_timer_timeout() -> void:
 
 func _on_invincibility_timer_timeout() -> void:
 	is_invincible = false
+	
+func _on_berserk_cooldown_timer_timeout() -> void:
+	can_berserk = true
+	
+func _on_berserk_duration_timer_timeout() -> void:
+	end_berserk()
 
 func jumping() -> void:
 	#$AnimationPlayer.play("Jump")
 		is_jumping = true
-
-func flip_components(face_left: bool) -> void:
-	var flip_scale = -1 if face_left else 1
-	hitbox.scale.x = abs(hitbox.scale.x) * -flip_scale  # Inverted flip for hitboxes
-	collision_shape.scale.x = abs(collision_shape.scale.x) * -flip_scale  # Inverted flip for collision
-	interacting_component.position.x = abs(interacting_component.position.x) * (flip_scale * -1)
