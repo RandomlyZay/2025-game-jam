@@ -270,7 +270,7 @@ func _on_interact() -> void:
 		return
 		
 	# Apply damage
-	take_damage(player_node.strength)
+	take_damage(player_node.weak_attack)
 	
 	# Apply knockback effect
 	var knockback_direction = (global_position - player_node.global_position).normalized()

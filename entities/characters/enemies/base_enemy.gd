@@ -532,7 +532,7 @@ func _on_interact() -> void:
 	if !is_instance_valid(player):
 		return
 		
-	var damage = player.strength
+	var damage = player.weak_attack
 	take_damage(damage)
 	
 	# Update hitdetector health display with instance validation

@@ -14,8 +14,8 @@ signal berserk_ended
 
 @export_group("Health")
 @export var max_health: float = 1.0
-@export var weak_attack: float = 10.0
-@export var heavy_attack: float = 15.0
+@export var weak_attack: float = 15.0
+@export var heavy_attack: float = 20.0
 
 @export_group("Movement")
 @export var base_speed: float = 500.0

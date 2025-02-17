@@ -3,13 +3,28 @@ extends Node2D
 @onready var interact_label: Label = $InteractLabel
 @onready var interact_range: Area2D = $InteractRange
 
+#Interact Cooldown
+@export var interact_cooldown: float = 0.5
+
+
 var current_interactions := []
 var can_interact := true
+var interact_cooldown_timer: Timer
 
 func _ready() -> void:
+	create_timers()
 	interact_range.collision_layer = 0
 	interact_range.collision_mask = 2
 	interact_label.hide()
+
+
+func create_timers() -> void:
+	# interact cooldown timer
+	interact_cooldown_timer = Timer.new()
+	interact_cooldown_timer.wait_time = interact_cooldown
+	interact_cooldown_timer.one_shot = true
+	interact_cooldown_timer.timeout.connect(_on_interact_cooldown_timer_timeout)
+	add_child(interact_cooldown_timer)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") and can_interact and !current_interactions.is_empty():
@@ -21,7 +36,8 @@ func _input(event: InputEvent) -> void:
 		if is_instance_valid(interaction) and interaction.has_method("interact"):
 			await interaction.interact()
 		
-		can_interact = true
+		
+		interact_cooldown_timer.start()
 		_clean_invalid_interactions()
 
 func _process(_delta: float) -> void:
@@ -64,3 +80,7 @@ func _on_interact_range_area_entered(area: Area2D) -> void:
 func _on_interact_range_area_exited(area: Area2D) -> void:
 	current_interactions.erase(area)
 	_clean_invalid_interactions()
+	
+
+func _on_interact_cooldown_timer_timeout() -> void:
+	can_interact = true
