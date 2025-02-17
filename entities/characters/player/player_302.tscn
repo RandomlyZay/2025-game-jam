@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bvdo2vxydmonb"]
 
-[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_5ti74"]
+[ext_resource type="Script" path="res://entities/characters/player/player_302.gd" id="1_2hl22"]
 [ext_resource type="Texture2D" uid="uid://c74x7rlvvmk7" path="res://graphics/characters/player/Speed+Element.png" id="2_t8v74"]
 [ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_1iym6"]
 
@@ -14,7 +14,7 @@ height = 64.0
 
 [node name="Player302" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
-script = ExtResource("1_5ti74")
+script = ExtResource("1_2hl22")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-3, 30)

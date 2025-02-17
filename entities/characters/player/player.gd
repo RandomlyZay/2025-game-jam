@@ -9,7 +9,7 @@ signal dash_started
 signal dash_ended
 
 @export_group("Health")
-@export var max_health: float = 1.0
+@export var max_health: float = 3.0
 @export var weak_attack: float = 15.0
 @export var arial_attack: float = 15.0
 @export var heavy_attack: float = 20.0

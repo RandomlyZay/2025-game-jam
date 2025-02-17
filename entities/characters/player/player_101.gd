@@ -13,12 +13,13 @@ signal berserk_started
 signal berserk_ended
 
 @export_group("Health")
-@export var max_health: float = 1.0
+@export var max_health: float = 6.0
 @export var weak_attack: float = 20.0
 @export var heavy_attack: float = 25.0
+@export var projectile_attack: float = 25
 
 @export_group("Movement")
-@export var base_speed: float = 500.0
+@export var base_speed: float = 250.0
 @export var knockback_recovery_speed: float = 1200.0  # How fast you recover from getting knocked back
 @export var knockback_resistance: float = 0.3
 @export var jump_speed: float = 25.00
@@ -48,8 +49,8 @@ signal berserk_ended
 # Timer References
 var dash_cooldown_timer: Timer
 var dash_duration_timer: Timer
-var berserk_invincibility_timer: Timer
 var invincibility_timer: Timer
+var berserk_invincibility_timer: Timer
 var berserk_cooldown_timer: Timer
 var berserk_duration_timer: Timer
 
@@ -70,7 +71,7 @@ var last_horizontal_direction: int = 1  # 1 for right, -1 for left
 func _ready() -> void:
 	current_health = max_health
 	emit_signal("health_changed", current_health, max_health)
-	
+	get_node("InteractingComponent").interact_cooldown = .75
 	
 	# Initialize timers
 	create_timers()
@@ -86,11 +87,11 @@ func create_timers() -> void:
 	add_child(berserk_duration_timer)
 	
 	# berserk cooldown timer
-	dash_cooldown_timer = Timer.new()
-	dash_cooldown_timer.wait_time = dash_cooldown
-	dash_cooldown_timer.one_shot = true
-	dash_cooldown_timer.timeout.connect(_on_berserk_cooldown_timer_timeout)
-	add_child(dash_cooldown_timer)
+	berserk_cooldown_timer = Timer.new()
+	berserk_cooldown_timer.wait_time = dash_cooldown
+	berserk_cooldown_timer.one_shot = true
+	berserk_cooldown_timer.timeout.connect(_on_berserk_cooldown_timer_timeout)
+	add_child(berserk_cooldown_timer)
 	
 	# Dash duration timer
 	dash_duration_timer = Timer.new()
@@ -207,8 +208,8 @@ func start_berserk() -> void:
 	
 	sprite_2d.scale = Vector2(3,3)
 	
-	dash_duration_timer.start()
-	dash_cooldown_timer.start()
+	berserk_duration_timer.start()
+	berserk_cooldown_timer.start()
 	invincibility_timer.start()
 	
 	modulate.a = 0.7

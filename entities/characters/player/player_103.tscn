@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://cwh10p00meeio"]
 
-[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_53k2t"]
+[ext_resource type="Script" path="res://entities/characters/player/player_103.gd" id="1_4d1m3"]
 [ext_resource type="Texture2D" uid="uid://cl3sv6e31i0f1" path="res://graphics/characters/player/Weight+Wing.png" id="2_kqx5d"]
 [ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_bky50"]
 
@@ -14,10 +14,11 @@ height = 64.0
 
 [node name="Player103" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
-script = ExtResource("1_53k2t")
+script = ExtResource("1_4d1m3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.12, 0.12)
+position = Vector2(-43, 28)
+scale = Vector2(0.0918964, 0.0918964)
 texture = ExtResource("2_kqx5d")
 
 [node name="HitBox" type="Area2D" parent="."]
