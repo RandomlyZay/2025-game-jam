@@ -45,11 +45,11 @@ func _process(_delta: float) -> void:
 		
 		if !current_interactions.is_empty():
 			var area = current_interactions[0]
-			if is_instance_valid(area) and area.has_method("get_interact_name"):
-				interact_label.text = area.get_interact_name()
-				interact_label.show()
-			else:
-				interact_label.hide()
+			#if is_instance_valid(area) and area.has_method("get_interact_name"):
+				#interact_label.text = area.get_interact_name()
+				#interact_label.show()
+			#else:
+				#interact_label.hide()
 		else:
 			interact_label.hide()
 	else:

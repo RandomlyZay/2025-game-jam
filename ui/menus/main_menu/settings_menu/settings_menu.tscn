@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dgewbw4hvhwwm"]
+[gd_scene load_steps=3 format=3 uid="uid://dgewbw4hvhwwm"]
 
 [ext_resource type="Script" path="res://ui/menus/main_menu/settings_menu/settings_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://br7fk3nibl378" path="res://graphics/backgrounds/dracomechanics.png" id="2_j308t"]
 
 [node name="SettingsMenu" type="Control"]
 layout_mode = 3
@@ -10,6 +11,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_j308t")
+centered = false
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 1

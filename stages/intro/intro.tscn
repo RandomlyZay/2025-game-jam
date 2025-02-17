@@ -31,7 +31,7 @@ offset_bottom = 980.0
 theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/normal_font_size = 64
 bbcode_enabled = true
-text = "[center]Hold E to skip[/center]"
+text = "[center]Hold E to skip (and to fight)[/center]"
 
 [node name="ScrollingText" type="RichTextLabel" parent="."]
 custom_minimum_size = Vector2(1200, 1200)
