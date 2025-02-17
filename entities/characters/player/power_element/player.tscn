@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=3 uid="uid://dkj8qasr58slw"]
+[gd_scene load_steps=5 format=3 uid="uid://dkj8qasr58slw"]
 
-[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_6mi14"]
 [ext_resource type="Texture2D" uid="uid://cntsp865int0l" path="res://graphics/characters/player/Power+Element.png" id="2_fdu0d"]
 [ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_7rtd5"]
 
@@ -14,7 +13,6 @@ height = 64.0
 
 [node name="Player202" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
-script = ExtResource("1_6mi14")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, 33)

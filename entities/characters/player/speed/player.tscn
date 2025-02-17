@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=3 uid="uid://c73d6deypv6k"]
+[gd_scene load_steps=5 format=3 uid="uid://c73d6deypv6k"]
 
-[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_iluen"]
 [ext_resource type="Texture2D" uid="uid://cas5gkowrkqt8" path="res://graphics/characters/player/Speed.png" id="2_50fpe"]
 [ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_0xbj0"]
 
@@ -14,7 +13,6 @@ height = 64.0
 
 [node name="Player300" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
-script = ExtResource("1_iluen")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, 32)

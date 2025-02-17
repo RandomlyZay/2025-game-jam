@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=3 uid="uid://cbes1ov6j18so"]
+[gd_scene load_steps=5 format=3 uid="uid://cbes1ov6j18so"]
 
-[ext_resource type="Script" path="res://entities/characters/player/player_100.gd" id="1_qv5cc"]
 [ext_resource type="Texture2D" uid="uid://7buokyskpp6t" path="res://graphics/characters/player/Weight.png" id="2_x51lt"]
 [ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_jn3tl"]
 
@@ -14,7 +13,6 @@ height = 64.0
 
 [node name="Player100" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
-script = ExtResource("1_qv5cc")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-22, 19)

@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=3 uid="uid://bqvy14pbgmj5g"]
+[gd_scene load_steps=5 format=3 uid="uid://bqvy14pbgmj5g"]
 
-[ext_resource type="Script" path="res://entities/characters/player/player.gd" id="1_int0h"]
 [ext_resource type="Texture2D" uid="uid://b8dwg5vn34o0l" path="res://graphics/characters/player/Power+Wing.png" id="2_obi6a"]
 [ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_543s1"]
 
@@ -14,7 +13,6 @@ height = 64.0
 
 [node name="Player203" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
-script = ExtResource("1_int0h")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-36, 32)

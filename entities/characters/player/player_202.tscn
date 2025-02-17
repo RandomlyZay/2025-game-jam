@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dgalmrsygt6rf"]
+[gd_scene load_steps=5 format=3 uid="uid://b3w11nhi5aif2"]
 
-[ext_resource type="Texture2D" uid="uid://dyh0f5i3b3s4q" path="res://graphics/characters/player/Weight+Armor.png" id="2_sslph"]
-[ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_ak22d"]
+[ext_resource type="Texture2D" uid="uid://cntsp865int0l" path="res://graphics/characters/player/Power+Element.png" id="2_fdu0d"]
+[ext_resource type="PackedScene" uid="uid://b8ey6fmmwrrx4" path="res://objects/interacting_component.tscn" id="3_7rtd5"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wkpqt"]
 radius = 5.33333
@@ -11,13 +11,13 @@ height = 37.3333
 radius = 32.0
 height = 64.0
 
-[node name="Player101" type="CharacterBody2D" groups=["human", "player"]]
+[node name="Player202" type="CharacterBody2D" groups=["human", "player"]]
 collision_mask = 12
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-28, 29)
-scale = Vector2(0.0706736, 0.0706736)
-texture = ExtResource("2_sslph")
+position = Vector2(0, 33)
+scale = Vector2(0.0567989, 0.0567989)
+texture = ExtResource("2_fdu0d")
 
 [node name="HitBox" type="Area2D" parent="."]
 visibility_layer = 0
@@ -34,7 +34,7 @@ visibility_layer = 0
 position = Vector2(-24, 56)
 shape = SubResource("CapsuleShape2D_8u7o8")
 
-[node name="InteractingComponent" parent="." instance=ExtResource("3_ak22d")]
+[node name="InteractingComponent" parent="." instance=ExtResource("3_7rtd5")]
 position = Vector2(-3, 30)
 scale = Vector2(2.18998, 2.27496)
 
