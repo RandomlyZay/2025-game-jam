@@ -1,0 +1,87 @@
+[gd_scene load_steps=9 format=3 uid="uid://d32c5dpbe03be"]
+
+[ext_resource type="Script" path="res://stages/level3/level3.gd" id="1_hjune"]
+[ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="2_qwa5h"]
+[ext_resource type="Texture2D" uid="uid://r3les7u4nf1a" path="res://graphics/backgrounds/sky.png" id="3_jycrc"]
+[ext_resource type="Texture2D" uid="uid://brn3h1qqn2dau" path="res://graphics/backgrounds/crystals.png" id="4_dksfo"]
+[ext_resource type="Texture2D" uid="uid://d0w4v5isrh5av" path="res://graphics/backgrounds/ground.png" id="5_jor8j"]
+[ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="6_01npf"]
+[ext_resource type="PackedScene" uid="uid://db4fctf3bqvpt" path="res://stages/level3/goal.tscn" id="6_ejjjx"]
+[ext_resource type="Script" path="res://stages/level3/goal.gd" id="7_dmbx4"]
+
+[node name="Level3" type="Node2D"]
+script = ExtResource("1_hjune")
+
+[node name="HUD" parent="." instance=ExtResource("2_qwa5h")]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(1920, 0)
+
+[node name="Sky" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(960, 808)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_jycrc")
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(1.05, 1)
+motion_mirroring = Vector2(1920, 0)
+
+[node name="Crystals" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer2"]
+position = Vector2(2, -96)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("4_dksfo")
+centered = false
+
+[node name="ParallaxLayer3" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(1920, 0)
+
+[node name="Ground" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer3"]
+position = Vector2(960, 632)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("5_jor8j")
+
+[node name="OuterBounds" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="LeftWall" type="CollisionPolygon2D" parent="OuterBounds"]
+build_mode = 1
+polygon = PackedVector2Array(0, 0, 0, 1440)
+
+[node name="TopWall" type="CollisionPolygon2D" parent="OuterBounds"]
+build_mode = 1
+polygon = PackedVector2Array(0, 0, 100000, 0)
+
+[node name="BottomWall" type="CollisionPolygon2D" parent="OuterBounds"]
+build_mode = 1
+polygon = PackedVector2Array(0, 1440, 100000, 1440)
+
+[node name="HorizonWall" type="CollisionPolygon2D" parent="OuterBounds"]
+build_mode = 1
+polygon = PackedVector2Array(0, 864, 100000, 864)
+
+[node name="Goal" parent="." instance=ExtResource("6_ejjjx")]
+position = Vector2(1272, 1016)
+script = ExtResource("7_dmbx4")
+
+[node name="Player000" parent="." instance=ExtResource("6_01npf")]
+position = Vector2(736, 980)
+
+[node name="Camera" type="Camera2D" parent="Player000"]
+limit_left = 0
+limit_top = 0
+limit_bottom = 1440
+position_smoothing_enabled = true
+position_smoothing_speed = 3.0
+editor_draw_screen = false
+editor_draw_limits = true
+
+[node name="Label" type="Label" parent="."]
+offset_left = 1136.0
+offset_top = 232.0
+offset_right = 1421.0
+offset_bottom = 914.0
+theme_override_font_sizes/font_size = 500
+text = "3"

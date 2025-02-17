@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://bdmod0ufyx03c"]
+
+[ext_resource type="Script" path="res://stages/level_bread/level_bread.gd" id="1_ojdli"]
+[ext_resource type="Texture2D" uid="uid://uchcki5g618d" path="res://graphics/objects/g_bread.png" id="2_36hkr"]
+[ext_resource type="Texture2D" uid="uid://cmgxw6f0tcx6i" path="res://graphics/characters/guy.jpg" id="3_vc1h3"]
+
+[node name="LevelBread" type="Node2D"]
+script = ExtResource("1_ojdli")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(272, 216)
+texture = ExtResource("2_36hkr")
+
+[node name="guy" type="Sprite2D" parent="."]
+position = Vector2(784, 504)
+scale = Vector2(4.42893, 19.0511)
+texture = ExtResource("3_vc1h3")

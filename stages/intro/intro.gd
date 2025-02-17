@@ -9,7 +9,7 @@ var planet_wait_time = 5.0
 var planet_timer = 0.0
 var planet_target_y = 0
 var skip_text_time := 0.0
-var fast_forward_multiplier := 5.0
+var fast_forward_multiplier := 10.0
 
 func _ready() -> void:
 	Audio.play_music("intro")

@@ -25,9 +25,9 @@ centered = false
 [node name="SkipText" type="RichTextLabel" parent="."]
 custom_minimum_size = Vector2(1200, 100)
 offset_left = 360.0
-offset_top = 952.0
+offset_top = 880.0
 offset_right = 1560.0
-offset_bottom = 1052.0
+offset_bottom = 980.0
 theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/normal_font_size = 64
 bbcode_enabled = true

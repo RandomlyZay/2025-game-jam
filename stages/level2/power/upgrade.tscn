@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://b6dqjw2q31trb"]
 
-[ext_resource type="Script" path="res://stages/level1/upgrade.gd" id="1_x5joc"]
+[ext_resource type="Script" path="res://stages/level2/power/upgrade.gd" id="1_x5joc"]
 [ext_resource type="Texture2D" uid="uid://c4ndjp6w5o1u4" path="res://graphics/backgrounds/upgrade_path.png" id="2_6jhwm"]
-[ext_resource type="Texture2D" uid="uid://bekm6isn44ive" path="res://graphics/characters/player/Base.png" id="3_6mvjm"]
-[ext_resource type="Texture2D" uid="uid://7buokyskpp6t" path="res://graphics/characters/player/Weight.png" id="4_cbtg6"]
+[ext_resource type="Texture2D" uid="uid://dj8g77ovcft1q" path="res://graphics/characters/player/Power+Armor.png" id="4_ajl2h"]
 [ext_resource type="Texture2D" uid="uid://bgojbui3mgya8" path="res://graphics/characters/player/Power.png" id="5_3qvle"]
-[ext_resource type="Texture2D" uid="uid://cas5gkowrkqt8" path="res://graphics/characters/player/Speed.png" id="6_fuv8y"]
+[ext_resource type="Texture2D" uid="uid://cntsp865int0l" path="res://graphics/characters/player/Power+Element.png" id="5_mr0aq"]
+[ext_resource type="Texture2D" uid="uid://bvcwm67xccb5f" path="res://graphics/characters/player/Power+Wing_Flying.png" id="6_a2akc"]
 
 [node name="Upgrade" type="Node2D"]
 position = Vector2(604, 544)
@@ -16,46 +16,46 @@ position = Vector2(356, 0)
 texture = ExtResource("2_6jhwm")
 
 [node name="CurrentSprite" type="Sprite2D" parent="."]
-position = Vector2(365, 279)
+position = Vector2(340, 320)
 scale = Vector2(0.235936, 0.216664)
-texture = ExtResource("3_6mvjm")
+texture = ExtResource("5_3qvle")
 
-[node name="Weight" type="Button" parent="."]
+[node name="Armor" type="Button" parent="."]
 offset_left = -284.0
 offset_top = -480.0
 offset_right = 116.0
 offset_bottom = -280.0
 flat = true
 
-[node name="Sprite2D" type="Sprite2D" parent="Weight"]
-position = Vector2(160, 56)
-scale = Vector2(0.231707, 0.231707)
-texture = ExtResource("4_cbtg6")
+[node name="Sprite2D" type="Sprite2D" parent="Armor"]
+position = Vector2(168, 88)
+scale = Vector2(0.208536, 0.208536)
+texture = ExtResource("4_ajl2h")
 
-[node name="Power" type="Button" parent="."]
+[node name="Element" type="Button" parent="."]
 offset_left = 172.0
 offset_top = -480.0
 offset_right = 572.0
 offset_bottom = -272.0
 flat = true
 
-[node name="Sprite2D" type="Sprite2D" parent="Power"]
-position = Vector2(192, 88)
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("5_3qvle")
+[node name="Sprite2D" type="Sprite2D" parent="Element"]
+position = Vector2(176, 96)
+scale = Vector2(0.188415, 0.188415)
+texture = ExtResource("5_mr0aq")
 
-[node name="Speed" type="Button" parent="."]
+[node name="Flight" type="Button" parent="."]
 offset_left = 636.0
 offset_top = -488.0
 offset_right = 1044.0
 offset_bottom = -280.0
 flat = true
 
-[node name="Sprite2D" type="Sprite2D" parent="Speed"]
-position = Vector2(216, 104)
+[node name="Sprite2D" type="Sprite2D" parent="Flight"]
+position = Vector2(192, 120)
 scale = Vector2(0.228049, 0.228049)
-texture = ExtResource("6_fuv8y")
+texture = ExtResource("6_a2akc")
 
-[connection signal="pressed" from="Weight" to="." method="_on_weight_pressed"]
-[connection signal="pressed" from="Power" to="." method="_on_power_pressed"]
-[connection signal="pressed" from="Speed" to="." method="_on_speed_pressed"]
+[connection signal="pressed" from="Armor" to="." method="_on_weight_pressed"]
+[connection signal="pressed" from="Element" to="." method="_on_power_pressed"]
+[connection signal="pressed" from="Flight" to="." method="_on_speed_pressed"]
