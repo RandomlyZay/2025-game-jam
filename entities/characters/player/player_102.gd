@@ -45,7 +45,7 @@ var current_health: float
 var knockback_velocity: Vector2 = Vector2.ZERO
 var is_invincible: bool = false
 var is_dying: bool = false
-var can_dash: bool = false
+var can_dash: bool = true
 var last_move_direction: Vector2 = Vector2.RIGHT
 var can_jump = false
 var is_jumping: bool = false

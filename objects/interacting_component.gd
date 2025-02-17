@@ -6,7 +6,6 @@ extends Node2D
 #Interact Cooldown
 @export var interact_cooldown: float = 0.5
 
-
 var current_interactions := []
 var can_interact := true
 var interact_cooldown_timer: Timer

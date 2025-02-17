@@ -46,7 +46,7 @@ var current_health: float
 var knockback_velocity: Vector2 = Vector2.ZERO
 var is_invincible: bool = false
 var is_dying: bool = false
-var can_dash: bool = false
+var can_dash: bool = true
 var last_move_direction: Vector2 = Vector2.RIGHT
 var can_jump = true
 var is_jumping: bool = false
@@ -58,7 +58,6 @@ var last_horizontal_direction: int = 1  # 1 for right, -1 for left
 func _ready() -> void:
 	current_health = max_health
 	emit_signal("health_changed", current_health, max_health)
-	
 	
 	# Initialize timers
 	create_timers()
