@@ -98,5 +98,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_attack")
 
 [node name="FloatingNumbers" parent="." instance=ExtResource("5_ysugf")]
 
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-40, 11)
+scale = Vector2(0.416154, 0.416154)
+texture = ExtResource("3_rqvx6")
+
 [connection signal="input_event" from="HitDetector" to="." method="_on_hit_detector_input_event"]
 [connection signal="area_entered" from="AttackArea" to="." method="_on_attack_area_area_entered"]
