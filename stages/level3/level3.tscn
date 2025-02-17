@@ -81,14 +81,6 @@ position_smoothing_speed = 3.0
 editor_draw_screen = false
 editor_draw_limits = true
 
-[node name="Label" type="Label" parent="."]
-offset_left = 1136.0
-offset_top = 232.0
-offset_right = 1421.0
-offset_bottom = 914.0
-theme_override_font_sizes/font_size = 500
-text = "3"
-
 [node name="CyclopsEnemy" parent="." instance=ExtResource("9_77yjk")]
 position = Vector2(2876, 961)
 
