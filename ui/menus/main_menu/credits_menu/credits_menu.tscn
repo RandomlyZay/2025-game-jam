@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cri4j0pxbfd78"]
+[gd_scene load_steps=3 format=3 uid="uid://cri4j0pxbfd78"]
 
 [ext_resource type="Script" path="res://ui/menus/main_menu/credits_menu/credits_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://be0la2ihmifp5" path="res://graphics/backgrounds/dracomechanics.png" id="2_5oxl3"]
 
 [node name="CreditsMenu" type="Control"]
 layout_mode = 3
@@ -10,6 +11,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_5oxl3")
+centered = false
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 1
@@ -21,6 +26,7 @@ offset_top = 50.0
 offset_right = 200.0
 offset_bottom = 120.0
 grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 48
 text = "CREDITS"
 horizontal_alignment = 1
@@ -58,11 +64,12 @@ theme_override_constants/separation = 15
 [node name="CreditsText" type="Label" parent="VBoxContainer"]
 custom_minimum_size = Vector2(900, 0)
 layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "ARTISTS
-Lead Artist: Eliza Theisen
+Dragon Artist: Eliza Theisen
 Background Art: Kayla McClenney
-Concept Art: Michael Rosa
+Internet Funnyman: Michael Rosa
 
 
 PROGRAMMERS
