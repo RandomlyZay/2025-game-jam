@@ -3,7 +3,7 @@ extends Node
 signal settings_changed
 
 var music_volume: float = 100.0  # Start at full volume
-var sfx_volume: float = 100.0    # Start at full volume
+var sfx_volume: float = 80.0    # Start at full volume
 var fullscreen: bool = true
 
 func _ready() -> void:

@@ -1,6 +1,6 @@
 extends "res://entities/characters/enemies/base_enemy.gd"
 
-@export var swipe_damage: float = 20.0  # Lower damage but faster attacks
+@export var swipe_damage: float = 35.0  # Lower damage but faster attacks
 @export var swipe_range: float = 100.0  # Slightly shorter range
 @export var swipe_arc: float = 140.0
 @export var swipe_windup: float = 0.3  # Faster windup

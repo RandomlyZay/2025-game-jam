@@ -72,9 +72,11 @@ func _on_resume_pressed() -> void:
 	get_tree().paused = false
 	if tutorial_popup:
 		tutorial_popup.show()
+	Audio.play_sfx("tech_part")
 	visible = false
 
 func _on_controls_pressed() -> void:
+	Audio.play_sfx("tech_part")
 	# Create controls menu if it doesn't exist
 	if not controls_menu_instance:
 		controls_menu_instance = controls_menu_scene.instantiate()
@@ -91,6 +93,7 @@ func _on_controls_pressed() -> void:
 		controls_menu_instance.grab_initial_focus()
 
 func _on_settings_pressed() -> void:
+	Audio.play_sfx("tech_part")
 	# Create settings menu if it doesn't exist
 	if not settings_menu_instance:
 		settings_menu_instance = settings_menu_scene.instantiate()
@@ -121,6 +124,7 @@ func _on_quit_pressed() -> void:
 	# Stop all audio before quitting
 	Audio.stop_music()
 	get_tree().paused = false
+	Audio.play_sfx("tech_part")
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/main_menu.tscn")
 
 func _on_input_mode_changed(mode: String) -> void:
@@ -136,3 +140,19 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and visible: 
 		_on_resume_pressed() 
 		get_viewport().set_input_as_handled()
+
+
+func _on_resume_mouse_entered() -> void:
+	Audio.play_sfx("text")
+
+
+func _on_controls_mouse_entered() -> void:
+	Audio.play_sfx("text")
+
+
+func _on_settings_mouse_entered() -> void:
+	Audio.play_sfx("text")
+
+
+func _on_quit_mouse_entered() -> void:
+	Audio.play_sfx("text")

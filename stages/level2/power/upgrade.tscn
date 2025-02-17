@@ -56,6 +56,9 @@ position = Vector2(192, 120)
 scale = Vector2(0.228049, 0.228049)
 texture = ExtResource("6_a2akc")
 
+[connection signal="mouse_entered" from="Armor" to="." method="_on_armor_mouse_entered"]
 [connection signal="pressed" from="Armor" to="." method="_on_weight_pressed"]
+[connection signal="mouse_entered" from="Element" to="." method="_on_element_mouse_entered"]
 [connection signal="pressed" from="Element" to="." method="_on_power_pressed"]
+[connection signal="mouse_entered" from="Flight" to="." method="_on_flight_mouse_entered"]
 [connection signal="pressed" from="Flight" to="." method="_on_speed_pressed"]

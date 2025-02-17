@@ -48,6 +48,7 @@ func setup_focus() -> void:
 
 func on_retry_pressed() -> void:
 	get_tree().paused = false
+	Audio.play_sfx("tech_part")
 	get_tree().reload_current_scene()
 
 func on_quit_pressed() -> void:
@@ -57,8 +58,17 @@ func on_quit_pressed() -> void:
 	get_tree().call_group("music_players", "stop")
 	get_tree().call_group("sfx_players", "stop")
 	
+	Audio.play_sfx("tech_part")
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/main_menu.tscn")
 
 func _on_input_mode_changed(mode: String) -> void:
 	if mode == "controller" and visible and retry_button:
 		retry_button.grab_focus()
+
+
+func _on_retry_button_mouse_entered() -> void:
+	Audio.play_sfx("text")
+
+
+func _on_quit_button_mouse_entered() -> void:
+	Audio.play_sfx("text")

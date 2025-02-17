@@ -43,13 +43,32 @@ func _on_input_mode_changed(mode: String) -> void:
 		first_button.grab_focus()
 
 func _on_play_pressed() -> void:
+	Audio.play_sfx("tech_part")
 	get_tree().change_scene_to_file("res://stages/intro/intro.tscn")
 
 func _on_settings_pressed() -> void:
+	Audio.play_sfx("tech_part")
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/settings_menu/settings_menu.tscn")
 
 func _on_credits_pressed() -> void:
+	Audio.play_sfx("tech_part")
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/credits_menu/credits_menu.tscn")
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
+
+
+func _on_play_button_mouse_entered() -> void:
+	Audio.play_sfx("text")
+
+
+func _on_settings_button_mouse_entered() -> void:
+	Audio.play_sfx("text")
+
+
+func _on_credits_button_mouse_entered() -> void:
+	Audio.play_sfx("text")
+
+
+func _on_quit_button_mouse_entered() -> void:
+	Audio.play_sfx("text")

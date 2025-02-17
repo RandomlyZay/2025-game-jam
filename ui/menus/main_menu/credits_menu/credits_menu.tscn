@@ -75,3 +75,5 @@ Isaiah Haughton
 Caleb Tucker"
 horizontal_alignment = 1
 autowrap_mode = 2
+
+[connection signal="mouse_entered" from="BackButton" to="." method="_on_back_button_mouse_entered"]

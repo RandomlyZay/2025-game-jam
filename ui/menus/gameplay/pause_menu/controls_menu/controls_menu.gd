@@ -26,6 +26,7 @@ func _input(event: InputEvent) -> void:
 		_on_back_pressed()
 
 func _on_back_pressed() -> void:
+	Audio.play_sfx("tech_part")
 	hide()  # Hide controls menu
 	var pause_menu = get_parent()
 	pause_menu.background.show()  # Show pause menu background
@@ -41,3 +42,7 @@ func _on_input_mode_changed(mode: String) -> void:
 	# Handle focus
 	if mode == "controller" and visible:
 		back_button.grab_focus()
+
+
+func _on_back_button_mouse_entered() -> void:
+	Audio.play_sfx("text")

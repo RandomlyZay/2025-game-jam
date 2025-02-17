@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://kbnowphrd7y2"]
+
+[ext_resource type="Script" path="res://objects/items/crate.gd" id="1_2ells"]
+[ext_resource type="Texture2D" uid="uid://iw7tpegfjs60" path="res://graphics/objects/crate.png" id="2_6cb6c"]
+[ext_resource type="Script" path="res://objects/interactable.gd" id="3_qytdd"]
+[ext_resource type="PackedScene" uid="uid://b08lb42hrodkb" path="res://ui/hud/floating_numbers.tscn" id="4_n28py"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e8h4f"]
+size = Vector2(96, 96)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_38tjh"]
+size = Vector2(144, 144)
+
+[node name="Crate" type="StaticBody2D"]
+collision_layer = 15
+collision_mask = 15
+script = ExtResource("1_2ells")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.228)
+texture = ExtResource("2_6cb6c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_e8h4f")
+
+[node name="interactable" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("3_qytdd")
+interact_name = "Open Chest"
+health = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="interactable"]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_38tjh")
+
+[node name="FloatingNumbers" parent="." instance=ExtResource("4_n28py")]
+position = Vector2(0, -120)

@@ -1,7 +1,7 @@
 # Audio Manager Guide
-# 1. **Resource Directories**: Place your audio files into:
-# 	- `res://audio/sfx/` for sound effects (supports .wav and .ogg files).
-# 	- `res://audio/music/` for music tracks (supports .ogg and .wav files).
+# 1. **Resource Management**:
+# 	- Audio resources are pre-loaded from `res://audio_resources.tres`
+# 	- Run the generate_audio_resources.gd script whenever audio files are added/removed
 #
 # 2. **Playing SFX**:
 # 	- Use `Audio.play_sfx(sound_name: String, params: Dictionary = {})` to play a sound effect.
@@ -80,39 +80,16 @@ var track_position: float = 0.0
 
 # Called when the node is added to the scene.
 func _ready() -> void:
-	# Load audio files from the specified directories.
-	load_audio_resources()
+	# Load pre-generated audio resources
+	var audio_res = load("res://audio_resources.tres") as AudioResources
+	if audio_res:
+		sfx = audio_res.sfx
+		music = audio_res.music
+	else:
+		push_error("Failed to load audio_resources.tres")
+	
 	# Initialize music and SFX players.
 	initialize_players()
-
-# Loads audio resources from predefined directories.
-func load_audio_resources() -> void:
-	# Load sound effects from the sfx folder.
-	load_audio_directory("res://audio/sfx/", sfx, [".wav", ".ogg"])
-	# Load music tracks from the music folder.
-	load_audio_directory("res://audio/music/", music, [".ogg", ".wav"])
-
-# Loads all audio files from a directory that match the given extensions and stores them in target_dict.
-func load_audio_directory(path: String, target_dict: Dictionary, extensions: Array) -> void:
-	var dir := DirAccess.open(path)
-	if dir:
-		dir.list_dir_begin()
-		var file_name := dir.get_next()
-		while file_name != "":
-			# Check if the file is not a directory and ends with one of the supported extensions.
-			if not dir.current_is_dir() and any_ends_with(file_name, extensions):
-				var resource = load(path + file_name)
-				if resource:
-					# Use the base name (without extension) as the key.
-					target_dict[file_name.get_basename()] = resource
-			file_name = dir.get_next()
-
-# Utility function to check if a string ends with any of the provided suffixes.
-func any_ends_with(string: String, suffixes: Array) -> bool:
-	for suffix in suffixes:
-		if string.ends_with(suffix):
-			return true
-	return false
 
 # Initializes the music and SFX audio players.
 func initialize_players() -> void:

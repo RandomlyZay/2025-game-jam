@@ -56,6 +56,9 @@ position = Vector2(216, 104)
 scale = Vector2(0.228049, 0.228049)
 texture = ExtResource("6_fuv8y")
 
+[connection signal="mouse_entered" from="Weight" to="." method="_on_weight_mouse_entered"]
 [connection signal="pressed" from="Weight" to="." method="_on_weight_pressed"]
+[connection signal="mouse_entered" from="Power" to="." method="_on_power_mouse_entered"]
 [connection signal="pressed" from="Power" to="." method="_on_power_pressed"]
+[connection signal="mouse_entered" from="Speed" to="." method="_on_speed_mouse_entered"]
 [connection signal="pressed" from="Speed" to="." method="_on_speed_pressed"]

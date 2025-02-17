@@ -14,4 +14,9 @@ func _input(event: InputEvent) -> void:
 		_on_back_pressed()
 
 func _on_back_pressed() -> void:
+	Audio.play_sfx("tech_part")
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/main_menu.tscn") 
+
+
+func _on_back_button_mouse_entered() -> void:
+	Audio.play_sfx("text")

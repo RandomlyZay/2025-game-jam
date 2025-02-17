@@ -167,6 +167,8 @@ func take_damage(amount: float) -> void:
 	if is_invincible or is_dying:
 		return
 	
+	Audio.play_sfx("robot_hurt")
+	
 	current_health = max(0.0, current_health - amount)
 	emit_signal("health_changed", current_health, max_health)
 	

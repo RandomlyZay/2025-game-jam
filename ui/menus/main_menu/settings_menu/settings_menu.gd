@@ -67,6 +67,7 @@ func _on_fullscreen_toggled(button_pressed: bool) -> void:
 	SettingsManager.set_fullscreen(button_pressed)
 
 func _on_back_pressed() -> void:
+	Audio.play_sfx("tech_part")
 	get_tree().change_scene_to_file("res://ui/menus/main_menu/main_menu.tscn")
 
 func _on_input_mode_changed(mode: String) -> void:
@@ -91,3 +92,7 @@ func _on_settings_changed() -> void:
 		music_slider.value = SettingsManager.music_volume
 	if sfx_slider.value != SettingsManager.sfx_volume:
 		sfx_slider.value = SettingsManager.sfx_volume
+
+
+func _on_back_button_mouse_entered() -> void:
+	Audio.play_sfx("text")

@@ -1,6 +1,6 @@
 extends "res://entities/characters/enemies/base_enemy.gd"
 
-@export var swipe_damage: float = 25.0
+@export var swipe_damage: float = 50.0
 @export var swipe_range: float = 120.0
 @export var swipe_arc: float = 160.0
 @export var swipe_windup: float = 0.4  # Reduced from 0.6

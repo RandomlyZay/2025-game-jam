@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://o0q0t4eik226" path="res://entities/characters/player/player.tscn" id="2_1emke"]
 [ext_resource type="PackedScene" uid="uid://dq8qo4qvlvhwj" path="res://ui/hud/hud.tscn" id="3_m5yk3"]
 [ext_resource type="Texture2D" uid="uid://r3les7u4nf1a" path="res://graphics/backgrounds/sky.png" id="3_nb4u6"]
-[ext_resource type="PackedScene" uid="uid://kbnowphrd7y2" path="res://objects/items/chest.tscn" id="4_6ms3x"]
+[ext_resource type="PackedScene" uid="uid://kbnowphrd7y2" path="res://objects/items/crate.tscn" id="4_6ms3x"]
 [ext_resource type="Texture2D" uid="uid://brn3h1qqn2dau" path="res://graphics/backgrounds/crystals.png" id="4_r3dlt"]
 [ext_resource type="Texture2D" uid="uid://d0w4v5isrh5av" path="res://graphics/backgrounds/ground.png" id="5_se46x"]
 [ext_resource type="PackedScene" uid="uid://c1eh02vx5evga" path="res://stages/level2/goal.tscn" id="5_ykodm"]

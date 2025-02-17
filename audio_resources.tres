@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="AudioResources" load_steps=27 format=3 uid="uid://xqvvv4u7x3dl"]
+
+[ext_resource type="AudioStream" uid="uid://fr1wfiea0s16" path="res://audio/music/drifting_through_the_clouds.wav" id="1_157x1"]
+[ext_resource type="AudioStream" uid="uid://cq2mav5qewfej" path="res://audio/music/game_over.wav" id="2_wrhqf"]
+[ext_resource type="AudioStream" uid="uid://dc4p3atyy02e7" path="res://audio/music/infiltrating_the_secret_base.wav" id="3_el84e"]
+[ext_resource type="AudioStream" uid="uid://ckthlw0v3imxa" path="res://audio/music/intro.wav" id="4_1ervp"]
+[ext_resource type="AudioStream" uid="uid://wiav762h3odc" path="res://audio/music/level.wav" id="5_ab3qp"]
+[ext_resource type="AudioStream" uid="uid://do6084tkm5k3r" path="res://audio/music/main_menu_theme.wav" id="6_27m1h"]
+[ext_resource type="AudioStream" uid="uid://hgcur55hawew" path="res://audio/music/sanctuary_riot.wav" id="7_35x16"]
+[ext_resource type="AudioStream" uid="uid://jke30ehm7nlw" path="res://audio/music/test.ogg" id="8_ujtr4"]
+[ext_resource type="AudioStream" uid="uid://ctiaj1g11370u" path="res://audio/music/test2.wav" id="9_rm4n8"]
+[ext_resource type="AudioStream" uid="uid://dc6pb8rluegdp" path="res://audio/music/the_alien_vibe.wav" id="10_e1810"]
+[ext_resource type="AudioStream" uid="uid://nmj32hbexsbx" path="res://audio/music/tutorial_theme.wav" id="11_8yeq2"]
+[ext_resource type="AudioStream" uid="uid://o4vfs6xp6cqr" path="res://audio/music/upgrade.wav" id="12_k8byr"]
+[ext_resource type="Script" path="res://global/audio_resources.gd" id="13_0qg7j"]
+[ext_resource type="AudioStream" uid="uid://d0frw61ftumnd" path="res://audio/sfx/bad_explosion.wav" id="14_yv2gu"]
+[ext_resource type="AudioStream" uid="uid://dnhe81n38sro8" path="res://audio/sfx/enemy_bullet.wav" id="15_euup1"]
+[ext_resource type="AudioStream" uid="uid://ccb4qr4psfyto" path="res://audio/sfx/enemy_death.wav" id="16_bdxny"]
+[ext_resource type="AudioStream" uid="uid://cabmas2k4ysa5" path="res://audio/sfx/enemy_hurt.wav" id="17_8eeyh"]
+[ext_resource type="AudioStream" uid="uid://biqqmd0c04v0w" path="res://audio/sfx/human_death.wav" id="18_th82r"]
+[ext_resource type="AudioStream" uid="uid://5vwfctilnnle" path="res://audio/sfx/human_hurt.wav" id="19_1r7hu"]
+[ext_resource type="AudioStream" uid="uid://cn3q3a2gaps8h" path="res://audio/sfx/random.wav" id="20_nsbkm"]
+[ext_resource type="AudioStream" uid="uid://bnysn56omnmr4" path="res://audio/sfx/robot_death.wav" id="21_i2tt2"]
+[ext_resource type="AudioStream" uid="uid://dn4uuq5xpgrjj" path="res://audio/sfx/robot_heal.wav" id="22_3p76i"]
+[ext_resource type="AudioStream" uid="uid://b0utlfv54b5ii" path="res://audio/sfx/robot_hurt.wav" id="23_y5g68"]
+[ext_resource type="AudioStream" uid="uid://dq26gpw7okwm6" path="res://audio/sfx/tech_part.wav" id="24_1ermh"]
+[ext_resource type="AudioStream" uid="uid://lx8c1h1i5prw" path="res://audio/sfx/text.wav" id="25_0jhre"]
+[ext_resource type="AudioStream" uid="uid://cdhqkb20cvu31" path="res://audio/sfx/text_finish.wav" id="26_poaxw"]
+
+[resource]
+script = ExtResource("13_0qg7j")
+sfx = {
+"bad_explosion": ExtResource("14_yv2gu"),
+"enemy_bullet": ExtResource("15_euup1"),
+"enemy_death": ExtResource("16_bdxny"),
+"enemy_hurt": ExtResource("17_8eeyh"),
+"human_death": ExtResource("18_th82r"),
+"human_hurt": ExtResource("19_1r7hu"),
+"random": ExtResource("20_nsbkm"),
+"robot_death": ExtResource("21_i2tt2"),
+"robot_heal": ExtResource("22_3p76i"),
+"robot_hurt": ExtResource("23_y5g68"),
+"tech_part": ExtResource("24_1ermh"),
+"text": ExtResource("25_0jhre"),
+"text_finish": ExtResource("26_poaxw")
+}
+music = {
+"drifting_through_the_clouds": ExtResource("1_157x1"),
+"game_over": ExtResource("2_wrhqf"),
+"infiltrating_the_secret_base": ExtResource("3_el84e"),
+"intro": ExtResource("4_1ervp"),
+"level": ExtResource("5_ab3qp"),
+"main_menu_theme": ExtResource("6_27m1h"),
+"sanctuary_riot": ExtResource("7_35x16"),
+"test": ExtResource("8_ujtr4"),
+"test2": ExtResource("9_rm4n8"),
+"the_alien_vibe": ExtResource("10_e1810"),
+"tutorial_theme": ExtResource("11_8yeq2"),
+"upgrade": ExtResource("12_k8byr")
+}
