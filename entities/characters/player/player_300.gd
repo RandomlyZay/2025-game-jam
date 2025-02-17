@@ -9,13 +9,13 @@ signal dash_started
 signal dash_ended
 
 @export_group("Health")
-@export var max_health: float = 4.0
-@export var weak_attack: float = 10.0
+@export var max_health: float = 2.0
+@export var weak_attack: float = 20.0
 @export var heavy_attack: float = 25.0
-@export var projectile_attack: float = 10
+@export var arial_attack: float = 20.0
 
 @export_group("Movement")
-@export var base_speed: float = 500.0
+@export var base_speed: float = 750.0
 @export var knockback_recovery_speed: float = 1200.0  # How fast you recover from getting knocked back
 @export var knockback_resistance: float = 0.3
 @export var jump_speed: float = 25.00
@@ -25,7 +25,7 @@ signal dash_ended
 @export_group("Dash")
 @export var dash_speed: float = 1500.0
 @export var dash_duration: float = 0.2
-@export var dash_cooldown: float = 1.0
+@export var dash_cooldown: float = 0.25
 @export var dash_invincibility_duration: float = 0.3
 
 #abilities
@@ -48,7 +48,7 @@ var is_invincible: bool = false
 var is_dying: bool = false
 var can_dash: bool = true
 var last_move_direction: Vector2 = Vector2.RIGHT
-var can_jump = true
+var can_jump = false
 var is_jumping: bool = false
 var jumpMultiplyer = 8
 var last_horizontal_direction: int = 1  # 1 for right, -1 for left
@@ -58,6 +58,9 @@ var last_horizontal_direction: int = 1  # 1 for right, -1 for left
 func _ready() -> void:
 	current_health = max_health
 	emit_signal("health_changed", current_health, max_health)
+	
+	get_node("InteractingComponent").interact_cooldown = .25
+
 	
 	
 	# Initialize timers

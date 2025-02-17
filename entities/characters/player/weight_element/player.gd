@@ -7,11 +7,14 @@ signal player_died
 # Movement Signals
 signal dash_started
 signal dash_ended
+signal laser_started
+signal laser_ended
 
 @export_group("Health")
-@export var max_health: float = 1.0
+@export var max_health: float = 5.0
 @export var weak_attack: float = 15.0
-@export var heavy_attack: float = 20.0
+@export var heavy_attack: float = 25.0
+@export var projectile_attack: float = 15
 
 @export_group("Movement")
 @export var base_speed: float = 500.0
@@ -20,6 +23,12 @@ signal dash_ended
 @export var jump_speed: float = 25.00
 @export var gravity: float = 5.00
 @export var acceleration: float = 500
+
+@export_group("Laser")
+@export var laser_speed: float = 1500.0
+@export var laser_duration: float = 15
+@export var laser_cooldown: float = 5
+
 
 @export_group("Dash")
 @export var dash_speed: float = 1500.0
@@ -32,12 +41,14 @@ signal dash_ended
 
 @export var can_fly = false
 @export var can_berserk = false
-@export var can_super_laser = false
+@export var can_laser = true
 @export var can_super_bomb = false
 
 # Timer References
 var dash_cooldown_timer: Timer
 var dash_duration_timer: Timer
+var laser_cooldown_timer: Timer
+var laser_duration_timer: Timer
 var invincibility_timer: Timer
 
 # State Variables
@@ -64,6 +75,21 @@ func _ready() -> void:
 	
 
 func create_timers() -> void:
+	
+	#Berserk Timer
+	laser_duration_timer = Timer.new()
+	laser_duration_timer.wait_time = laser_duration
+	laser_duration_timer.one_shot = true
+	laser_duration_timer.timeout.connect(_on_laser_duration_timer_timeout)
+	add_child(laser_duration_timer)
+	
+	# berserk cooldown timer
+	laser_cooldown_timer = Timer.new()
+	laser_cooldown_timer.wait_time = laser_cooldown
+	laser_cooldown_timer.one_shot = true
+	laser_cooldown_timer.timeout.connect(_on_laser_cooldown_timer_timeout)
+	add_child(laser_cooldown_timer)
+	
 	# Dash duration timer
 	dash_duration_timer = Timer.new()
 	dash_duration_timer.wait_time = dash_duration
@@ -162,6 +188,22 @@ func start_dash() -> void:
 func end_dash() -> void:
 	emit_signal("dash_ended")
 	modulate.a = 1.0
+	
+
+func start_laser() -> void:
+	can_laser = false
+	is_invincible = true
+	
+	emit_signal("laser_started")
+	
+
+	laser_duration_timer.start()
+	laser_cooldown_timer.start()
+	modulate.a = 0.7
+
+func end_laser() -> void:
+	emit_signal("laser_ended")
+	modulate.a = 1.0
 
 func take_damage(amount: float) -> void:
 	if is_invincible or is_dying:
@@ -198,7 +240,14 @@ func _on_dash_duration_timer_timeout() -> void:
 
 func _on_invincibility_timer_timeout() -> void:
 	is_invincible = false
+	
 
+func _on_laser_cooldown_timer_timeout() -> void:
+	can_laser = false
+
+func _on_laser_duration_timer_timeout() -> void:
+	end_laser()
+	
 func jumping() -> void:
 	#$AnimationPlayer.play("Jump")
 		is_jumping = true

@@ -9,9 +9,9 @@ signal dash_started
 signal dash_ended
 
 @export_group("Health")
-@export var max_health: float = 4.0
-@export var weak_attack: float = 10.0
-@export var heavy_attack: float = 25.0
+@export var max_health: float = 3.0
+@export var weak_attack: float = 20.0
+@export var heavy_attack: float = 20.0
 @export var projectile_attack: float = 10
 
 @export_group("Movement")
@@ -48,7 +48,7 @@ var is_invincible: bool = false
 var is_dying: bool = false
 var can_dash: bool = true
 var last_move_direction: Vector2 = Vector2.RIGHT
-var can_jump = true
+var can_jump = false
 var is_jumping: bool = false
 var jumpMultiplyer = 8
 var last_horizontal_direction: int = 1  # 1 for right, -1 for left
